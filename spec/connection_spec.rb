@@ -7,7 +7,11 @@ describe Connection do
 
   it "should connect to Jira OK" do
     @jira=Connection::Jira.connect
-    puts @jira.getProjectByKey("EX").name.should eql 'Explorer'
+    @jira.getProjectByKey("EX").name.should eql 'Explorer'
+  end
+  it "should connect to Sesame OK" do
+    @sesame=Connection::Sesame.connect
+    @sesame.title.should eql 'AMEE Provenance Repository'
   end
 end
 

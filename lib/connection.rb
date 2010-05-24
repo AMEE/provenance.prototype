@@ -16,4 +16,15 @@ module Connection
       end
     end
   end
+  module Sesame
+    Config=config('sesame')
+    def self.connect
+      @sesame ||= begin
+        url = RDF::URI.new(Config['url'])
+        $log.info "Authenticating to #{Config['url']} repository #{Config['repository']}."
+        serv = RDF::Sesame::Server.new(url)
+        repo = serv.repository(Config['repository'])
+      end
+    end
+  end
 end
