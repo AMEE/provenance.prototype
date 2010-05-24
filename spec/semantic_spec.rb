@@ -4,7 +4,7 @@ require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 Triples=[
   RDF::Statement.new(
     RDF::URI(
-      "http://jira.amee.com/browse/ST-49?focusedCommentId=12470"),
+      "http://jira.amee.com/browse/ST-49?focusedCommentId=12475"),
     RDF::URI(
       "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
     AMEE::test

@@ -1,3 +1,9 @@
+
+def declaring(name,&block)
+  klass=Command.const_set(name.to_s.classify,Class.new(Command))
+  klass.send(:define_method,:describe,block)
+end
+
 class Command
   include RDF
     
@@ -23,18 +29,20 @@ class Command
   attr_accessor :subject
 
   def self.create(comment,name,args)
-    $log.debug("Create command #{name.capitalize}(#{args.join(',')})")
+    $log.debug("Create command #{name.classify}(#{args.join(',')})")
     begin
-      "Command::#{name.capitalize}".constantize.new(comment,args)
+      "Command::#{name.classify}".constantize.new(comment,args)
     rescue NameError => err
       $log.error err
     end
   end
-
-  class Test < Command
-    def describe
-      type AMEE.test
-    end
+  Find.find(File.join(File.dirname(__FILE__),'command')) do |file|
+    next if File.extname(file) != ".rb"
+    require file
   end
-
 end
+
+
+
+
+
