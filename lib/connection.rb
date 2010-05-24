@@ -1,4 +1,8 @@
 require 'jira4r'
+# make JiraTool tell us the URL it was made from for later
+Jira4R::JiraTool.class_eval do
+  attr_reader :base_url
+end
 
 # module for connecting to external services
 # i.e. Jira, Sesame.

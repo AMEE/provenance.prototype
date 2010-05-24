@@ -7,6 +7,8 @@ module Commands
       @comment=comment
       @args=args
       @triples=[]
+      @subject=comment.uri # by default, assume the URI subject for the command
+      # is the URL of the comment, i.e. the URI for the process
       $log.debug("Building #{self.class}(#{args})")
       describe
     end
@@ -19,7 +21,8 @@ module Commands
     def type(o)
       qualify(RDF.type,o)
     end
-    attr_reader :comment,:args,:triples,:subject
+    attr_reader :comment,:args,:triples
+    attr_accessor :subject
   end
 
   class Test < Command
