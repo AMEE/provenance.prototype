@@ -3,11 +3,11 @@
 
 require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 
-describe Commands do 
+describe Command do 
 
   it "should create a test command" do
     @comment=flexmock(:uri=>RDF::URI('http://test.amee.com/jira/EX-7'))
-    @test=Commands::Test.new(@comment,'dummy')
+    @test=Command::Test.new(@comment,'dummy')
     @test.args.should eql ['dummy']
     @test.triples[0].predicate.should eql RDF::URI(
       "http://www.w3.org/1999/02/22-rdf-syntax-ns#type")

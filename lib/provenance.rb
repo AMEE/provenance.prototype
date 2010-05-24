@@ -4,6 +4,7 @@ require 'utils'
 require 'pp'
 require 'rdf'
 require 'rdf/sesame'
+require 'active_support'
 
 require 'vocabulary'
 require 'connection'

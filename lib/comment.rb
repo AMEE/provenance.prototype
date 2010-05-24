@@ -13,7 +13,7 @@ class Comment
     @comment=comment
     @jira=jira
     $log.debug("Parsing comment #{project}-#{ticket}:#{comment}")
-    @commands.push(Commands::Test.new(self,'hello'))
+    @commands.push(Command.create(self,'test','hello'))
   end
   def url
     # url of the jira comment
