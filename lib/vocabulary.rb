@@ -6,6 +6,6 @@ class OPM < RDF::Vocabulary("http://openprovenance.org/ontology#")
   property :cause
   property :effect
   property :process
-  property :was_generated_by
-  property :was_derived_from
+  property :wasGeneratedBy
+  property :wasDerivedFrom
 end

@@ -26,7 +26,9 @@ class Command
     qualify(RDF.type,o)
   end
   attr_reader :comment,:args,:triples
-  attr_accessor :subject
+  def subject(s=@subject)
+    @subject=s
+  end
 
   def self.create(comment,name,args)
     $log.debug("Create command #{name.classify}(#{args.join(',')})")
