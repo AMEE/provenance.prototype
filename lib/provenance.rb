@@ -1,4 +1,6 @@
 require 'rubygems'
 require 'yaml'
-require 'connection'
+require 'utils'
 require 'pp'
+
+require 'connection'

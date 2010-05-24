@@ -5,10 +5,9 @@ require 'jira4r'
 
 module Connection
   module Jira
-    Config=YAML.load_file File.join(File.dirname(File.dirname(__FILE__)),'config','jira.yml')
+    Config=config('jira')
     def self.connect
       @jira ||= begin
-        pp Config
         j=Jira4R::JiraTool.new(2, Config['url'])
         p "Authenticating to #{Config['url']} as #{Config['user']}, with #{Config['password']}"
         j.login(Config['user'], Config['password'])
