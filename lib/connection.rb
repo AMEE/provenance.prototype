@@ -9,7 +9,8 @@ module Connection
     def self.connect
       @jira ||= begin
         j=Jira4R::JiraTool.new(2, Config['url'])
-        p "Authenticating to #{Config['url']} as #{Config['user']}, with #{Config['password']}"
+        j.logger=Log4r::Logger['Jira']
+        $log.info "Authenticating to #{Config['url']} as #{Config['user']}."
         j.login(Config['user'], Config['password'])
         j
       end
