@@ -11,9 +11,9 @@ Triples=[
   )
 ]
 
-describe Semantic do
+describe SemanticDB do
   before(:each) do
-    @semantic=Semantic::Sesame.new
+    @semantic=SemanticDB::Sesame.new
   end
 
   it "should store and remove statement" do

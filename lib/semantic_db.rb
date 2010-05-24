@@ -1,7 +1,7 @@
 #wrapper class for Sesame or other semantic libraries
 #to give potential for multiple libraries to have same signature to our code
 
-class Semantic
+class SemanticDB
   def initialize
     @log=Log4r::Logger['Semantic']
   end
@@ -23,7 +23,7 @@ class Semantic
   end
 end
 
-class Semantic::Sesame < Semantic
+class SemanticDB::Sesame < SemanticDB
   def initialize(connection=Connection::Sesame.connect)
     @sesame=connection
     super()
