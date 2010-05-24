@@ -19,6 +19,7 @@ describe Comment do
   end
   it "should create comments from a real jira" do
     @jira=Connection::Jira.connect
+    @sesame=Connection::Sesame.connect
     @comment=Comment.new(@jira,'ST',49,12470)
     @comment.body.
       should match "Example provenance commands to test out the system"

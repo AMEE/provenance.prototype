@@ -1,10 +1,11 @@
-require 'jira4r'
+
 # make JiraTool tell us the URL it was made from for later
 Jira4R::JiraTool.class_eval do
   attr_reader :base_url
 end
 
 # module for connecting to external services
+# manages auth, config files etc.
 # i.e. Jira, Sesame.
 
 module Connection
@@ -12,11 +13,11 @@ module Connection
     Config=config('jira')
     def self.connect
       @jira ||= begin
-        j=Jira4R::JiraTool.new(2, Config['url'])
-        j.logger=Log4r::Logger['Jira']
+        jira=Jira4R::JiraTool.new(2, Config['url'])
+        jira.logger=Log4r::Logger['Jira']
         $log.info "Authenticating to #{Config['url']} as #{Config['user']}"
-        j.login(Config['user'], Config['password'])
-        j
+        jira.login(Config['user'], Config['password'])
+        jira
       end
     end
   end
@@ -28,6 +29,8 @@ module Connection
         $log.info "Connecting to #{Config['url']} repository #{Config['repository']}."
         serv = RDF::Sesame::Server.new(url)
         repo = serv.repository(Config['repository'])
+        Log4r::Logger['Semantic'].info("#{repo.size} existing statements")
+        repo
       end
     end
   end

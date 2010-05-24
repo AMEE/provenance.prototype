@@ -13,5 +13,6 @@ describe Connection do
     @sesame=Connection::Sesame.connect
     @sesame.title.should eql 'AMEE Provenance Repository'
   end
+ 
 end
 
