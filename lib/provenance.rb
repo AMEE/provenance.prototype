@@ -6,3 +6,5 @@ require 'rdf'
 require 'rdf/sesame'
 
 require 'connection'
+require 'comment'
+require 'command'
