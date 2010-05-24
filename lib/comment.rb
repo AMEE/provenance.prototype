@@ -1,17 +1,23 @@
 class Comment
-  attr_reader :commands,:jira,:code
-  def initialize(jira,code)
-   # looks up code, e.g. EX-74 in JIRA, and builds the set of provenance
-   # commands it contains
+  attr_reader :commands,:jira,:project,:ticket,:comment,:body
+  def initialize(jira,project,ticket,comment)
+    # looks up comment , e.g. EX-74 comment 12345 in JIRA,
+    # and builds the set of provenance
+    # commands it contains
+    # note comment id is unique, but we give project and ticket to constructor
+    # as well, to help keep URLs meaningful
+    @body=jira.getComment(comment).body
     @commands=[]
-    @code=code
+    @project=project
+    @ticket=ticket
+    @comment=comment
     @jira=jira
-    $log.debug("Parsing comment #{code}")
+    $log.debug("Parsing comment #{project}-#{ticket}:#{comment}")
     @commands.push(Commands::Test.new(self,'hello'))
   end
   def url
     # url of the jira comment
-    "#{jira.base_url}/browse/#{code}"
+    "#{jira.base_url}/browse/#{project}-#{ticket}?focusedCommentId=#{comment}"
   end
   def uri
     RDF::URI url
