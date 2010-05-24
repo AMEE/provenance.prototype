@@ -23,5 +23,9 @@ describe Semantic do
     @semantic.delete Triples
     @semantic.true?(Triples[0]).should be_false
   end
+
+  it "should handle output of a real comment" do
+    @semantic.store Comment.new(Connection::Jira.connect,'ST',49,12470).triples
+  end
 end
 

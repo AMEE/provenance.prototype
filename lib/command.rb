@@ -1,5 +1,5 @@
 
-def declaring(name,&block)
+def prov(name,&block)
   klass=Command.const_set(name.to_s.classify,Class.new(Command))
   klass.send(:define_method,:describe,block)
 end
@@ -32,8 +32,9 @@ class Command
     $log.debug("Create command #{name.classify}(#{args.join(',')})")
     begin
       "Command::#{name.classify}".constantize.new(comment,args)
-    rescue NameError => err
+    rescue NameError,ArgumentError => err
       $log.error err
+      $log.error err.backtrace
     end
   end
   Find.find(File.join(File.dirname(__FILE__),'command')) do |file|

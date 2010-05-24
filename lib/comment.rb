@@ -13,6 +13,7 @@ class Comment
     @ticket=ticket
     @comment=comment
     @jira=jira
+    @urinum=0
     $log.debug("Parsing comment #{project}-#{ticket}:#{comment}")
     parse_body
   end
@@ -24,6 +25,16 @@ class Comment
 
   def uri
     RDF::URI url
+  end
+
+  def newuri
+    @urinum+=1
+    RDF::URI "#{url}/#{@urinum}"   
+  end
+
+  def triples
+    @res=[]
+    @commands.map{|x| x.triples}.flatten(1)
   end
 
   private

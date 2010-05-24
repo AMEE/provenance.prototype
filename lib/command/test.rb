@@ -1,3 +1,3 @@
-declaring(:test) do  
+prov :test do  
   type AMEE.test
 end
