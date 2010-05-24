@@ -16,10 +16,12 @@ describe Semantic do
     @semantic=Semantic::Sesame.new
   end
 
-  it "should desc" do
+  it "should store and remove statement" do
+    @semantic.true?(Triples[0]).should be_false
     @semantic.store Triples
     @semantic.true?(Triples[0]).should be_true
     @semantic.delete Triples
+    @semantic.true?(Triples[0]).should be_false
   end
 end
 
