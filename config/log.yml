@@ -1,0 +1,45 @@
+log4r_config:
+
+  # define all loggers ...
+  loggers:
+    - name      : Main
+      level     : DEBUG
+      additive  : 'false'
+      trace     : 'false'      
+      outputters:
+        - stderr
+        - mainlogfile
+    - name      : Jira
+      level     : DEBUG
+      additive  : 'false'
+      trace     : 'false'
+      outputters:
+        - stderr
+        - jiralogfile
+
+  # define all outputters (incl. formatters)      
+  outputters:
+    - type     : StderrOutputter
+      name     : stderr 
+      formatter:
+        date_pattern: '%y%m%d %H:%M:%S'
+        pattern     : '%d %c %l: %m '
+        type        : PatternFormatter
+
+    - type        : FileOutputter
+      name        : mainlogfile
+      trunc       : 'false'
+      filename    : "#{HOME}/logs/prov.log"
+      formatter   :
+        date_pattern: '%y%m%d %H:%M:%S'
+        pattern     : '%d %l: %m'
+        type        : PatternFormatter
+
+    - type        : FileOutputter
+      name        : jiralogfile
+      trunc       : 'true'
+      filename    : "#{HOME}/logs/jira.log"
+      formatter   :
+        date_pattern: '%y%m%d %H:%M:%S'
+        pattern     : '%d %l: %m'
+        type        : PatternFormatter
