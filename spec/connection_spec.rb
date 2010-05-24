@@ -7,7 +7,7 @@ describe Connection do
 
   it "should connect to Jira OK" do
     @jira=Connection::Jira.connect
-    puts @jira.getProject("Explorer").inspect
+    puts @jira.getProjectByKey("EX").name.should eql 'Explorer'
   end
 end
 
