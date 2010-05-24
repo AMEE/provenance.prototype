@@ -11,6 +11,12 @@ class Semantic
   def query(query)
     raise NotSupported
   end
+  def delete(triples)
+    raise NotSupported
+  end
+  def true?(statement)
+    raise NotSupported
+  end
 
   class NotSupported < Exception
 
