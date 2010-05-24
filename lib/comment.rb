@@ -28,18 +28,24 @@ class Comment
       tokens=line.split(/\s/)
       reset_parser
       tokens.each do |token|
-
-        if token=~/prov\:/
-          cname=token.sub(/prov\:/,'')
-          command if @command
-          @command=cname
-        else
-          @args.push token if @command
-        end
+        handle_token(token)
       end
       command if @command
     end
 
+  end
+
+  def handle_token(token)
+    if token=~/prov\:/
+      cname=token.sub(/prov\:/,'')
+      # if there's already a command on this line, we reached end of arguments
+      command if @command
+      # and regardless of that, we've got a new command to start now.
+      @command=cname
+    else
+      # it's only an arg to a command if we're currently doing a command
+      @args.push token if @command
+    end
   end
 
   def reset_parser
