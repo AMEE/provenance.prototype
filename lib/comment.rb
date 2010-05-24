@@ -17,7 +17,18 @@ class Comment
     parse_body
   end
 
-  def parse_body
+  def url
+    # url of the jira comment
+    "#{jira.base_url}/browse/#{project}-#{ticket}?focusedCommentId=#{comment}"
+  end
+
+  def uri
+    RDF::URI url
+  end
+
+  private
+
+    def parse_body
     # commands are bounded by prov:foo, on newline and semicolon
     # pain to do this in ruby 1.8 without lookaround to do non-consuming splits
 
@@ -58,12 +69,4 @@ class Comment
     reset_parser
   end
 
-  def url
-    # url of the jira comment
-    "#{jira.base_url}/browse/#{project}-#{ticket}?focusedCommentId=#{comment}"
-  end
-
-  def uri
-    RDF::URI url
-  end
 end
