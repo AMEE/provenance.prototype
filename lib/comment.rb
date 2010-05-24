@@ -4,6 +4,7 @@ class Comment
    # looks up code, e.g. EX-74 in JIRA, and builds the set of provenance
    # commands it contains
     @commands=[]
+    $log.debug("Parsing comment #{code}")
     @commands.push(Commands::Test.new(self,'hello'))
   end
 end
