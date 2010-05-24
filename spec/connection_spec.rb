@@ -6,8 +6,8 @@ require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 describe Connection do
 
   it "should connect to Jira OK" do
-    @jira=jira
-    puts jira.getProject("Explorer").inspect
+    @jira=Connection::Jira.connect
+    puts @jira.getProject("Explorer").inspect
   end
 end
 

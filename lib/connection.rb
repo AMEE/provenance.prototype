@@ -1,15 +1,17 @@
-require 'jira4r/jira4r'
+require 'jira4r'
 
 # module for connecting to external services
 # i.e. Jira, Sesame.
 
 module Connection
-  JiraConfig=YAML.load 'jira.yml'
-  def jira
-    @jira ||= begin
-      j=Jira::JiraTool.new(2, JiraConfig.url)
-      j.login(JiraConfig.user, JiraConfig.pass)
-      j
+  module Jira
+    Config=YAML.load_file File.join(File.dirname(File.dirname(__FILE__)),'config','jira.yml')
+    def self.connect
+      @jira ||= begin
+        j=Jira4R::JiraTool.new(2, Config[:url])
+        j.login(Config[:user], Config[:pass])
+        j
+      end
     end
   end
 end
