@@ -7,7 +7,7 @@ describe Comment do
   
   it "should create comments from a mock jira" do
     @jira=flexmock(:base_url=>"http://example.com/jira",:getComment=>
-      flexmock(:body=>'Mock body'))
+      flexmock(:body=>'Mock body prov:test Hopeful'))
     @comment=Comment.new(@jira,'EX',1,55)
     @comment.body.should match 'Mock body'
     @typeassertion= @comment.commands[0].triples[0]

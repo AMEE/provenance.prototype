@@ -7,7 +7,7 @@ class Command
     @triples=[]
     @subject=comment.uri # by default, assume the URI subject for the command
     # is the URL of the comment, i.e. the URI for the process
-    $log.debug("Building #{self.class}(#{args})")
+    $log.debug("Building triples for #{self.class}(#{args.join(',')})")
     describe
   end
   def statement(s,v,o)
@@ -23,7 +23,12 @@ class Command
   attr_accessor :subject
 
   def self.create(comment,name,args)
-    "Command::#{name.capitalize}".constantize.new(comment,args)
+    $log.debug("Create command #{name.capitalize}(#{args.join(',')})")
+    begin
+      "Command::#{name.capitalize}".constantize.new(comment,args)
+    rescue NameError => err
+      $log.error err
+    end
   end
 
   class Test < Command
