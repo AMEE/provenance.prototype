@@ -8,8 +8,10 @@ module Connection
     Config=YAML.load_file File.join(File.dirname(File.dirname(__FILE__)),'config','jira.yml')
     def self.connect
       @jira ||= begin
-        j=Jira4R::JiraTool.new(2, Config[:url])
-        j.login(Config[:user], Config[:pass])
+        pp Config
+        j=Jira4R::JiraTool.new(2, Config['url'])
+        p "Authenticating to #{Config['url']} as #{Config['user']}, with #{Config['password']}"
+        j.login(Config['user'], Config['password'])
         j
       end
     end
