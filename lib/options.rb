@@ -22,9 +22,15 @@ module Options
           options.verbosity=Log4r::INFO
         end
       end
+      opts.on("-c comment",Integer) do |comment|
+        options.comment=comment
+      end
     end.parse!(args)
     Log4r::Outputter['stderr'].level=options.verbosity
     $log.debug('Provenance started')
     $log.info("Verbosity #{Log4r::LNAMES[options.verbosity]}")
+    options.target = args.shift
+    
+    
   end
 end

@@ -14,5 +14,11 @@ describe Provenance do
       ENV['PATH']=oldpath
     end
   end
+  it "should parse issue" do
+    Provenance.new("EX-590").issue.should eql 590
+    Provenance.new("EX-590").project.should eql 'EX'
+    Provenance.new("EX").project.should eql 'EX'
+    Provenance.new("EX").issue.should be_nil
+  end
 end
 

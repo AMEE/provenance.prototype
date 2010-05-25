@@ -13,4 +13,3 @@ yc=Log4r::YamlConfigurator
 yc['HOME']=Home
 yc.load_yaml_file configfile('log')
 $log=Log4r::Logger['Main']
-$log.debug('Provenance started')
