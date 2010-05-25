@@ -36,7 +36,7 @@ class Command
       "Command::#{name.classify}".constantize.new(comment,args)
     rescue NameError,ArgumentError => err
       $log.error err
-      $log.error err.backtrace
+      #$log.error err.backtrace
     end
   end
   Find.find(File.join(File.dirname(__FILE__),'command')) do |file|

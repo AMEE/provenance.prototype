@@ -20,6 +20,7 @@ require 'comment'
 require 'command'
 require 'semantic_db'
 require 'options'
+require 'issue'
 
 class Provenance
   include Options
