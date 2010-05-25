@@ -1,5 +1,4 @@
-require 'log4r'
-require 'log4r/yamlconfigurator'
+
 Home=File.join(File.dirname(File.dirname(__FILE__)))
 
 def configfile(mod)
