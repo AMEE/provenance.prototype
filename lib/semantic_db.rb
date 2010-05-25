@@ -17,7 +17,9 @@ class SemanticDB
   def true?(statement)
     raise NotSupported
   end
-
+  def count
+    raise NotSupported
+  end
   class NotSupported < Exception
 
   end
@@ -43,5 +45,8 @@ class SemanticDB::Sesame < SemanticDB
   def true?(statement)
     @log.debug("Verify: #{statement.subject} #{statement.predicate} #{statement.object}")
     @sesame.has_statement? statement
+  end
+  def count
+    @sesame.count
   end
 end

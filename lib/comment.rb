@@ -33,7 +33,6 @@ class Comment
   end
 
   def triples
-    @res=[]
     @commands.map{|x| x.triples}.flatten(1)
   end
 
@@ -76,7 +75,8 @@ class Comment
   end
 
   def command
-    @commands.push(Command.create(self,@command,@args))
+    c=Command.create(self,@command,@args)
+    @commands.push(c) if c
     reset_parser
   end
 

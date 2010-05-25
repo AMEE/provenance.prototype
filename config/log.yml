@@ -27,7 +27,8 @@ log4r_config:
   # define all outputters (incl. formatters)      
   outputters:
     - type     : StderrOutputter
-      name     : stderr 
+      name     : stderr
+      level    : WARN
       formatter:
         date_pattern: '%y%m%d %H:%M:%S'
         pattern     : '%d %c %l: %m '
@@ -50,6 +51,7 @@ log4r_config:
         date_pattern: '%y%m%d %H:%M:%S'
         pattern     : '%d %l: %m'
         type        : PatternFormatter
+        
     - type        : FileOutputter
       name        : semanticlogfile
       trunc       : 'true'

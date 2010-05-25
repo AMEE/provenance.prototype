@@ -15,6 +15,8 @@ require 'log4r/yamlconfigurator'
 
 require 'utils'
 require 'vocabulary'
+require 'parser'
+
 require 'connection'
 require 'comment'
 require 'command'
@@ -22,9 +24,10 @@ require 'semantic_db'
 require 'options'
 require 'issue'
 
+
 class Provenance
   include Options
-  attr_reader :project,:issue
+  attr_reader :project,:issue,:comment
   def initialize(args)
     parse_options(args)
     match=options.target.match(/([A-Z]+)-([0-9]+)/)
@@ -37,7 +40,25 @@ class Provenance
     end
   end
   def exec
-    
+    if comment
+      comments=[Comment.new(Connection::Jira.connect,project,comment)]
+    else
+      comments=Issue.new(Connection::Jira.connect,project,issue).comments
+    end
+    $log.info("Found #{comments.length} comments")
+    db="SemanticDB::#{options.db}".constantize.new
+    $log.debug("Before commit, #{db.count} assertions")
+    if options.delete
+      comments.each do |comment|
+        db.delete comment.triples
+      end
+    end
+    if options.add
+      comments.each do |comment|
+        db.store comment.triples
+      end
+    end
+    $log.debug("After commit, #{db.count} assertions")
   end
   def clean
     

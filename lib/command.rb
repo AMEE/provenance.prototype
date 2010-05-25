@@ -17,7 +17,7 @@ class Command
     describe
   end
   def statement(s,v,o)
-    @triples << Statement.new(s,v,o)
+    @triples << Statement.new(Parser[s],Parser[v],Parser[o])
   end
   def qualify(v,o)
     statement(subject,v,o)
@@ -37,6 +37,7 @@ class Command
     rescue NameError,ArgumentError => err
       $log.error err
       #$log.error err.backtrace
+      nil
     end
   end
   Find.find(File.join(File.dirname(__FILE__),'command')) do |file|

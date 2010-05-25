@@ -3,7 +3,10 @@ module Options
   def parse_options(args)
     args=Shellwords.shellwords(args) if args.class==String
     @options = OpenStruct.new
-    options.verbosity=Log4r::INFO
+    conf=config('prov')
+    options.add=true
+    options.delete=true
+    options.db=conf['db'] ? conf['db'] : "Sesame"
     OptionParser.new do |opts|
       opts.banner = "Usage: provenance [switches] issue"
       opts.separator ""
@@ -22,13 +25,28 @@ module Options
           options.verbosity=Log4r::INFO
         end
       end
+      opts.on("--database database",String) do |database|
+        options.db=database
+        $log.info "Selected database #{database}"
+      end
       opts.on("-c comment",Integer) do |comment|
-        options.comment=comment
+        @comment=comment
+      end
+      opts.on("-d","delete only") do
+        options.add=false
+        
+      end
+      opts.on("-a","force add only, default replaces") do
+        options.delete=false
+      end
+      opts.on("-t","Don't effect DB, just read data") do
+        options.delete=false
+        options.add=false
       end
     end.parse!(args)
-    Log4r::Outputter['stderr'].level=options.verbosity
+    Log4r::Outputter['stderr'].level=options.verbosity if options.verbosity
     $log.debug('Provenance started')
-    $log.info("Verbosity #{Log4r::LNAMES[options.verbosity]}")
+    $log.info("Verbosity #{Log4r::LNAMES[Log4r::Outputter['stderr'].level]}")
     options.target = args.shift
     
     

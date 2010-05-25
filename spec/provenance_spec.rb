@@ -8,7 +8,7 @@ describe Provenance do
     begin
       oldpath=ENV['PATH']
       ENV['PATH']+=":#{File.expand_path(File.dirname(File.dirname(__FILE__)))}/bin"
-      res=system("provenance EX-50 ")
+      res=system("provenance -t EX-50 ")
       res.should be_true
     ensure
       ENV['PATH']=oldpath
