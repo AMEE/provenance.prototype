@@ -1,6 +1,6 @@
 
 def prov(name,&block)
-  klass=Command.const_set(name.to_s.classify,Class.new(Command))
+  klass=Command.const_set(name.to_s.capitalize,Class.new(Command))
   klass.send(:define_method,:describe,block)
 end
 
@@ -31,9 +31,9 @@ class Command
   end
 
   def self.create(comment,name,args)
-    $log.debug("Create command #{name.classify}(#{args.join(',')})")
+    $log.debug("Create command #{name.capitalize}(#{args.join(',')})")
     begin
-      "Command::#{name.classify}".constantize.new(comment,args)
+      "Command::#{name.capitalize}".constantize.new(comment,args)
     rescue NameError,ArgumentError => err
       $log.error err
       #$log.error err.backtrace
