@@ -23,6 +23,7 @@ module Connection
   end
   module Sesame
     Config=config('sesame')
+
     def self.connect
       @sesame ||= begin
         url = RDF::URI.new(Config['url'])

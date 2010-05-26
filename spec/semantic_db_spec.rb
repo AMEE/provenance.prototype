@@ -17,11 +17,14 @@ describe SemanticDB do
   end
 
   it "should store and remove statement" do
+    bcount=@semantic.count
     @semantic.true?(Triples[0]).should be_false
     @semantic.store Triples
+    @semantic.count.should eql bcount+1
     @semantic.true?(Triples[0]).should be_true
     @semantic.delete Triples
     @semantic.true?(Triples[0]).should be_false
+    @semantic.count.should eql bcount
   end
 
   it "should handle output of a real comment" do

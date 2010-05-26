@@ -1,2 +1,3 @@
+#url: http://jamespjh:p0ster@ec2-79-125-29-100.eu-west-1.compute.amazonaws.com/openrdf-sesame
 url: http://localhost:8082/openrdf-sesame
 repository: amee-provenance

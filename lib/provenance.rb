@@ -12,6 +12,7 @@ require 'ostruct'
 require 'shellwords'
 require 'log4r'
 require 'log4r/yamlconfigurator'
+require 'patch_sesame'
 
 require 'utils'
 require 'vocabulary'
