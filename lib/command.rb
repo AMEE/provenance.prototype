@@ -33,7 +33,7 @@ class Command
   def self.create(comment,name,args)
     $log.debug("Create command #{name.capitalize}(#{args.join(',')})")
     begin
-      "Command::#{name.capitalize}".constantize.new(comment,args)
+      "Command::#{name.capitalize}".constantize.new(comment,*args)
     rescue NameError,ArgumentError => err
       $log.error err
       #$log.error err.backtrace

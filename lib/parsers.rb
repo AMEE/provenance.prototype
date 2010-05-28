@@ -1,6 +1,6 @@
 parse :svn do |x|
   if x=~/svn\:/
-    x.sub(/svn:/,'http://svn.amee.com/!svn/bc/')
+    x.sub(/svn\:/,'http://svn.amee.com/!svn/bc/')
   else
     x
   end

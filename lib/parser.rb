@@ -8,7 +8,7 @@ class Parser
   
   def self.[](val)
     @@parsers.each do |v|
-      $log.debug("Parsing #{val} under handler #{v.class}")
+      $log.debug("Parsing  #{val.class} #{val} under handler #{v.class}")
       val=v.handle(val)
     end
     val

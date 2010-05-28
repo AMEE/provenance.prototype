@@ -50,12 +50,12 @@ module Options
         options.db_fetch=true
       end
       opts.on("-o","Output RDFXML to stdout") do
-        options.out=:xml
+        options.out=:rdfxml
       end
-      opts.on("--out format", [:xml,:n3,:ntriples], "Output triples to stdout, in 'format'
-            (default xml, alternatively n3, or ntriples)") do |format|
+      opts.on("--out format", [:rdfxml,:n3,:ntriples,:turtle], "Output triples to stdout, in 'format'
+            (default rdfxml, alternatively n3, turtle, or ntriples)") do |format|
         if format==nil
-          options.out=:xml
+          options.out=:rdfxml
         else
           options.out=format
         end
