@@ -31,6 +31,9 @@ class Provenance
   attr_reader :project,:issue,:comment
   def initialize(args)
     parse_options(args)
+    Log4r::Outputter['stderr'].level=options.verbosity if options.verbosity
+    $log.debug('Provenance started')
+    $log.info("Verbosity #{Log4r::LNAMES[Log4r::Outputter['stderr'].level]}")
     match=options.target.match(/([A-Z]+)-([0-9]+)/)
     if match
       (@project,@issue)=match.captures
@@ -50,6 +53,9 @@ class Provenance
     db="SemanticDB::#{options.db}".constantize.new
     $log.debug("Before commit, #{db.count} assertions")
     if options.delete
+      # delete currently removes all the literal current triples in the ticket/comment
+      # this is of course stupid
+      # it needs instead to delete the triples which reference the ticket/comment URIs as subjects
       comments.each do |comment|
         db.delete comment.triples
       end
