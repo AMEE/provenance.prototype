@@ -21,6 +21,10 @@ class Issue
     end
   end
 
+  def uri
+    url
+  end
+
   def url
     # url of the jira comment
     "#{jira.base_url}/browse/#{key}"

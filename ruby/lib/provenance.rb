@@ -16,6 +16,7 @@ require 'log4r/yamlconfigurator'
 
 require 'patch_sesame'
 require 'patch_jira'
+require 'patch_rdf'
 
 require 'utils'
 require 'vocabulary'
@@ -37,7 +38,7 @@ class Provenance
     Log4r::Outputter['stderr'].level=options.verbosity if options.verbosity
     $log.debug('Provenance started')
     $log.info("Verbosity #{Log4r::LNAMES[Log4r::Outputter['stderr'].level]}")
-    match=options.target.match(/([A-Z]+)-([0-9]+)/)
+    match=options.target.match(/([A-Z]+)-([0-9]+)/) if options.target
     if match
       (@project,@issue)=match.captures
       @issue=@issue.to_i
@@ -52,33 +53,28 @@ class Provenance
   def jiraread
     $log.info("Reading from Jira")
     if comment
-      comments=[Comment.new(Connection::Jira.connect,project,comment)]
+      @comments=[Comment.new(Connection::Jira.connect,project,comment)]
     else
-      comments=Issue.new(Connection::Jira.connect,project,issue).comments
+      @comments=Issue.new(Connection::Jira.connect,project,issue).comments
     end
-    $log.info("Found #{comments.length} comments")
-    comments.each do |comment|
+    $log.info("Found #{@comments.length} comments")
+    @comments.each do |comment|
       comment.triples.each do |statement|
         @triples << statement
       end
     end
   end
 
+  def db_fetch
+     $log.info("Reading from DB")
+     @triples=db.fetch
+  end
+
   def db_commit
     $log.debug("Before commit, db has #{db.count} triples")
-    if options.delete
-      # delete currently removes all the literal current triples in the ticket/comment
-      # this is of course stupid
-      # it needs instead to delete the triples which reference the ticket/comment URIs as subjects
-      comments.each do |comment|
-        db.delete triples
-      end
-    end
-    if options.add
-      comments.each do |comment|
-        db.store triples
-      end
-    end
+    $log.debug("Operating on #{triples.length} triples")
+    db.delete triples if options.delete
+    db.store triples if options.add
     $log.debug("After commit, db has #{db.count} triples")
   end
 
@@ -89,7 +85,9 @@ class Provenance
       when :rdfxml,:ntriples,:turtle
         RDF::Writer.for(options.out).new do |writer|
           triples.each do |statement|
+            $log.debug("Writing triple #{statement}")
             writer<<statement
+            writer.flush_pipe if writer.respond_to? :flush_pipe
           end
         end
       when :n3
@@ -108,7 +106,7 @@ class Provenance
     if options.jira
       jiraread
     elsif options.db_fetch
-      $log.info("Reading from DB")
+      db_fetch
     end
     $log.info("Found #{triples.count} triples")
     

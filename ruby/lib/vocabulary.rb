@@ -7,8 +7,13 @@ end
 class OPM < RDF::Vocabulary("http://openprovenance.org/ontology#")
   property :cause
   property :effect
-  property :process
-  property :wasGeneratedBy
-  property :wasDerivedFrom
   property :role
+  property :account
+  property :label
+  property :Process
+  property :WasGeneratedBy
+  property :WasDerivedFrom
+  property :Role
+  property :Artifact
+  property :Used
 end

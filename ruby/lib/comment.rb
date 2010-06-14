@@ -23,6 +23,10 @@ class Comment
     "#{jira.base_url}/browse/#{project}-#{ticket}?focusedCommentId=#{comment}"
   end
 
+  def issue_uri
+     "#{jira.base_url}/browse/#{project}-#{ticket}"
+  end
+
   def uri
     RDF::URI url
   end

@@ -20,6 +20,9 @@ class SemanticDB
   def count
     raise NotSupported
   end
+  def fetch
+    raise NotSupported
+  end
   class NotSupported < Exception
 
   end
@@ -48,5 +51,13 @@ class SemanticDB::Sesame < SemanticDB
   end
   def count
     @sesame.count
+  end
+  def fetch
+    res=[]
+    @sesame.each do |statement|
+      @log.debug("Read: #{statement.subject} #{statement.predicate} #{statement.object}")
+      res << statement
+    end
+    res
   end
 end

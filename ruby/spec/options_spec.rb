@@ -32,8 +32,8 @@ describe Options do
   end
   it "should parse -b" do
    parse_options("-b EX-1")
-   options.add.should be_true
-   options.delete.should be_true
+   options.add.should be_false
+   options.delete.should be_false
    options.jira.should be_false
    options.db_fetch.should be_true
    options.out.should be_nil
@@ -44,13 +44,13 @@ describe Options do
     options.delete.should be_true
     options.jira.should be_true
     options.db_fetch.should be_false
-    options.out.should eql :xml
+    options.out.should eql :rdfxml
     parse_options("--out n3 EX-1")
     options.out.should eql :n3
     parse_options("--out ntriples EX-1")
     options.out.should eql :ntriples
-    parse_options("--out xml EX-1")
-    options.out.should eql :xml
+    parse_options("--out rdfxml EX-1")
+    options.out.should eql :rdfxml
   end
 end
 

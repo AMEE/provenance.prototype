@@ -48,6 +48,20 @@ module Options
       opts.on("-b","--db_fetch","Don't read ticket, fetch from DB") do
         options.jira=false
         options.db_fetch=true
+        options.delete=false
+        options.add=false
+      end
+      opts.on("--clear","empty semantic db") do
+        options.jira=false
+        options.db_fetch=true
+        options.delete=true
+        options.add=false
+      end
+      opts.on("-t", "Don't do anything") do
+        options.jira=false
+        options.db_fetch=false
+        options.delete=false
+        options.add=false
       end
       opts.on("-o","Output RDFXML to stdout") do
         options.out=:rdfxml
