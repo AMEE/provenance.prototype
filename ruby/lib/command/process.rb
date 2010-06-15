@@ -13,7 +13,7 @@ end
 
 prov :via do
   subject comment.newuri
-  type OPM.WasDerivedFrom
+  type OPM.Used
   qualify OPM.effect,comment.uri
   qualify OPM.cause,args.shift
   qualify OPM.role,AMEE.via
@@ -31,10 +31,11 @@ end
 
 prov :in do
   subject comment.newuri
-  type OPM.WasDerivedFrom
+  type OPM.Used
   qualify OPM.effect,comment.uri
   qualify OPM.cause,args.shift
   qualify OPM.account,comment.issue_uri
+  qualify OPM.role,AMEE.input
 end
 
 prov :out_folder do
@@ -43,6 +44,7 @@ prov :out_folder do
   qualify OPM.effect,args.shift
   qualify OPM.cause,comment.uri
   qualify OPM.account,comment.issue_uri
+  qualify OPM.role,AMEE.container
 end
 
 prov :out do
@@ -51,4 +53,5 @@ prov :out do
   qualify OPM.effect,args.shift
   qualify OPM.cause,comment.uri
   qualify OPM.account,comment.issue_uri
+  qualify OPM.role,AMEE.output
 end

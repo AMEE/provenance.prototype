@@ -21,9 +21,29 @@ class Command
   end
   def qualify(v,o)
     statement(subject,v,o)
+    case v
+    when OPM.cause,OPM.effect
+      # add to the list of artifacts
+      # this would be cleaner done by ontological inferences
+      # maybe move this to later sparql
+      unless o==comment.uri
+        statement(graph,OPM.hasArtifact,o)
+        statement(o,RDF.type,OPM.Artifact)
+      end
+    end
   end
   def type(o)
     qualify(RDF.type,o)
+    case o
+      when OPM.Process
+        statement graph,OPM.hasProcess,subject
+      when OPM.WasDerivedFrom, OPM.WasGeneratedBy,
+           OPM.Used, OPM.WasTriggeredBy, OPM.WasControlledBy
+        statement graph,OPM.hasDependency,subject
+    end
+  end
+  def graph
+    comment.graph_uri
   end
   attr_reader :comment,:args,:triples
   def subject(s=@subject)

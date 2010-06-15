@@ -31,6 +31,7 @@ require 'issue'
 
 
 class Provenance
+  include RDF
   include Options
   attr_reader :project,:issue,:comment,:triples,:db
   def initialize(args)
@@ -62,6 +63,16 @@ class Provenance
       comment.triples.each do |statement|
         @triples << statement
       end
+    end
+    @triples << Statement.new(Parser[@comments.first.graph_uri],
+      OPM.hasAccount,Parser[@comments.first.issue_uri])
+    @triples << Statement.new(Parser[@comments.first.graph_uri],
+      RDF.type,OPM.OPMGraph)
+    @triples << Statement.new(Parser[@comments.first.issue_uri],
+      RDF.type,OPM.Account)
+    [AMEE.browser,AMEE.via,AMEE.output,AMEE.input,AMEE.container].each do |role|
+      @triples << Statement.new(role,RDF.type,OPM.Role)
+      @triples << Statement.new(role,OPM.value,role.qname[1].to_s)
     end
   end
 

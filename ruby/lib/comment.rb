@@ -1,4 +1,5 @@
 class Comment
+  include RDF
   attr_reader :commands,:jira,:project,:ticket,:comment,:body
   def initialize(jira,project,ticket,comment)
     # looks up comment , e.g. EX-74 comment 12345 in JIRA,
@@ -25,6 +26,10 @@ class Comment
 
   def issue_uri
      "#{jira.base_url}/browse/#{project}-#{ticket}"
+  end
+
+  def graph_uri
+     "#{jira.base_url}/browse/#{project}-#{ticket}/graph"
   end
 
   def uri
