@@ -1,0 +1,12 @@
+-------------------------------------------------------------------------------
+Test set: com.amee.provenance.rdf2xmlTest
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 1.941 sec <<< FAILURE!
+testConversion1(com.amee.provenance.rdf2xmlTest)  Time elapsed: 1.911 sec  <<< ERROR!
+java.lang.NullPointerException
+	at org.openprovenance.elmo.RdfOPMFactory.newRole(RdfOPMFactory.java:311)
+	at org.openprovenance.elmo.RdfOPMFactory.newUsed(RdfOPMFactory.java:448)
+	at org.openprovenance.elmo.RdfOPMFactory.newOPMGraph(RdfOPMFactory.java:577)
+	at com.amee.provenance.AMEEOPMManager.<init>(AMEEOPMManager.java:57)
+	at com.amee.provenance.rdf2xmlTest.testConversion1(rdf2xmlTest.java:9)
+
