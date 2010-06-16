@@ -1,11 +1,9 @@
 package com.amee.provenance;
 
-import org.openprovenance.elmo.RdfOPMFactory;
-import org.openprovenance.elmo.RdfObjectFactory;
-import org.openprovenance.elmo.RdfValue;
-import org.openprovenance.elmo.RepositoryHelper;
+import org.openprovenance.elmo.*;
 import org.openprovenance.model.OPMGraph;
 import org.openprovenance.model.OPMSerialiser;
+import org.openprovenance.model.Artifact;
 import org.openrdf.elmo.ElmoManager;
 import org.openrdf.elmo.ElmoManagerFactory;
 import org.openrdf.elmo.ElmoModule;
@@ -32,6 +30,12 @@ public class AMEEOPMManager {
         // Construct manager, factory, helper.
         System.out.print("Hello! ");
         ElmoModule module = new ElmoModule();
+        module.addConcept(org.openprovenance.rdf.Entity.class);
+        module.addConcept(org.openprovenance.rdf.UsedOrWasControlledByOrWasGeneratedBy.class);
+        module.addConcept(org.openprovenance.rdf.Annotable.class);
+        module.addConcept(org.openprovenance.rdf.AnnotationOrEdgeOrNode.class);
+        module.addConcept(org.openprovenance.rdf.EventEdge.class);
+        module.addConcept(org.openprovenance.rdf.PropertyOrRole.class);
         rHelper=new RepositoryHelper();
         rHelper.registerConcepts(module);
         factory = new SesameManagerFactory(module);
@@ -40,7 +44,7 @@ public class AMEEOPMManager {
         rHelper.readFromRDF(file,null,(SesameManager)manager,RDFFormat.RDFXML);
 
         for (org.openprovenance.rdf.Entity g :
-                manager.findAll(org.openprovenance.rdf.OPMGraph.class))
+                manager.findAll(org.openprovenance.rdf.Entity.class))
         {
             System.out.print("Name: ");
             System.out.println(((org.openrdf.elmo.Entity) g).getQName());
@@ -51,11 +55,13 @@ public class AMEEOPMManager {
 
         org.openprovenance.rdf.OPMGraph gr=(org.openprovenance.rdf.OPMGraph)manager.find(qname);
 
-        RdfOPMFactory oFactory=new RdfOPMFactory(new RdfObjectFactory(manager,NS),
+        RdfOPMFactory oFactory=new AMEERdfOPMFactory(new RdfObjectFactory(manager,NS),
                 manager);
 
         graph=oFactory.newOPMGraph(gr);
-
+        for (Artifact art : graph.getArtifacts().getArtifact()) {
+            System.out.println(((RdfArtifact) art).getQName());
+        }
     }
 
     public void convert() throws JAXBException {
