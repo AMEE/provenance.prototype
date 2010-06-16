@@ -6,8 +6,16 @@ parse :svn do |x|
   end
 end
 
+parse :browser do |x|
+  if x=~/Shiretoko/
+   "http://xml.amee.com/browsers/#{x}"
+  else
+    x
+  end
+end
+
 parse :uri do |x|
-  if x.class != RDF::URI
+  if x.class != RDF::URI && (x=~/http\:\/\// || x=~/mailto/)
     RDF::URI.new(x)
   else
     x

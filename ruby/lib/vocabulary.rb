@@ -5,6 +5,8 @@ class AMEE < RDF::Vocabulary("http://xml.amee.com/provenance#")
   property :output
   property :container
   property :input
+  property :download
+  property :outfolder
 end
 
 class OPM < RDF::Vocabulary("http://openprovenance.org/ontology#")
@@ -14,6 +16,7 @@ class OPM < RDF::Vocabulary("http://openprovenance.org/ontology#")
   property :account
   property :label
   property :value
+  property :type
   property :Process
   property :WasGeneratedBy
   property :WasDerivedFrom

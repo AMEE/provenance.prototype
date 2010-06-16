@@ -1,6 +1,7 @@
 require 'rubygems'
 require 'yaml'
 require 'pp'
+require 'cgi'
 require 'rdf'
 require 'rdf/sesame'
 require 'rdf/raptor'
@@ -54,7 +55,7 @@ class Provenance
   def jiraread
     $log.info("Reading from Jira")
     if comment
-      @comments=[Comment.new(Connection::Jira.connect,project,comment)]
+      @comments=[Comment.new(Connection::Jira.connect,project,issue,comment)]
     else
       @comments=Issue.new(Connection::Jira.connect,project,issue).comments
     end

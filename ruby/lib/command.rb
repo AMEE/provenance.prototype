@@ -15,9 +15,12 @@ class Command
     # is the URL of the comment, i.e. the URI for the process
     $log.debug("Building triples for #{self.class}(#{args.join(',')})")
     describe
+    qualify OPM.account,comment.issue_uri
   end
   def statement(s,v,o)
-    @triples << Statement.new(Parser[s],Parser[v],Parser[o])
+    triple= Statement.new(Parser[s],Parser[v],Parser[o])
+    $log.debug("Created statement #{triple}")
+    @triples << triple
   end
   def qualify(v,o)
     statement(subject,v,o)
@@ -26,9 +29,15 @@ class Command
       # add to the list of artifacts
       # this would be cleaner done by ontological inferences
       # maybe move this to later sparql
-      unless o==comment.uri
+      if o==comment.uri
+        statement(graph,OPM.hasProcess,o) # these duplicate triples
+        statement(o,RDF.type,OPM.Process) # already asserted against the process
+        statement(o,OPM.account,comment.issue_uri) # but safely we make them again
+      else
         statement(graph,OPM.hasArtifact,o)
         statement(o,RDF.type,OPM.Artifact)
+        statement(o,OPM.label,RDF::Literal.new(o.split(/\//)[-1]))
+        statement(o,OPM.account,comment.issue_uri)
       end
     end
   end
@@ -56,7 +65,7 @@ class Command
       "Command::#{name.capitalize}".constantize.new(comment,*args)
     rescue NameError,ArgumentError => err
       $log.error err
-      #$log.error err.backtrace
+      $log.error err.backtrace
       nil
     end
   end

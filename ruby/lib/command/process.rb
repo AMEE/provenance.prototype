@@ -2,13 +2,13 @@
 
 prov :process do
   type OPM.Process
-  qualify OPM.account,comment.issue_uri
+  qualify OPM.label,RDF::Literal.new("#{comment.comment}")
 end
 
 prov :download do
   type OPM.Process
-  #type AMEE.Download
-  qualify OPM.account,comment.issue_uri
+  qualify OPM.label,RDF::Literal.new("download #{comment.comment}")
+  #qualify OPM.type,AMEE.download
 end
 
 prov :via do
@@ -17,16 +17,14 @@ prov :via do
   qualify OPM.effect,comment.uri
   qualify OPM.cause,args.shift
   qualify OPM.role,AMEE.via
-  qualify OPM.account,comment.issue_uri
 end
 
 prov :browser do
   subject comment.newuri
-  type OPM.WasGeneratedBy
-  qualify OPM.effect,args.shift
-  qualify OPM.cause,comment.uri
+  type OPM.Used
+  qualify OPM.effect,comment.uri
+  qualify OPM.cause,args.shift
   qualify OPM.role,AMEE.browser
-  qualify OPM.account,comment.issue_uri
 end
 
 prov :in do
@@ -34,16 +32,15 @@ prov :in do
   type OPM.Used
   qualify OPM.effect,comment.uri
   qualify OPM.cause,args.shift
-  qualify OPM.account,comment.issue_uri
   qualify OPM.role,AMEE.input
 end
 
 prov :out_folder do
   subject comment.newuri
   type OPM.WasGeneratedBy
+  #qualify OPM.type,AMEE.outfolder
   qualify OPM.effect,args.shift
   qualify OPM.cause,comment.uri
-  qualify OPM.account,comment.issue_uri
   qualify OPM.role,AMEE.container
 end
 
@@ -52,6 +49,5 @@ prov :out do
   type OPM.WasGeneratedBy
   qualify OPM.effect,args.shift
   qualify OPM.cause,comment.uri
-  qualify OPM.account,comment.issue_uri
   qualify OPM.role,AMEE.output
 end
