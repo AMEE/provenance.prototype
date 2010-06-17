@@ -2,7 +2,9 @@ package com.amee.provenance;
 
 import org.openprovenance.elmo.RdfArtifact;
 import org.openprovenance.elmo.RdfOPMFactory;
+import org.openprovenance.elmo.RdfProcess;
 import org.openprovenance.model.ObjectFactory;
+import org.openprovenance.rdf.*;
 import org.openrdf.elmo.ElmoManager;
 import org.openrdf.elmo.Entity;
 
@@ -19,10 +21,21 @@ public class AMEERdfOPMFactory extends RdfOPMFactory {
         super(o, manager);
         mmanager=manager;
     }
-     public RdfArtifact newArtifact(org.openprovenance.rdf.Artifact a) {
+
+    @Override
+    public RdfArtifact newArtifact(org.openprovenance.rdf.Artifact a) {
         QName qname=((Entity)a).getQName();
         RdfArtifact res=register(qname,new AMEERdfArtifact(mmanager,qname));
-        addAccounts((org.openprovenance.rdf.AnnotationOrEdgeOrNode)a,res.getAccount());
+        addAccounts(a,res.getAccount());
+        processAnnotations(a,res);
+        return res;
+    }
+
+    @Override
+    public RdfProcess newProcess(org.openprovenance.rdf.Process a) {
+        QName qname=((Entity)a).getQName();
+        RdfProcess res=register(qname, new AMEERdfProcess(mmanager,qname));
+        addAccounts(a,res.getAccount());
         processAnnotations(a,res);
         return res;
     }

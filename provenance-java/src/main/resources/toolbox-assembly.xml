@@ -1,0 +1,37 @@
+<assembly>
+  <id>release</id>
+  <formats>
+    <format>zip</format>
+  </formats>
+  <includeBaseDirectory>false</includeBaseDirectory>
+
+  <files>
+
+  </files>
+
+  <fileSets>
+    <fileSet>
+      <directory>${project.build.directory}/appassembler/bin</directory>
+      <outputDirectory>/ameeopm/bin</outputDirectory>
+      <fileMode>755</fileMode>
+      <excludes>
+        <exclude>ameeopmBAK</exclude>
+      </excludes>
+    </fileSet>
+    <fileSet>
+      <directory>${project.build.directory}/appassembler/repo</directory>
+      <outputDirectory>/ameeopm/repo</outputDirectory>
+      <fileMode>644</fileMode>
+    </fileSet>
+    <fileSet>
+      <directory>/src/test/resources/</directory>
+      <outputDirectory>/ameeopm/examples</outputDirectory>
+      <includes>
+        <include>ST-50.xml</include>
+      </includes>
+    </fileSet>
+  </fileSets>
+
+
+</assembly>
+

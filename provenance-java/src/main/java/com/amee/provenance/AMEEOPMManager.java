@@ -10,10 +10,14 @@ import org.openrdf.elmo.ElmoModule;
 import org.openrdf.elmo.sesame.SesameManager;
 import org.openrdf.elmo.sesame.SesameManagerFactory;
 import org.openrdf.rio.RDFFormat;
+import org.apache.commons.io.FilenameUtils;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.namespace.QName;
 import java.io.File;
+import java.io.IOException;
+
+import static org.apache.commons.io.FilenameUtils.removeExtension;
 
 public class AMEEOPMManager {
 
@@ -23,12 +27,23 @@ public class AMEEOPMManager {
     String filename;
     OPMGraph graph;
     static String NS="http://jira.amee.com/browse/ST-50/";
+    public final static String USAGE="ameeopm file (reading file.xml resulting in file.opm.xml, file.dot, file.pdf)";    
+
+
+    public static void main(String [] args) throws Exception {
+        if ((args==null) || (args.length==0) || (args.length>4)) {
+            System.out.println(USAGE);
+            return;
+        }
+        AMEEOPMManager aom= new AMEEOPMManager(args[0]);
+        aom.toXML();
+        aom.toDot();
+    }
 
     public AMEEOPMManager(String afilename) throws Exception {
-        filename=afilename;
+        filename=removeExtension(afilename)+".xml";
         File file = new File(filename);
         // Construct manager, factory, helper.
-        System.out.print("Hello! ");
         ElmoModule module = new ElmoModule();
         module.addConcept(org.openprovenance.rdf.Entity.class);
         module.addConcept(org.openprovenance.rdf.UsedOrWasControlledByOrWasGeneratedBy.class);
@@ -42,16 +57,14 @@ public class AMEEOPMManager {
         manager = factory.createElmoManager();
 
         rHelper.readFromRDF(file,null,(SesameManager)manager,RDFFormat.RDFXML);
-
-        for (org.openprovenance.rdf.Entity g :
-                manager.findAll(org.openprovenance.rdf.Entity.class))
+        QName qname=null;
+        for (org.openprovenance.rdf.OPMGraph g :
+                manager.findAll(org.openprovenance.rdf.OPMGraph.class))
         {
-            System.out.print("Name: ");
-            System.out.println(((org.openrdf.elmo.Entity) g).getQName());
+            System.out.print("Graph Name: ");
+            qname=((org.openrdf.elmo.Entity) g).getQName();
+            System.out.println(qname);
         }
-
-        QName qname = new QName(NS,"graph");
-
 
         org.openprovenance.rdf.OPMGraph gr=(org.openprovenance.rdf.OPMGraph)manager.find(qname);
 
@@ -59,16 +72,20 @@ public class AMEEOPMManager {
                 manager);
 
         graph=oFactory.newOPMGraph(gr);
+
         for (Artifact art : graph.getArtifacts().getArtifact()) {
-            System.out.println(((RdfArtifact) art).getQName());
+            //System.out.println(((RdfArtifact) art).getQName());
         }
     }
 
-    public void convert() throws JAXBException {
+    public void toXML() throws JAXBException {
 
         OPMSerialiser serial=OPMSerialiser.getThreadOPMSerialiser();
         serial.serialiseOPMGraph(new File(filename+".opm"),graph,true);
+    }
 
-
+    public void toDot() throws IOException {
+        AMEEOPMToDot o2d=new AMEEOPMToDot();
+        o2d.convert(graph,filename+".dot",filename+".pdf");
     }
 }
