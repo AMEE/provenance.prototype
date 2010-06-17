@@ -2,12 +2,14 @@
 
 prov :process do
   type OPM.Process
-  qualify OPM.label,RDF::Literal.new("#{comment.comment}")
+  qualify OPM.label,RDF::Literal.new(
+    "#{comment.project}-#{comment.issue} #{comment.comment}")
 end
 
 prov :download do
   type OPM.Process
-  qualify OPM.label,RDF::Literal.new("download #{comment.comment}")
+  qualify OPM.label,RDF::Literal.new(
+    "download #{comment.project}-#{comment.issue} #{comment.comment}")
   #qualify OPM.type,AMEE.download
 end
 
