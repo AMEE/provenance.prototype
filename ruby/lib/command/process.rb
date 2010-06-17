@@ -3,13 +3,13 @@
 prov :process do
   type OPM.Process
   qualify OPM.label,RDF::Literal.new(
-    "#{comment.project}-#{comment.issue} #{comment.comment}")
+    "#{comment.project}-#{comment.issue} #{comment.ticket}")
 end
 
 prov :download do
   type OPM.Process
   qualify OPM.label,RDF::Literal.new(
-    "download #{comment.project}-#{comment.issue} #{comment.comment}")
+    "download #{comment.project}-#{comment.ticket} #{comment.comment}")
   #qualify OPM.type,AMEE.download
 end
 

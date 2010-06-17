@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<opmGraph xmlns="http://openprovenance.org/model/v1.1.a">
+    <accounts>
+        <account id="green"/>
+        <account id="orange"/>
+        <overlaps>
+            <account ref="green"/>
+            <account ref="orange"/>
+        </overlaps>
+    </accounts>
+    <processes>
+        <process id="p1">
+            <account ref="green"/>
+            <label value="http://process.org/add1ToAll"/>
+        </process>
+        <process id="p2">
+            <account ref="orange"/>
+            <label value="http://process.org/split"/>
+        </process>
+        <process id="p3">
+            <account ref="orange"/>
+            <label value="http://process.org/plus1"/>
+        </process>
+        <process id="p4">
+            <account ref="orange"/>
+            <label value="http://process.org/plus1"/>
+        </process>
+        <process id="p5">
+            <account ref="orange"/>
+            <label value="http://process.org/cons"/>
+        </process>
+    </processes>
+    <artifacts>
+        <artifact id="a1">
+            <account ref="green"/>
+            <account ref="orange"/>
+            <label value="(2,6)"/>
+        </artifact>
+        <artifact id="a2">
+            <account ref="green"/>
+            <account ref="orange"/>
+            <label value="(3,7)"/>
+        </artifact>
+        <artifact id="a3">
+            <account ref="orange"/>
+            <label value="2"/>
+        </artifact>
+        <artifact id="a4">
+            <account ref="orange"/>
+            <label value="6"/>
+        </artifact>
+        <artifact id="a5">
+            <account ref="orange"/>
+            <label value="3"/>
+        </artifact>
+        <artifact id="a6">
+            <account ref="orange"/>
+            <label value="7"/>
+        </artifact>
+    </artifacts>
+    <causalDependencies>
+        <used>
+            <effect ref="p1"/>
+            <role value="in"/>
+            <cause ref="a1"/>
+            <account ref="green"/>
+        </used>
+        <used>
+            <effect ref="p2"/>
+            <role value="pair"/>
+            <cause ref="a1"/>
+            <account ref="orange"/>
+        </used>
+        <used>
+            <effect ref="p3"/>
+            <role value="in"/>
+            <cause ref="a3"/>
+            <account ref="orange"/>
+        </used>
+        <used>
+            <effect ref="p4"/>
+            <role value="in"/>
+            <cause ref="a4"/>
+            <account ref="orange"/>
+        </used>
+        <used>
+            <effect ref="p5"/>
+            <role value="left"/>
+            <cause ref="a5"/>
+            <account ref="orange"/>
+        </used>
+        <used>
+            <effect ref="p5"/>
+            <role value="right"/>
+            <cause ref="a6"/>
+            <account ref="orange"/>
+        </used>
+        <wasGeneratedBy>
+            <effect ref="a2"/>
+            <role value="out"/>
+            <cause ref="p1"/>
+            <account ref="green"/>
+        </wasGeneratedBy>
+        <wasGeneratedBy>
+            <effect ref="a3"/>
+            <role value="left"/>
+            <cause ref="p2"/>
+            <account ref="orange"/>
+        </wasGeneratedBy>
+        <wasGeneratedBy>
+            <effect ref="a4"/>
+            <role value="right"/>
+            <cause ref="p2"/>
+            <account ref="orange"/>
+        </wasGeneratedBy>
+        <wasGeneratedBy>
+            <effect ref="a5"/>
+            <role value="out"/>
+            <cause ref="p3"/>
+            <account ref="orange"/>
+        </wasGeneratedBy>
+        <wasGeneratedBy>
+            <effect ref="a6"/>
+            <role value="out"/>
+            <cause ref="p4"/>
+            <account ref="orange"/>
+        </wasGeneratedBy>
+        <wasGeneratedBy>
+            <effect ref="a2"/>
+            <role value="pair"/>
+            <cause ref="p5"/>
+            <account ref="orange"/>
+        </wasGeneratedBy>
+    </causalDependencies>
+</opmGraph>
