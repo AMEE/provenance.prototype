@@ -38,7 +38,7 @@ class Comment
 
   def newuri
     @urinum+=1
-    RDF::URI "#{url}_#{@urinum}"
+    RDF::URI "#{url}##{@urinum}"
   end
 
   def triples
