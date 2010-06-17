@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<configuration xmlns="http://openprovenance.org/model/opmPrinterConfig">
+
+  <graphName>OPMGraph</graphName>
+
+
+  <processes displayValue="true">
+    <process value="http://process.org/add1ToAll" display="add1ToAll"/>
+
+  </processes>
+
+  <artifacts displayValue="true">
+    <artifact value="2 eggs"       display="two eggs"/>
+  </artifacts>
+
+  <agents displayValue="true">
+  </agents>
+
+
+  <edges default="filled">
+    <edge type="org.openprovenance.elmo.RdfUsed"            style="dotted"  printRole="true"/>
+    <edge type="org.openprovenance.elmo.RdfWasGeneratedBy"  style="dotted"  printRole="true"/>
+    <edge type="org.openprovenance.elmo.RdfWasControlledBy" style="dotted"  printRole="true"/>
+    <edge type="org.openprovenance.elmo.RdfWasDerivedFrom"  style="bold" />
+  </edges>
+
+
+  <accounts defaultAccount="black" defaultColor="black">
+    <account name="orange"      color="red"/>
+  </accounts>
+
+
+</configuration>  

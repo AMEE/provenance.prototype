@@ -41,8 +41,8 @@ public class AMEEOPMManager {
     }
 
     public AMEEOPMManager(String afilename) throws Exception {
-        filename=removeExtension(afilename)+".xml";
-        File file = new File(filename);
+        filename=removeExtension(afilename);
+        File file = new File(afilename);
         // Construct manager, factory, helper.
         ElmoModule module = new ElmoModule();
         module.addConcept(org.openprovenance.rdf.Entity.class);
