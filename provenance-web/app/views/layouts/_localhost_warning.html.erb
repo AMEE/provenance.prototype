@@ -1,0 +1,7 @@
+<% unless request.host.include? "amee.com" %>
+  <div style="text-align:center; color:red; font-size:150%; font-weight: bold;">
+    WARNING: Do not access Explorer through localhost for development.<br/>
+    Create an alias in your hosts file and use http://dev.explorer.amee.com:<%=request.port%> instead.<br/>
+    If you use localhost, SSO and cookies will not work correctly.
+  </div>
+<% end %>

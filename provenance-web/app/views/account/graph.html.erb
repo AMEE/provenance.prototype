@@ -1,0 +1,7 @@
+<h1>Provenance graph for <%= @issuekey %> </h1>
+<div id="graph-container">
+<%= image_tag "#{@issuekey}.jpeg", :usemap=>'#graphmap',:id=>'graphimg' %>
+</span>
+<map id="graphmap" name="graphmap">
+<%= render :partial=> "testmap/#{@issuekey.downcase.sub(/-/,'')}" %>
+</map>

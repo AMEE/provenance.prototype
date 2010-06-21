@@ -1,0 +1,34 @@
+<div id="header">
+  <div id="multisitenav">
+    <img width="1" height="12" alt="Site divider" src="http://www2.amee.com/wp-content/themes/amee2/images/sitedivider.gif"/>
+    <a href="http://www.amee.com">About AMEE</a>
+    <img width="1" height="12" alt="Site divider" src="http://www2.amee.com/wp-content/themes/amee2/images/sitedivider.gif"/>
+    <a class="currentsite" href="http://localhost:3000">Audit</a>
+    <img width="1" height="12" alt="Site divider" src="http://www2.amee.com/wp-content/themes/amee2/images/sitedivider.gif"/>
+    <a href="http://my.amee.com/developers">Developer Center</a>
+    <img width="1" height="12" alt="Site divider" src="http://www2.amee.com/wp-content/themes/amee2/images/sitedivider.gif"/>
+    <a href="http://my.amee.com">MyAMEE</a>
+    <img width="1" height="12" alt="Site divider" src="http://www2.amee.com/wp-content/themes/amee2/images/sitedivider.gif"/>
+    <% if current_user %>
+      <%= link_to "Sign Out", logout_url %>
+    <% else %>
+      <%= link_to "Sign In", login_url %>
+    <% end %>
+    <img width="1" height="12" alt="Site divider" src="http://www2.amee.com/wp-content/themes/amee2/images/sitedivider.gif"/>
+  </div>
+  <div id="sitenav">
+    <img width="130" height="45" alt="AMEE logo" style="float: left; margin-left: 45px; margin-top: 8px;" src="http://www2.amee.com/wp-content/themes/amee2/images/ameelogo.png"/>
+    <ul>
+      <li <%= "class='current_page_item'" if request.request_uri == "/" %>><%= link_to "ST-50", "/" %></li>
+      
+    </ul>
+  </div>
+  <div class="clear"></div>
+</div>
+
+<%= "<div class='flash f_error'>#{flash[:error]}</div>" if flash[:error] -%>
+<%= "<div class='flash f_notice'>#{flash[:notice]}</div>" if flash[:notice] -%>
+<div id="contentarea">
+  <div class="intro">
+    AMEE Audit is in <strong>ALPHA</strong> status.
+  </div>

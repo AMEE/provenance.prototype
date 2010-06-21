@@ -1,0 +1,6 @@
+/* AMEE Explorer version of @font-face, as found in MyAMEE CSS, but required
+   locally so that the TTF font is loaded correctly in Firefox. */
+@font-face {
+  font-family: "Variable Black";
+	src: url('/fonts/Variable_black_regular.ttf') format("truetype");
+}
