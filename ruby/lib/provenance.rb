@@ -117,6 +117,8 @@ class Provenance
     
     if options.jira
       jiraread
+      $log.debug("Before uniq, #{triples.count} triples")
+      @triples=Repository.new.insert(*triples).statements
     elsif options.db_fetch
       db_fetch
     end

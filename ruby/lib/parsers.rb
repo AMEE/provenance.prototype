@@ -1,3 +1,11 @@
+parse :escapes do |x|
+  if x.respond_to? :gsub
+    x.gsub(/\\/,'')
+  else
+    x
+  end
+end
+
 parse :svn do |x|
   if x=~/svn\:/
     x.sub(/svn\:/,'http://svn.amee.com/!svn/bc/')
