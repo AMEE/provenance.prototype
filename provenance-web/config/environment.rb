@@ -19,7 +19,8 @@ Rails::Initializer.run do |config|
   # config.gem "hpricot", :version => '0.6', :source => "http://code.whytheluckystiff.net"
   # config.gem "sqlite3-ruby", :lib => "sqlite3"
   # config.gem "aws-s3", :lib => "aws/s3"
-
+  config.gem "amee", :version => "~> 2.1.0"
+  config.gem "my_amee_users", :version => '>= 1.0.0'
   # Only load the plugins named here, in the order given (default is alphabetical).
   # :all can be used as a placeholder for all plugins not explicitly named
   # config.plugins = [ :exception_notification, :ssl_requirement, :all ]
@@ -39,3 +40,8 @@ Rails::Initializer.run do |config|
   # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}')]
   # config.i18n.default_locale = :de
 end
+
+config = RAILS_ROOT + "/config/my_amee.yml"
+raise "#{config} not found" unless File.exist?(config)
+$my_amee_config = YAML.load_file(config)[RAILS_ENV] or
+raise "No environment '#{RAILS_ENV}' in config file '#{config}'"
