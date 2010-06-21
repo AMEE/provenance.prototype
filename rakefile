@@ -1,6 +1,6 @@
 task :default => ["web"]
 
-Resources="provenance-java/src/test/resources/"
+Resources="resources/"
 
 rule  '.dot' => '.xml' do |t|
   sh "provenance-java/target/appassembler/bin/ameeopm #{t.source}"
@@ -12,21 +12,32 @@ end
 rule '.jpeg' => '.dot' do |t|
   sh "fdp -Tjpeg -o#{t.name} #{t.source}" 
 end
-
-
-file "#{Resources}ST-50.xml" do
+rule '.xml' do |t|
+  begin
+    sh "ruby/bin/provenance -o -x #{File.basename(t.name,'.xml')} > #{t.name}"
+  rescue => err
+    p "Failed with #{err}, removing partial file".
+    rm "#{Resources}#{t.name}"
+  end
 end
+
+task 'clean' do
+  rm Dir.glob "#{Resources}*"
+  sh "ruby/bin/provenance --clear"
+end
+
+file "#{Resources}ST-50.xml"
 file "#{Resources}ST-50.cmap" => "#{Resources}ST-50.dot"
 file "#{Resources}ST-50.jpeg" => "#{Resources}ST-50.dot"
 file "#{Resources}ST-50.dot" => "#{Resources}ST-50.xml"
 
-file "provenance-web/app/views/testmap/_ST-50.erb" => 
+file "provenance-web/app/views/testmap/_st50.erb" => 
   ["#{Resources}ST-50.cmap"] do
-  sh "cp #{Resources}ST-50.cmap provenance-web/app/views/testmap/_ST-50.erb" 
+  sh "cp #{Resources}ST-50.cmap provenance-web/app/views/testmap/_st50.erb" 
 end
 
-file "provenance-web/public/ST-50.jpeg" => ["#{Resources}ST-50.jpeg"] do
-  sh "cp #{Resources}ST-50.jpeg provenance-web/public/ST-50.jpeg"
+file "provenance-web/public/images/ST-50.jpeg" => ["#{Resources}ST-50.jpeg"] do
+  sh "cp #{Resources}ST-50.jpeg provenance-web/public/images/ST-50.jpeg"
 end
 
-task :web => ["provenance-web/app/views/testmap/_ST-50.erb","provenance-web/public/images/ST-50.jpeg"]
+task :web => ["provenance-web/app/views/testmap/_st50.erb","provenance-web/public/images/ST-50.jpeg"]
