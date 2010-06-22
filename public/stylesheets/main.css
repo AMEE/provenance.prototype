@@ -34,7 +34,7 @@ div#nda {
 #graph-container {
     overflow:scroll;
     width:100%;
-    height:600px;
+    height:400px;
 }
 
 #descendants_list {
