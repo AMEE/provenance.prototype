@@ -1,0 +1,2 @@
+<%= "working" %>
+<%= repository.query(:predicate=>RDF.type).map{|x| x.subject}.join(',') %>

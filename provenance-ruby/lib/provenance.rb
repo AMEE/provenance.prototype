@@ -5,6 +5,7 @@ require 'cgi'
 require 'rdf'
 require 'rdf/sesame'
 require 'rdf/raptor'
+require 'sparql/client'
 require 'active_support'
 require 'jira4r'
 require 'find'
@@ -14,6 +15,7 @@ require 'ostruct'
 require 'shellwords'
 require 'log4r'
 require 'log4r/yamlconfigurator'
+require 'erb'
 
 require 'patch_sesame'
 require 'patch_jira'
@@ -29,12 +31,14 @@ require 'command'
 require 'semantic_db'
 require 'options'
 require 'issue'
+require 'query'
 
 
 class Provenance
   include RDF
   include Options
-  attr_reader :project,:issue,:comment,:triples,:db
+  include QueryTemplate
+  attr_reader :project,:issue,:comment,:triples,:db,:repository
   def initialize(args)
     parse_options(args)
     Log4r::Outputter['stderr'].level=options.verbosity if options.verbosity
@@ -118,14 +122,16 @@ class Provenance
     if options.jira
       jiraread
       $log.debug("Before uniq, #{triples.count} triples")
-      @triples=Repository.new.insert(*triples).statements
+      @repository=Repository.new.insert(*triples)
+      @triples=repository.statements
     elsif options.db_fetch
       db_fetch
+      @repository=Repository.new.insert(*triples)
     end
-    $log.info("Found #{triples.count} triples")
-    
+    $log.info("Found #{triples.count} triples")  
     db_commit
     file_output
+    puts query if options.query
   
   end
   def clean
