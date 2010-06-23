@@ -69,6 +69,13 @@ module Options
       opts.on("-o","Output RDFXML to stdout") do
         options.out=:rdfxml
       end
+      opts.on("--in fname","Input RDFXML from file") do |infile|
+        options.in=File.new infile
+        options.delete=false
+        options.add=false
+        options.jira=false
+        options.db_fetch=false
+      end
       opts.on("--out format", [:rdfxml,:n3,:ntriples,:turtle], "Output triples to stdout, in 'format'
             (default rdfxml, alternatively n3, turtle, or ntriples)") do |format|
         if format==nil

@@ -94,6 +94,18 @@ class Provenance
     $log.debug("After commit, db has #{db.count} triples")
   end
 
+  def file_input
+    if options.in
+      $log.info("Reading rdfxml statements from #{options.in}")
+      RDF::Reader.for(:rdfxml).new(options.in) do |reader|
+          reader.each_statement do |s|
+            triples<<s
+          end
+      end
+      @repository=Repository.new.insert(*triples)
+    end
+  end
+
   def file_output
     if options.out
       $log.info("Writing #{triples.length} stements as #{options.out} to stdout")
@@ -118,8 +130,8 @@ class Provenance
   end
 
   def exec
-    
-    if options.jira
+   file_input
+   if options.jira
       jiraread
       $log.debug("Before uniq, #{triples.count} triples")
       @repository=Repository.new.insert(*triples)
@@ -131,7 +143,7 @@ class Provenance
     $log.info("Found #{triples.count} triples")  
     db_commit
     file_output
-    puts query if options.query
+    puts doquery if options.query
   
   end
   def clean

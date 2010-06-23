@@ -26,7 +26,7 @@ describe Provenance do
   it "should parse a query file" do
     @p=Provenance.new("-b -q #{Resources}/test_template.erb")
     @p.exec
-    @p.query.should match /working/
-    @p.query.should match Regexp.escape "http://jira.amee.com/browse/ST-49?focusedCommentId=12470"
+    @p.doquery.should match /working/
+    @p.doquery.should match Regexp.escape "http://jira.amee.com/browse/ST-49?focusedCommentId=12470"
   end
 end

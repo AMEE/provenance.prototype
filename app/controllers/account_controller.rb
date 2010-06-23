@@ -7,6 +7,9 @@ class AccountController < ApplicationController
   def graph
   end
 
+  def report
+  end
+  
   private
 
   def build

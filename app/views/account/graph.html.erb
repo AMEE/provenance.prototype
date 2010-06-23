@@ -3,5 +3,5 @@
 <%= image_tag "#{@issuekey}.jpeg", :usemap=>'#graphmap',:id=>'graphimg' %>
 </span>
 <map id="graphmap" name="graphmap">
-<%= render :partial=> "testmap/#{@issuekey.downcase.sub(/-/,'')}" %>
+<%= render :partial=> "map/#{@issuekey.downcase.sub(/-/,'')}" %>
 </map>

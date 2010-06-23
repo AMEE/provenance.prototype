@@ -38,6 +38,15 @@ describe Options do
    options.db_fetch.should be_true
    options.out.should be_nil
   end
+  it "should parse -in" do
+   parse_options("-in #{Resources}/ST-50")
+   options.add.should be_false
+   options.delete.should be_false
+   options.jira.should be_false
+   options.db_fetch.should be_false
+   options.out.should be_nil
+   options.in.should eql File.new("#{Resources}/ST-50")
+  end
   it "should parse output formats" do
     parse_options("-o EX-1")
     options.add.should be_true

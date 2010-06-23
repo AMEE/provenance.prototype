@@ -83,3 +83,21 @@ div#cloud {
 #graphimg {
     border:none;
 }
+
+#processes {
+    padding-top:20px;
+    padding-left:20px;
+}
+
+.process {
+    padding-top:20px;
+    padding-left:20px;
+}
+.input {
+    display:block;
+    padding-left:20px;
+}
+.output {
+    display:block;
+    padding-left:20px;
+}
