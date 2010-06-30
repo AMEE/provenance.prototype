@@ -1,0 +1,27 @@
+<div id="report">
+     <h1>Provenance report</h1>
+
+<div id="accounts">
+  For these accounts:
+  <% query([nil,RDF.type,OPM.Account]).each_subject do |s| -%>
+  <span class="account"><%= link s %></span>
+  <%end-%>
+</div>
+
+<div id="processes">
+  <% query([nil,RDF.type,OPM.Process]).
+    each_subject do |p| -%>
+  <div class="process">The process  <%= link p%> had the following outputs:
+    <% query([nil,OPM.cause,p]).
+    each_subject do |o| -%>
+      <span class="output"><%=link first_object([o,OPM.effect,nil])%> <%role= first_object([o,OPM.role,nil]) %> <%= "with role #{role}" if role unless role==AMEE.output%></span> 
+    <%end-%>
+    ... and the following inputs:
+    <% query([nil,OPM.effect,p]).
+    each_subject do |i| -%>
+      <span class="input"><%=link first_object([i,OPM.cause,nil])%>  <%role= first_object([i,OPM.role,nil]) %> <%= "with role #{role}" if role unless role==AMEE.input%></span>
+    <%end-%>
+    </div>
+  <%end%>
+</div>
+</div>
