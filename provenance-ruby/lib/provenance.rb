@@ -24,6 +24,7 @@ require 'patch_rdf'
 require 'utils'
 require 'vocabulary'
 require 'parser'
+require 'statemented'
 
 require 'connection'
 require 'comment'
@@ -38,6 +39,7 @@ class Provenance
   include RDF
   include Options
   include QueryTemplate
+  include Statemented
   attr_reader :project,:issue,:comment,:triples,:db,:repository
   def initialize(args)
     parse_options(args)
@@ -69,15 +71,13 @@ class Provenance
         @triples << statement
       end
     end
-    @triples << Statement.new(Parser[@comments.first.graph_uri],
-      OPM.hasAccount,Parser[@comments.first.issue_uri])
-    @triples << Statement.new(Parser[@comments.first.graph_uri],
-      RDF.type,OPM.OPMGraph)
-    @triples << Statement.new(Parser[@comments.first.issue_uri],
-      RDF.type,OPM.Account)
-    [AMEE.browser,AMEE.via,AMEE.output,AMEE.input,AMEE.container].each do |role|
-      @triples << Statement.new(role,RDF.type,OPM.Role)
-      @triples << Statement.new(role,OPM.value,role.qname[1].to_s)
+    statement(@comments.first.graph_uri,OPM.hasAccount,@comments.first.issue_uri)
+    statement(@comments.first.graph_uri,RDF.type,OPM.OPMGraph)
+    statement(@comments.first.issue_uri,RDF.type,OPM.Account)
+    [AMEE.browser,AMEE.via,AMEE.output,
+      AMEE.input,AMEE.container,AMEE.numeric].each do |role|
+      statement(role,RDF.type,OPM.Role)
+      statement(role,OPM.value,role.qname[1].to_s)
     end
   end
 

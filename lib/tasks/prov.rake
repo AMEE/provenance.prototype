@@ -20,7 +20,7 @@ rule '.xml' do |t|
     sh "provenance-ruby/bin/provenance -o -x #{File.basename(t.name,'.xml')} > #{t.name}"
   rescue => err
     p "Failed with #{err}, removing partial file".
-    rm "#{Resources}#{t.name}"
+      rm "#{Resources}#{t.name}"
   end
 end
 
@@ -34,24 +34,33 @@ task 'dotclean' do
   rm Dir.glob "#{Resources}*.cmap"
 end
 
-file "#{Resources}ST-50.xml"
-file "#{Resources}ST-50.cmap" => "#{Resources}ST-50.dot"
-file "#{Resources}ST-50.jpeg" => "#{Resources}ST-50.dot"
-file "#{Resources}ST-50.dot" => "#{Resources}ST-50.xml"
-file "#{Resources}ST-50.report" => "#{Resources}ST-50.xml"
-
-file "app/views/map/_st50.erb" => 
-  ["#{Resources}ST-50.cmap"] do
-  sh "cp #{Resources}ST-50.cmap app/views/map/_st50.erb" 
+def topartial(code)
+  "_"+code.downcase.gsub(/-/,'')
 end
 
-file "app/views/report/_st50.erb" =>
-  ["#{Resources}ST-50.report"] do
-  sh "cp #{Resources}ST-50.report app/views/report/_st50.erb"
+def prepareticket(code)
+  file "#{Resources}#{code}.xml"
+  file "#{Resources}#{code}.cmap" => "#{Resources}#{code}.dot"
+  file "#{Resources}#{code}.jpeg" => "#{Resources}#{code}.dot"
+  file "#{Resources}#{code}.dot" => "#{Resources}#{code}.xml"
+  file "#{Resources}#{code}.report" => "#{Resources}#{code}.xml"
+
+  file "app/views/map/#{topartial(code)}.erb" =>
+    ["#{Resources}#{code}.cmap"] do
+    sh "cp #{Resources}#{code}.cmap app/views/map/#{topartial(code)}.erb"
+  end
+
+  file "app/views/report/#{topartial(code)}.erb" =>
+    ["#{Resources}#{code}.report"] do
+    sh "cp #{Resources}#{code}.report app/views/report/#{topartial(code)}.erb"
+  end
+
+  file "public/images/#{code}.jpeg" => ["#{Resources}#{code}.jpeg"] do
+    sh "cp #{Resources}#{code}.jpeg public/images/#{code}.jpeg"
+  end
+
+  task :web => ["app/views/map/#{topartial(code)}.erb","app/views/report/#{topartial(code)}.erb","public/images/#{code}.jpeg"]
 end
 
-file "public/images/ST-50.jpeg" => ["#{Resources}ST-50.jpeg"] do
-  sh "cp #{Resources}ST-50.jpeg public/images/ST-50.jpeg"
-end
-
-task :web => ["app/views/map/_st50.erb","app/views/report/_st50.erb","public/images/ST-50.jpeg"]
+prepareticket "ST-50"
+prepareticket "SC-47"

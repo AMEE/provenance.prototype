@@ -6,7 +6,7 @@ end
 
 class Command
   include RDF
-    
+  include Statemented
   def initialize(comment,*args)
     @comment=comment
     @args=args
@@ -17,11 +17,7 @@ class Command
     describe
     qualify OPM.account,comment.issue_uri
   end
-  def statement(s,v,o)
-    triple= Statement.new(Parser[s],Parser[v],Parser[o])
-    $log.debug("Created statement #{triple}")
-    @triples << triple
-  end
+  
   def qualify(v,o)
     statement(subject,v,o)
     case v
@@ -58,7 +54,14 @@ class Command
   def subject(s=@subject)
     @subject=s
   end
-
+  def invoke(other_command,nargs=args)
+    c="Command::#{other_command.to_s.capitalize}".
+      constantize.new(comment,*nargs)
+    c.triples.each do |s|
+      @triples<<s
+      end
+    subject c.subject
+  end
   def self.create(comment,name,args)
     $log.debug("Create command #{name.capitalize}(#{args.join(',')})")
     begin

@@ -7,6 +7,10 @@ class AMEE < RDF::Vocabulary("http://xml.amee.com/provenance#")
   property :input
   property :download
   property :outfolder
+  property :manual
+  property :numeric # numeric operand in a calculation process
+  property :calculation # a process type representing numeric calculation
+  property :ameem # a process type indicating ameem upload
 end
 
 class OPM < RDF::Vocabulary("http://openprovenance.org/ontology#")

@@ -3,53 +3,34 @@
 prov :process do
   type OPM.Process
   qualify OPM.label,RDF::Literal.new(
-    "#{comment.project}-#{comment.issue} #{comment.ticket}")
+    "#{comment.project}-#{comment.ticket} #{comment.comment}")
 end
 
-prov :download do
-  type OPM.Process
-  qualify OPM.label,RDF::Literal.new(
-    "download #{comment.project}-#{comment.ticket} #{comment.comment}")
-  #qualify OPM.type,AMEE.download
-end
-
-prov :via do
+prov :base_in do
   subject comment.newuri
   type OPM.Used
   qualify OPM.effect,comment.uri
   qualify OPM.cause,args.shift
-  qualify OPM.role,AMEE.via
 end
 
-prov :browser do
+prov :base_out do
   subject comment.newuri
-  type OPM.Used
-  qualify OPM.effect,comment.uri
-  qualify OPM.cause,args.shift
-  qualify OPM.role,AMEE.browser
+  type OPM.WasGeneratedBy
+  qualify OPM.effect,args.shift
+  qualify OPM.cause,comment.uri
 end
 
 prov :in do
-  subject comment.newuri
-  type OPM.Used
-  qualify OPM.effect,comment.uri
-  qualify OPM.cause,args.shift
+  invoke :base_in
   qualify OPM.role,AMEE.input
 end
 
 prov :out_folder do
-  subject comment.newuri
-  type OPM.WasGeneratedBy
-  #qualify OPM.type,AMEE.outfolder
-  qualify OPM.effect,args.shift
-  qualify OPM.cause,comment.uri
+  invoke :base_out
   qualify OPM.role,AMEE.container
 end
 
 prov :out do
-  subject comment.newuri
-  type OPM.WasGeneratedBy
-  qualify OPM.effect,args.shift
-  qualify OPM.cause,comment.uri
+  invoke :base_out
   qualify OPM.role,AMEE.output
 end

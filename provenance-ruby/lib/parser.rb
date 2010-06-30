@@ -7,11 +7,23 @@ end
 class Parser
   
   def self.[](val)
+    val=[val] unless val.class==Array   
     @@parsers.each do |v|
-      $log.debug("Parsing  #{val.class} #{val} under handler #{v.class}")
-      val=v.handle(val)
+      passresult=[]
+      val.each do |vval|
+        $log.debug("Parsing  #{vval.class} #{vval.inspect} under handler #{v.class}")
+        res=v.handle(vval)
+        if res.class==Array
+          res.each do |r|
+            passresult<<r
+          end
+        else
+          passresult << v.handle(vval)
+        end
+      end
+      val=passresult
     end
-    val
+    return val
   end
   
   @@parsers=[]

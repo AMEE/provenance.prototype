@@ -16,15 +16,14 @@ describe QueryTemplate do
     @repository.insert RDF::Statement.new("bob",RDF.type,AMEE.test)
   end
   it "should desc" do
-   @q=query
+   @q=doquery
    @q.should match /working/
-   @q.should match /bob/
   end
 end
 
 describe Provenance do
   it "should parse a query file" do
-    @p=Provenance.new("-b -q #{Resources}/test_template.erb")
+    @p=Provenance.new("-q #{Resources}/test_template.erb -x -c 12470 ST-49")
     @p.exec
     @p.doquery.should match /working/
     @p.doquery.should match Regexp.escape "http://jira.amee.com/browse/ST-49?focusedCommentId=12470"
