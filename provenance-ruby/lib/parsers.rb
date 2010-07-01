@@ -6,52 +6,42 @@ parse :escapes do |x|
   end
 end
 
-
-
-parse :csv_files do |x|
-  if x=~/csv_files\:/
-     folder=x.sub(/csv_files\:/,'apicsvs:')
-     ["#{folder}/default.js",
-      "#{folder}/itemdef.csv",
-      "#{folder}/data.csv",
-     ]
-  else
-    x
-  end
+prefix :csv_files do |x|
+  folder=presub(x,'apicsvs:')
+  ["#{folder}/default.js",
+   "#{folder}/itemdef.csv",
+   "#{folder}/data.csv",
+  ]
 end
 
-parse :apicsvs do |x|
-  if x=~/apicsvs\:/
-     x.sub(/apicsvs\:/,'svn:internal/api_csvs/')
-  else
-    x
-  end
+prefix :apicsvs do |x|
+  presub(x,'svn:internal/api_csvs/')
 end
 
-parse :amee do |x|
-  if x=~/amee\:/
-     x.sub(/amee\:/,'http://live.amee.com/data/')
-  else
-    x
-  end
+prefix :anonymous do |x|
+  presub(x,Parser.context+"/")
 end
 
-parse :svn do |x|
-  if x=~/svn\:/
-    if x.split(/\//)[0]=~/[0-9]+/
-      x.sub(/svn\:/,'http://svn.amee.com/!svn/bc/')
-    else
-      # improve this to lookup latest svn number
-      x.sub(/svn\:/,'http://svn.amee.com/')
-    end
+prefix :nouri do |x|
+  presub(x,"http://xml.amee.com/provenance/global/")
+end
+
+prefix :amee do |x|
+  presub(x,'http://live.amee.com/data/')
+end
+
+prefix :svn do |x|
+  if x.to_s.split(/\//)[0]=~/[0-9]+/
+    presub(x,'http://svn.amee.com/!svn/bc/')
   else
-    x
+    # improve this to lookup latest svn number
+    presub(x,'http://svn.amee.com/')
   end
 end
 
 parse :browser do |x|
   if x=~/Shiretoko/
-   "http://xml.amee.com/browsers/#{x}"
+    "http://xml.amee.com/browsers/#{x}"
   else
     x
   end

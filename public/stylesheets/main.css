@@ -31,12 +31,13 @@ div#nda {
 	position: relative;
 }
 
-#graph-container {
-    overflow:scroll;
-    width:100%;
-    height:400px;
+#viewport {
+    overflow:hidden;
+    cursor: move;
+    border: solid black 1px;
+    margin: 20px auto;
 }
-
+img {border:0}
 #descendants_list {
     overflow-x: visible;
     overflow-y: auto;

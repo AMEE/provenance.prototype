@@ -1,6 +1,6 @@
 prov :download do
   invoke :process
-  #qualify OPM.type,AMEE.download
+  qualify OPM.type,AMEE.download
 end
 
 prov :via do

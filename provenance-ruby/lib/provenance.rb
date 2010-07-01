@@ -16,6 +16,7 @@ require 'shellwords'
 require 'log4r'
 require 'log4r/yamlconfigurator'
 require 'erb'
+require 'shellwords'
 
 require 'patch_sesame'
 require 'patch_jira'
@@ -24,6 +25,7 @@ require 'patch_rdf'
 require 'utils'
 require 'vocabulary'
 require 'parser'
+require 'multiloop'
 require 'statemented'
 
 require 'connection'
@@ -71,6 +73,7 @@ class Provenance
         @triples << statement
       end
     end
+    Parser.context @comments.first.graph_uri
     statement(@comments.first.graph_uri,OPM.hasAccount,@comments.first.issue_uri)
     statement(@comments.first.graph_uri,RDF.type,OPM.OPMGraph)
     statement(@comments.first.issue_uri,RDF.type,OPM.Account)

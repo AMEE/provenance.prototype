@@ -9,16 +9,22 @@ class Command
   include Statemented
   def initialize(comment,*args)
     @comment=comment
-    @args=args
     @triples=[]
     @subject=comment.uri # by default, assume the URI subject for the command
     # is the URL of the comment, i.e. the URI for the process
     $log.debug("Building triples for #{self.class}(#{args.join(',')})")
-    describe
+    Parser.context comment.issue_uri
+    parse(*args) do |params|
+      @args=params
+      describe
+    end
     qualify OPM.account,comment.issue_uri
   end
   
   def qualify(v,o)
+    o=RDF::Literal(o.to_s,:datatype=>XSD.anyURI) if v==OPM.type
+      # I don't understand this design choice, but OPM types are NOT URIrefs.
+      # They're literal values of URI type.
     statement(subject,v,o)
     case v
     when OPM.cause,OPM.effect
@@ -32,7 +38,7 @@ class Command
       else
         statement(graph,OPM.hasArtifact,o)
         statement(o,RDF.type,OPM.Artifact)
-        statement(o,OPM.label,RDF::Literal.new(o.split(/\//)[-1]))
+        statement(o,OPM.label,RDF::Literal.new(o.to_s.split(/\//)[-1]))
         statement(o,OPM.account,comment.issue_uri)
       end
     end

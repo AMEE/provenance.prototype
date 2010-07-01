@@ -1,7 +1,21 @@
 <h1>Provenance graph for <%= @issuekey %> </h1>
-<div id="graph-container">
-<%= image_tag "#{@issuekey}.jpeg", :usemap=>'#graphmap',:id=>'graphimg' %>
-</span>
-<map id="graphmap" name="graphmap">
-<%= render :partial=> "map/#{@issuekey.downcase.sub(/-/,'')}" %>
-</map>
+<div id="viewport" style="height: <%=96*@basey%>px; width: <%=96*@basex%>px;">
+  <% [1,2,4,8].each do |scale| %>
+    <div style="height: <%=96*@basey*scale%>px; width: <%=96*@basex*scale%>px;">
+      <%= image_tag "#{@issuekey}.#{scale}jpeg", :usemap=>"#graphmap#{scale}",:id=>"graphimg#{scale}",
+        :style=>"height: #{96*@basey*scale}px; width: #{96*@basex*scale}px;"%>
+      <div class="mapcontent">
+        <map id="graphmap<%=scale%>" name="graphmap<%=scale%>">
+          <%= render :partial=> "map/#{@issuekey.downcase.sub(/-/,'')}#{scale}" %>
+        </map>
+      </div>
+    </div>
+<%end%>
+</div>
+<script type="text/javascript">
+  $(document).ready(function() {
+    $("#viewport").mapbox({mousewheel: true,
+      layerSplit:1
+    });
+  });
+</script>

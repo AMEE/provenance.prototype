@@ -29,5 +29,9 @@ describe Parser do
         RDF::URI("http://svn.amee.com/internal/api_csvs/home/energy/electricity/data.csv")
       ]
   end
+  it "Should parse anonymous to context" do
+    Parser.context "Happy"
+    Parser["anonymous:/sad"].should eql ["Happy/sad"]
+  end
 end
 

@@ -1,6 +1,6 @@
 prov :calculation do
   invoke :process
-  #qualify OPM.type,AMEE.calculation
+  qualify OPM.type,AMEE.calculation
 end
 
 prov :numeric do

@@ -5,12 +5,16 @@
 <head>
   <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
   <title>AMEE Audit</title>
+
     <%= stylesheet_link_tag "#{$my_amee_config['url']}/stylesheets/main.css" %>
     <%= stylesheet_link_tag "/stylesheets/font-face.css" %>
     <%= stylesheet_link_tag "#{$my_amee_config['url']}/stylesheets/authority.css" %>
     <%= stylesheet_link_tag 'search_highlight','search_results', 'main', 'jquery.treeview' %>
-    <%= javascript_include_tag :defaults %>
-	
+    <%= javascript_include_tag 'jquery' %>
+    <%= javascript_include_tag 'jquery-ui' %>
+    <%= javascript_include_tag 'jrails' %>
+    <%= javascript_include_tag 'mousewheel' %>
+    <%= javascript_include_tag 'mapbox' %>
     <!--[if lt IE 7]>
     <script defer type="text/javascript" src="/javascripts/pngfix.js"></script>
     <%= stylesheet_link_tag "#{$my_amee_config['url']}/stylesheets/ie6.css" %>

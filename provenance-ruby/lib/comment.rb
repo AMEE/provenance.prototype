@@ -55,7 +55,7 @@ class Comment
     # tokenize on whitespace
     lines.each do |line|
       $log.debug "Parsing #{line}"
-      tokens=line.split(/\s/)
+      tokens=Shellwords.shellwords(line) # don't split whitespace inside quotes
       reset_parser
       tokens.each do |token|
         handle_token(token)
