@@ -8,17 +8,17 @@ describe Provenance do
     begin
       oldpath=ENV['PATH']
       ENV['PATH']+=":#{File.expand_path(File.dirname(File.dirname(__FILE__)))}/bin"
-      res=system("provenance -x EX-50 ")
+      res=system("provenance -x -i EX-50 ")
       res.should be_true
     ensure
       ENV['PATH']=oldpath
     end
   end
   it "should parse issue" do
-    Provenance.new("EX-590").issue.should eql 590
-    Provenance.new("EX-590").project.should eql 'EX'
-    Provenance.new("EX").project.should eql 'EX'
-    Provenance.new("EX").issue.should be_nil
+    Provenance.new("-i EX-590").issue.should eql 590
+    Provenance.new("-i EX-590").project.should eql 'EX'
+    Provenance.new("-p EX").project.should eql 'EX'
+    Provenance.new("-p EX").issue.should be_nil
   end
 end
 

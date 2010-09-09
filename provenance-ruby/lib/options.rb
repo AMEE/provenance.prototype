@@ -6,7 +6,6 @@ module Options
     conf=config('prov')
     options.add=true
     options.delete=true
-    options.jira=true # fetch from jira
     options.db_fetch=false # fetch from db
     options.out=nil # don't output file format
     options.db=conf['db'] ? conf['db'] : "Sesame"
@@ -34,6 +33,14 @@ module Options
       end
       opts.on("-c comment",Integer) do |comment|
         @comment=comment
+      end
+      opts.on("-i issue",String) do |issue|
+        options.jira=true
+        options.target=issue
+      end
+      opts.on("-p project",String) do |project|
+        options.jira=true
+        options.target=project
       end
       opts.on("-d","delete only") do
         options.add=false
@@ -85,6 +92,6 @@ module Options
         end
       end
     end.parse!(args)
-    options.target = args.shift    
+    
   end
 end

@@ -7,7 +7,7 @@ describe Options do
   include Options
 
   it "should parse no switches" do
-   parse_options("EX-1")
+   parse_options("-i EX-1")
    options.add.should be_true
    options.delete.should be_true
    options.jira.should be_true
@@ -15,7 +15,7 @@ describe Options do
    options.out.should be_nil
   end
   it "should parse -d" do
-   parse_options("-d EX-1")
+   parse_options("-d -i EX-1")
    options.add.should be_false
    options.delete.should be_true
    options.jira.should be_true
@@ -23,7 +23,7 @@ describe Options do
    options.out.should be_nil
   end
   it "should parse -x" do
-   parse_options("-x EX-1")
+   parse_options("-x -i EX-1")
    options.add.should be_false
    options.delete.should be_false
    options.jira.should be_true
@@ -31,7 +31,7 @@ describe Options do
    options.out.should be_nil
   end
   it "should parse -b" do
-   parse_options("-b EX-1")
+   parse_options("-b")
    options.add.should be_false
    options.delete.should be_false
    options.jira.should be_false
@@ -48,7 +48,7 @@ describe Options do
    options.in.path.should eql "#{Resources}/ST-50.xml"
   end
   it "should parse output formats" do
-    parse_options("-o EX-1")
+    parse_options("-o -i EX-1")
     options.add.should be_true
     options.delete.should be_true
     options.jira.should be_true
