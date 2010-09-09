@@ -31,7 +31,7 @@ describe Parser do
   end
   it "Should parse anonymous to context" do
     Parser.context "Happy"
-    Parser["anonymous:/sad"].should eql ["Happy/sad"]
+    Parser["anonymous:sad"].should eql ["Happy/sad"]
   end
 end
 

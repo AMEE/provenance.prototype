@@ -17,6 +17,19 @@ describe Comment do
       "http://example.com/jira/browse/EX-1?focusedCommentId=55")
     @typeassertion.object.should eql AMEE::test
   end
+  it "shouldn't balk on apostrophes" do
+    @jira=flexmock(:base_url=>"http://example.com/jira",:getComment=>
+      flexmock(:body=>"Didn't work before prov:test Hopeful"))
+    lambda{Comment.new(@jira,'EX',1,55)}.should_not raise_error
+    
+    @jira=flexmock(:base_url=>"http://example.com/jira",:getComment=>
+      flexmock(:body=>"Dogs' bones work before prov:test Hopeful"))
+    lambda{Comment.new(@jira,'EX',1,55)}.should_not raise_error
+    
+    @jira=flexmock(:base_url=>"http://example.com/jira",:getComment=>
+      flexmock(:body=>"'bah't 'at prov:test Hopeful"))
+    lambda{Comment.new(@jira,'EX',1,55)}.should_not raise_error
+  end
   it "should create comments from a real jira" do
     @jira=Connection::Jira.connect
     @sesame=Connection::Sesame.connect

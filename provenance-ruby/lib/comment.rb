@@ -55,7 +55,22 @@ class Comment
     # tokenize on whitespace
     lines.each do |line|
       $log.debug "Parsing #{line}"
-      tokens=Shellwords.shellwords(line) # don't split whitespace inside quotes
+      begin
+        tokens=Shellwords.shellwords(line) # don't split whitespace inside quotes
+      rescue ArgumentError
+        # robustly try to do the right thing if apostrophe in middle of a word
+        line.gsub!(/\w'\w/,'') # handle didn't shouldn't it's cat's etc...
+        begin
+          tokens=Shellwords.shellwords(line)
+        rescue ArgumentError
+          line.gsub!(/\w'/,'') # handle dogs'
+          begin
+            tokens=Shellwords.shellwords(line)
+          rescue ArgumentError
+            tokens=line.split(' ')
+          end
+        end
+      end
       reset_parser
       tokens.each do |token|
         handle_token(token)
