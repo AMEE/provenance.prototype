@@ -28,6 +28,7 @@ require 'vocabulary'
 require 'parser'
 require 'multiloop'
 require 'statemented'
+require 'prov_block'
 
 require 'connection'
 require 'comment'
@@ -69,15 +70,19 @@ class Provenance
       @comments=Issue.new(Connection::Jira.connect,project,issue).comments
     end
     $log.info("Found #{@comments.length} comments")
-    @comments.each do |comment|
+    handle_prov_blocks @comments
+  end
+
+  def handle_prov_blocks(pbs)
+     pbs.each do |comment|
       comment.triples.each do |statement|
         @triples << statement
       end
     end
-    Parser.context @comments.first.graph_uri
-    statement(@comments.first.graph_uri,OPM.hasAccount,@comments.first.issue_uri)
-    statement(@comments.first.graph_uri,RDF.type,OPM.OPMGraph)
-    statement(@comments.first.issue_uri,RDF.type,OPM.Account)
+    Parser.context pbs.first.graph_uri
+    statement(pbs.first.graph_uri,OPM.hasAccount,pbs.first.account_uri)
+    statement(pbs.first.graph_uri,RDF.type,OPM.OPMGraph)
+    statement(pbs.first.account_uri,RDF.type,OPM.Account)
     [AMEE.browser,AMEE.via,AMEE.output,
       AMEE.input,AMEE.container,AMEE.numeric].each do |role|
       statement(role,RDF.type,OPM.Role)

@@ -3,21 +3,21 @@
 prov :process do
   type OPM.Process
   qualify OPM.label,RDF::Literal.new(
-    "#{comment.project}-#{comment.ticket} #{comment.comment}")
+    "#{prov_block.label}")
 end
 
 prov :base_in do
-  subject comment.newuri
+  subject prov_block.newuri
   type OPM.Used
-  qualify OPM.effect,comment.uri
+  qualify OPM.effect,prov_block.uri
   qualify OPM.cause,args.shift
 end
 
 prov :base_out do
-  subject comment.newuri
+  subject prov_block.newuri
   type OPM.WasGeneratedBy
   qualify OPM.effect,args.shift
-  qualify OPM.cause,comment.uri
+  qualify OPM.cause,prov_block.uri
 end
 
 prov :in do

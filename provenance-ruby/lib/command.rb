@@ -7,18 +7,18 @@ end
 class Command
   include RDF
   include Statemented
-  def initialize(comment,*args)
-    @comment=comment
+  def initialize(prov_block,*args)
+    @prov_block=prov_block
     @triples=[]
-    @subject=comment.uri # by default, assume the URI subject for the command
-    # is the URL of the comment, i.e. the URI for the process
+    @subject=prov_block.uri # by default, assume the URI subject for the command
+    # is the URL of the prov_block, i.e. the URI for the process
     $log.debug("Building triples for #{self.class}(#{args.join(',')})")
-    Parser.context comment.issue_uri
+    Parser.context prov_block.account_uri
     parse(*args) do |params|
       @args=params
       describe
     end
-    qualify OPM.account,comment.issue_uri
+    qualify OPM.account,prov_block.account_uri
   end
   
   def qualify(v,o)
@@ -31,15 +31,15 @@ class Command
       # add to the list of artifacts
       # this would be cleaner done by ontological inferences
       # maybe move this to later sparql
-      if o==comment.uri
+      if o==prov_block.uri
         statement(graph,OPM.hasProcess,o) # these duplicate triples
         statement(o,RDF.type,OPM.Process) # already asserted against the process
-        statement(o,OPM.account,comment.issue_uri) # but safely we make them again
+        statement(o,OPM.account,prov_block.account_uri) # but safely we make them again
       else
         statement(graph,OPM.hasArtifact,o)
         statement(o,RDF.type,OPM.Artifact)
         statement(o,OPM.label,RDF::Literal.new(o.to_s.split(/\//)[-1]))
-        statement(o,OPM.account,comment.issue_uri)
+        statement(o,OPM.account,prov_block.account_uri)
       end
     end
   end
@@ -54,24 +54,24 @@ class Command
     end
   end
   def graph
-    comment.graph_uri
+    prov_block.graph_uri
   end
-  attr_reader :comment,:args,:triples
+  attr_reader :prov_block,:args,:triples
   def subject(s=@subject)
     @subject=s
   end
   def invoke(other_command,nargs=args)
     c="Command::#{other_command.to_s.capitalize}".
-      constantize.new(comment,*nargs)
+      constantize.new(prov_block,*nargs)
     c.triples.each do |s|
       @triples<<s
       end
     subject c.subject
   end
-  def self.create(comment,name,args)
+  def self.create(prov_block,name,args)
     $log.debug("Create command #{name.capitalize}(#{args.join(',')})")
     begin
-      "Command::#{name.capitalize}".constantize.new(comment,*args)
+      "Command::#{name.capitalize}".constantize.new(prov_block,*args)
     rescue NameError,ArgumentError => err
       $log.error err
       $log.error err.backtrace
