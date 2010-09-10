@@ -7,7 +7,8 @@ describe Multiloop do
     all(1,[2,3,4],[5,6],[7,8]) do |combo|
       combos<<combo
     end
-    combos.should eql [[1, 2, 5, 7],
+    combos.should eql [
+      [1, 2, 5, 7],
       [1, 2, 5, 8],
       [1, 2, 6, 7],
       [1, 2, 6, 8],
@@ -18,6 +19,7 @@ describe Multiloop do
       [1, 4, 5, 7],
       [1, 4, 5, 8],
       [1, 4, 6, 7],
-      [1, 4, 6, 8]]
+      [1, 4, 6, 8]
+    ]
   end
 end

@@ -8,6 +8,8 @@ module Options
     options.delete=true
     options.db_fetch=false # fetch from db
     options.out=nil # don't output file format
+    options.infile=nil
+    options.category=nil
     options.db=conf['db'] ? conf['db'] : "Sesame"
     OptionParser.new do |opts|
       opts.banner = "Usage: provenance [switches] issue"
@@ -81,6 +83,16 @@ module Options
         options.delete=false
         options.add=false
         options.jira=false
+        options.db_fetch=false
+      end
+      opts.on("--file fname","Input amee prov format from file") do |infile|
+        options.infile=File.new infile
+        options.jira=false
+        options.db_fetch=false
+      end
+       opts.on("--category cpath","Input all prov files from amee api_csvs category") do |cpath|   
+        options.jira=false
+        options.category=cpath
         options.db_fetch=false
       end
       opts.on("--out format", [:rdfxml,:n3,:ntriples,:turtle], "Output triples to stdout, in 'format'

@@ -6,13 +6,35 @@ require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 describe Options do
   include Options
 
-  it "should parse no switches" do
+  it "should parse jira issue switch" do
    parse_options("-i EX-1")
    options.add.should be_true
    options.delete.should be_true
    options.jira.should be_true
+   options.infile.should be_nil
+   options.category.should be_nil
    options.db_fetch.should be_false
    options.out.should be_nil
+  end
+  it "should parse text file switch" do
+    parse_options("--file #{Resources}/something.prov")
+    options.add.should be_true
+    options.delete.should be_true
+    options.jira.should be_false
+    options.infile.path.should eql "#{Resources}/something.prov"
+    options.category.should be_nil
+    options.db_fetch.should be_false
+    options.out.should be_nil
+  end
+  it "should parse apicsv switch" do
+    parse_options("--category /home/heating")
+    options.add.should be_true
+    options.delete.should be_true
+    options.jira.should be_false
+    options.infile.should be_nil
+    options.category.should eql '/home/heating'
+    options.db_fetch.should be_false
+    options.out.should be_nil
   end
   it "should parse -d" do
    parse_options("-d -i EX-1")
