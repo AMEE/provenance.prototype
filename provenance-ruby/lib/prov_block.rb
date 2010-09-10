@@ -1,4 +1,11 @@
-module HandlesProvBlock
+class HandlesProvBlock
+
+  attr_reader :body
+  
+  def initialize
+    @urinum=0
+  end
+
   def uri
     RDF::URI url
   end

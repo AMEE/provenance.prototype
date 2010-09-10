@@ -18,6 +18,7 @@ require 'log4r'
 require 'log4r/yamlconfigurator'
 require 'erb'
 require 'shellwords'
+require 'enumerator'
 
 require 'patch_sesame'
 require 'patch_jira'
@@ -32,6 +33,8 @@ require 'prov_block'
 
 require 'connection'
 require 'comment'
+require 'text_file'
+require 'text_step'
 require 'command'
 require 'semantic_db'
 require 'options'
@@ -74,7 +77,7 @@ class Provenance
   end
 
   def handle_prov_blocks(pbs)
-     pbs.each do |comment|
+    pbs.each do |comment|
       comment.triples.each do |statement|
         @triples << statement
       end
@@ -91,8 +94,8 @@ class Provenance
   end
 
   def db_fetch
-     $log.info("Reading from DB")
-     @triples=db.fetch
+    $log.info("Reading from DB")
+    @triples=db.fetch
   end
 
   def db_commit
@@ -107,11 +110,18 @@ class Provenance
     if options.in
       $log.info("Reading rdfxml statements from #{options.in}")
       RDF::Reader.for(:rdfxml).new(options.in) do |reader|
-          reader.each_statement do |s|
-            triples<<s
-          end
+        reader.each_statement do |s|
+          triples<<s
+        end
       end
       @repository=Repository.new.insert(*triples)
+    end
+    if options.infile
+      $log.info("Reading prov:commands from #{options.infile}")
+      FlatFile.new(options.infile)
+      @steps=TextFile.steps
+      $log.info("Found #{@steps.length} comments")
+      handle_prov_blocks @steps
     end
   end
 
@@ -139,8 +149,8 @@ class Provenance
   end
 
   def exec
-   file_input
-   if options.jira
+    file_input
+    if options.jira
       jiraread
       $log.debug("Before uniq, #{triples.count} triples")
       @repository=Repository.new.insert(*triples)
