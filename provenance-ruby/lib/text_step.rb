@@ -11,7 +11,7 @@ class TextStep < HandlesProvBlock
   end
 
   def label
-    "#{file.path.basename}-#{offset}"
+    "#{File.basename(file.path)}-#{offset}"
   end
 
   def url

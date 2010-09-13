@@ -12,7 +12,7 @@ class TextFile
 
   def steps
     @steps=text.split(/\n\n/).enum_with_index.collect do |b,i| 
-      TextStep.new(file,i,b)
+      TextStep.new(self,i,b)
     end
   end
 

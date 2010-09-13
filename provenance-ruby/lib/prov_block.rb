@@ -1,9 +1,10 @@
 class HandlesProvBlock
 
-  attr_reader :body
+  attr_reader :body,:commands,:triples
   
   def initialize
     @urinum=0
+    @commands=[]
   end
 
   def uri
@@ -22,10 +23,10 @@ class HandlesProvBlock
   private
 
     def parse_body
-    # commands are bounded by prov:foo, on newline and semicolon
+    # commands are bounded by prov:foo and semicolon
     # pain to do this in ruby 1.8 without lookaround to do non-consuming splits
 
-    lines=body.split(/[;\n]/)
+    lines=body.split(/[;]/) # was also on newline, trying without
     # tokenize on whitespace
     lines.each do |line|
       $log.debug "Parsing #{line}"
