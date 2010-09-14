@@ -9,6 +9,18 @@ class Issue
     @jira=jira
   end
 
+  def self.parse_key(target)
+    match=target.match(/([A-Z]+)-([0-9]+)/) if target
+    if match
+      (project,issue)=match.captures
+      issue=issue.to_i
+    else
+      project=target
+      issue=nil
+    end
+    [project,issue]
+  end
+
   def key
     "#{project}-#{ticket}"
   end

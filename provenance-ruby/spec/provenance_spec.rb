@@ -20,5 +20,9 @@ describe Provenance do
     Provenance.new("-p EX").project.should eql 'EX'
     Provenance.new("-p EX").issue.should be_nil
   end
+  it "should load multiple issues by text search" do
+    @p=Provenance.new("-x --alljira")
+    lambda{@p.exec}.should_not raise_error
+  end
 end
 

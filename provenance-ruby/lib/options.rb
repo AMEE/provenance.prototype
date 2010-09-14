@@ -44,6 +44,9 @@ module Options
         options.jira=true
         options.target=project
       end
+      opts.on("--alljira",String) do
+        options.jira=true
+      end
       opts.on("-d","delete only") do
         options.add=false
       end
@@ -90,9 +93,15 @@ module Options
         options.jira=false
         options.db_fetch=false
       end
-       opts.on("--category cpath","Input all prov files from amee api_csvs category") do |cpath|   
+      opts.on("--category cpath","Input all prov files from amee api_csvs category") do |cpath|
         options.jira=false
         options.category=cpath
+        options.db_fetch=false
+      end
+      opts.on("--category-recursive cpath","Input all prov files from amee api_csvs category and children") do |cpath|
+        options.jira=false
+        options.category=cpath
+        options.recursive=true
         options.db_fetch=false
       end
       opts.on("--out format", [:rdfxml,:n3,:ntriples,:turtle], "Output triples to stdout, in 'format'

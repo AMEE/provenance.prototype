@@ -28,5 +28,6 @@ describe Issue do
      @issue.comments[0].body.should match '/V4_10_Ch10_Livestock'
      @issue.should have_at_least(10).comments
   end
+  
 end
 

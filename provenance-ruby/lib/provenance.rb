@@ -56,30 +56,37 @@ class Provenance
     Log4r::Outputter['stderr'].level=options.verbosity if options.verbosity
     $log.debug('Provenance started')
     $log.info("Verbosity #{Log4r::LNAMES[Log4r::Outputter['stderr'].level]}")
-    match=options.target.match(/([A-Z]+)-([0-9]+)/) if options.target
-      if match
-        (@project,@issue)=match.captures
-        @issue=@issue.to_i
-      else
-        @project=options.target
-        @issue=nil
-      end
+    @project,@issue=Issue.parse_key(options.target)
     @blocks=[]
     @triples=[]
     @db="SemanticDB::#{options.db}".constantize.new
   end
 
+
   def jiraread
     if options.jira
-      $log.info("Reading from Jira")     
-      if comment
+      $log.info("Reading from Jira")
+      if comment&&issue
         comments=[Comment.new(Connection::Jira.connect,project,issue,comment)]
-      else
+      elsif issue
         comments=Issue.new(Connection::Jira.connect,project,issue).comments
+      else
+        # slurp according to filter
+        jira=Connection::Jira.connect
+        comments=[]
+        # our version of jira doesn't paginate here.
+        issues=jira.getIssuesFromTextSearch('prov')
+        $log.info("Found #{issues.length} issues")
+        issues.each do |issue|
+          tc=Issue.new(jira,*Issue.parse_key(issue.key)).comments
+          $log.info("Found #{tc.length} comments in issue #{issue.key}")
+          comments<<tc
+        end
+        comments.flatten!(1)
       end
       $log.info("Found #{comments.length} comments")
       @blocks=comments
-    end    
+    end
   end
 
   def handle_prov_blocks(pbs)
@@ -168,20 +175,20 @@ class Provenance
             writer<<statement
           end
         end
-      end       
+      end
     end
   end
 
   def exec
     file_input
     jiraread
-    db_fetch  
+    db_fetch
 
     handle_prov_blocks @blocks if @blocks
    
     $log.debug("Before uniq, #{triples.count} triples")
     @repository=Repository.new.insert(*triples)
-    @triples=repository.statements #dedup 
+    @triples=repository.statements #dedup
     $log.info("Found #{triples.count} triples")
     
     db_commit
