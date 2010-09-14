@@ -19,6 +19,8 @@ require 'log4r/yamlconfigurator'
 require 'erb'
 require 'shellwords'
 require 'enumerator'
+require 'svn/client'
+require 'svn_wc'
 
 require 'patch_sesame'
 require 'patch_jira'
@@ -34,6 +36,7 @@ require 'prov_block'
 require 'connection'
 require 'comment'
 require 'text_file'
+require 'svn_file'
 require 'text_step'
 require 'command'
 require 'semantic_db'
@@ -54,26 +57,29 @@ class Provenance
     $log.debug('Provenance started')
     $log.info("Verbosity #{Log4r::LNAMES[Log4r::Outputter['stderr'].level]}")
     match=options.target.match(/([A-Z]+)-([0-9]+)/) if options.target
-    if match
-      (@project,@issue)=match.captures
-      @issue=@issue.to_i
-    else
-      @project=options.target
-      @issue=nil
-    end
+      if match
+        (@project,@issue)=match.captures
+        @issue=@issue.to_i
+      else
+        @project=options.target
+        @issue=nil
+      end
+    @blocks=[]
     @triples=[]
     @db="SemanticDB::#{options.db}".constantize.new
   end
 
   def jiraread
-    $log.info("Reading from Jira")
-    if comment
-      @comments=[Comment.new(Connection::Jira.connect,project,issue,comment)]
-    else
-      @comments=Issue.new(Connection::Jira.connect,project,issue).comments
-    end
-    $log.info("Found #{@comments.length} comments")
-    handle_prov_blocks @comments
+    if options.jira
+      $log.info("Reading from Jira")     
+      if comment
+        comments=[Comment.new(Connection::Jira.connect,project,issue,comment)]
+      else
+        comments=Issue.new(Connection::Jira.connect,project,issue).comments
+      end
+      $log.info("Found #{comments.length} comments")
+      @blocks=comments
+    end    
   end
 
   def handle_prov_blocks(pbs)
@@ -94,8 +100,10 @@ class Provenance
   end
 
   def db_fetch
-    $log.info("Reading from DB")
-    @triples=db.fetch
+    if options.db_fetch
+      $log.info("Reading from DB")
+      @triples=db.fetch
+    end
   end
 
   def db_commit
@@ -114,14 +122,30 @@ class Provenance
           triples<<s
         end
       end
-      @repository=Repository.new.insert(*triples)
     end
     if options.infile
       $log.info("Reading prov:commands from #{options.infile}")
-      FlatFile.new(options.infile)
-      @steps=TextFile.steps
-      $log.info("Found #{@steps.length} comments")
-      handle_prov_blocks @steps
+      t=TextFile.new(options.infile)
+      steps=t.steps
+      $log.info("Found #{steps.length} comments")
+      @blocks=steps
+    end
+    if options.category
+      $log.info("Reading prov:commands from #{options.category} in svn")
+      svn=Connection::Subversion.connect
+      glob=options.recursive ? '**/*.prov' : '*.prov'
+      fullpath=File.join(Connection::Subversion::Config['svn_repo_working_copy'],
+        options.category,glob)
+      accounts=Dir.glob(fullpath).map{|x|
+        x.sub(Connection::Subversion::Config['svn_repo_working_copy'],'')}
+      $log.info("Found #{accounts.length} accounts: #{accounts.inspect}")
+      accounts.each do |account|
+        t=SvnFile.new(svn,account)
+        steps=t.steps
+        $log.info("Found #{steps.length} comments in an account")
+        @blocks<<steps
+      end
+      @blocks.flatten!(1)
     end
   end
 
@@ -150,16 +174,16 @@ class Provenance
 
   def exec
     file_input
-    if options.jira
-      jiraread
-      $log.debug("Before uniq, #{triples.count} triples")
-      @repository=Repository.new.insert(*triples)
-      @triples=repository.statements
-    elsif options.db_fetch
-      db_fetch
-      @repository=Repository.new.insert(*triples)
-    end
-    $log.info("Found #{triples.count} triples")  
+    jiraread
+    db_fetch  
+
+    handle_prov_blocks @blocks if @blocks
+   
+    $log.debug("Before uniq, #{triples.count} triples")
+    @repository=Repository.new.insert(*triples)
+    @triples=repository.statements #dedup 
+    $log.info("Found #{triples.count} triples")
+    
     db_commit
     file_output
     puts doquery if options.query

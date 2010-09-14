@@ -35,4 +35,22 @@ module Connection
       end
     end
   end
+
+  module Subversion
+    Config=config('svn')
+    def self.connect
+      @svn ||= begin
+        $log.info "Connecting to #{Config['svn_repo_master']} SVN repository"
+        wc=SvnWc::RepoAccess.new YAML::dump(Config)
+        unless File.directory? Config['svn_repo_working_copy']
+          $log.info "Initial checkout to #{Config['svn_repo_working_copy']}"
+          wc.do_checkout
+        else
+          $log.info "Svn updating"
+          wc.update
+        end
+        wc
+      end
+    end
+  end
 end

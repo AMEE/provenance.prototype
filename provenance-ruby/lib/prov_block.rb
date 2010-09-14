@@ -11,6 +11,10 @@ class HandlesProvBlock
     RDF::URI url
   end
 
+  def graph_uri
+     "#{account_uri}/graph"
+  end
+  
   def newuri
     @urinum+=1
     RDF::URI "#{url}##{@urinum}"

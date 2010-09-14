@@ -13,6 +13,12 @@ describe Connection do
     @sesame=Connection::Sesame.connect
     @sesame.title.should eql 'AMEE Provenance Repository'
   end
- 
+  it "should connect to SVN OK" do
+    @svn=Connection::Subversion.connect
+    info= @svn.info(File.join(Connection::Subversion::Config['svn_repo_working_copy'],
+        SubversionTestCategory))
+    info[:url].
+      should eql "#{Connection::Subversion::Config['svn_repo_master']}#{SubversionTestCategory}"
+  end
 end
 

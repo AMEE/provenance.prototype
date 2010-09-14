@@ -22,8 +22,4 @@ class TextStep < HandlesProvBlock
   def account_uri
      "#{file.url}"
   end
-
-  def graph_uri
-     "#{account_uri}/graph"
-  end
 end

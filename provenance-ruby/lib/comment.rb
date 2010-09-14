@@ -33,7 +33,5 @@ class Comment < HandlesProvBlock
      "#{jira.base_url}/browse/#{project}-#{ticket}"
   end
 
-  def graph_uri
-     "#{jira.base_url}/browse/#{project}-#{ticket}/graph"
-  end
+  
 end
