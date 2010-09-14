@@ -1,7 +1,7 @@
 
 def prov(name,&block)
   klass=Command.const_set(name.to_s.capitalize,Class.new(Command))
-  klass.send(:define_method,:describe,block)
+  klass.send(:define_method,:do_description,block)
 end
 
 class Command
@@ -16,7 +16,7 @@ class Command
     Parser.context prov_block.account_uri
     parse(*args) do |params|
       @args=params
-      describe
+      do_description
     end
     qualify OPM.account,prov_block.account_uri
   end

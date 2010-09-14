@@ -62,6 +62,7 @@ class HandlesProvBlock
   def handle_token(token)
     if token=~/prov\:/
       cname=token.sub(/prov\:/,'')
+      return if cname.blank? # means someone's put prov: without a subcommand.
       # if there's already a command on this line, we reached end of arguments
       command if @command
       # and regardless of that, we've got a new command to start now.
