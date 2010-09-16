@@ -3,11 +3,13 @@ task :default => ["web"]
 Resources="resources/"
 Graphers={
   "ST-50"=>"fdp",
-  "SC-47"=>"dot"
+  "SC-47"=>"dot",
+  "everything"=>"fdp"
 }
 Scales={
   "ST-50"=>[8,4],
-  "SC-47"=>[8,4]
+  "SC-47"=>[8,4],
+  "everything"=>[8,4]
 }
 
 def goptions(file,s)
@@ -38,7 +40,16 @@ end
 
 rule '.xml' do |t|
   begin
-    sh "provenance-ruby/bin/provenance -o -x #{File.basename(t.name,'.xml')} > #{t.name}"
+    target=File.basename(t.name,'.xml')
+    case target
+    when /[A-Z][A-Z]-\d*/
+      switch="-i #{target}"
+    when "everything"
+      switch="--everything"
+    else
+      switch="--category #{target}"
+    end
+    sh "provenance-ruby/bin/provenance -o -x #{switch} > #{t.name}"
   rescue => err
     p "Failed with #{err}, removing partial file".
       rm "#{Resources}#{t.name}"
@@ -59,7 +70,7 @@ def topartial(code)
   "_"+code.downcase.gsub(/-/,'')
 end
 
-def scaleticket(s,code)
+def scalepage(s,code)
   file "#{Resources}#{code}.#{s}cmap" => "#{Resources}#{code}.dot"
   file "#{Resources}#{code}.#{s}jpeg" => "#{Resources}#{code}.dot"
   file "app/views/map/#{topartial(code)}#{s}.erb" =>
@@ -72,15 +83,15 @@ def scaleticket(s,code)
   task :web => ["app/views/map/#{topartial(code)}#{s}.erb","public/images/#{code}.#{s}jpeg"]
 end
 
-def prepareticket(code)
+def preparepage(code)
   file "#{Resources}#{code}.xml"
   
   file "#{Resources}#{code}.dot" => "#{Resources}#{code}.xml"
   file "#{Resources}#{code}.report" => "#{Resources}#{code}.xml"
-  scaleticket(1,code)
-  scaleticket(2,code)
-  scaleticket(4,code)
-  scaleticket(8,code)
+  scalepage(1,code)
+  scalepage(2,code)
+  scalepage(4,code)
+  scalepage(8,code)
 
   file "app/views/report/#{topartial(code)}.erb" =>
     ["#{Resources}#{code}.report"] do
@@ -91,5 +102,6 @@ def prepareticket(code)
   task :web => ["app/views/report/#{topartial(code)}.erb"]
 end
 
-prepareticket "ST-50"
-prepareticket "SC-47"
+preparepage "ST-50"
+preparepage "SC-47"
+preparepage "everything"
