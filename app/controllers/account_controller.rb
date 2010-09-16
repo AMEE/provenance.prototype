@@ -5,11 +5,9 @@ class AccountController < ApplicationController
 
 
   def graph
-    case @issuekey
-    when "ST-50"
-      @basex=8
-      @basey=4
-    when "SC-47"
+    case @account
+    when false
+    else
       @basex=8
       @basey=4
     end
@@ -21,7 +19,11 @@ class AccountController < ApplicationController
   private
 
   def build
-    @issuekey="#{params[:project]}-#{params[:issue]}"
+    if params[:account]
+      @account=params[:account]
+    else
+      @account="#{params[:project]}-#{params[:issue]}"
+    end
   end
 
 end
