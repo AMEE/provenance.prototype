@@ -12,7 +12,7 @@ class HandlesProvBlock
   end
 
   def graph_uri
-     "#{account_uri}/graph"
+     "http://www.amee.com/graph"
   end
   
   def newuri

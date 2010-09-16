@@ -57,7 +57,6 @@ class Provenance
     $log.debug('Provenance started')
     $log.info("Verbosity #{Log4r::LNAMES[Log4r::Outputter['stderr'].level]}")
     @project,@issue=Issue.parse_key(options.target)
-    @blocks=[]
     @triples=[]
     @db="SemanticDB::#{options.db}".constantize.new
   end
@@ -95,10 +94,13 @@ class Provenance
         @triples << statement
       end
     end
-    Parser.context pbs.first.graph_uri
-    statement(pbs.first.graph_uri,OPM.hasAccount,pbs.first.account_uri)
-    statement(pbs.first.graph_uri,RDF.type,OPM.OPMGraph)
-    statement(pbs.first.account_uri,RDF.type,OPM.Account)
+    Parser.context pbs.first.graph_uri # there's only one graph
+    pbs.each do |ac|
+      statement(ac.graph_uri,OPM.hasAccount,ac.account_uri)
+      statement(ac.graph_uri,RDF.type,OPM.OPMGraph)
+      statement(ac.account_uri,RDF.type,OPM.Account)
+    end
+    
     [AMEE.browser,AMEE.via,AMEE.output,
       AMEE.input,AMEE.container,AMEE.numeric].each do |role|
       statement(role,RDF.type,OPM.Role)
@@ -138,6 +140,7 @@ class Provenance
       @blocks=steps
     end
     if options.category
+      @blocks=[]
       $log.info("Reading prov:commands from #{options.category} in svn")
       svn=Connection::Subversion.connect
       glob=options.recursive ? '**/*.prov' : '*.prov'

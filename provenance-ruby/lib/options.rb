@@ -44,8 +44,14 @@ module Options
         options.jira=true
         options.target=project
       end
-      opts.on("--alljira",String) do
+      opts.on("--alljira") do
         options.jira=true
+      end
+      opts.on("--everything") do
+        options.jira=true
+        options.category='/'
+        options.recursive=true
+        options.db_fetch=false
       end
       opts.on("-d","delete only") do
         options.add=false

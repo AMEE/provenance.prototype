@@ -31,12 +31,12 @@ prefix :amee do |x|
 end
 
 prefix :svn do |x|
-  if x.to_s.split(/\//)[0]=~/[0-9]+/
-    presub(x,'http://svn.amee.com/!svn/bc/')
-  else
+  #if x.to_s.split(/\//)[0]=~/[0-9]+/
+  #  presub(x,'http://svn.amee.com/!svn/bc/')
+  #else
     # improve this to lookup latest svn number
     presub(x,'http://svn.amee.com/')
-  end
+  #end
 end
 
 parse :browser do |x|
