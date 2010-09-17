@@ -4,6 +4,7 @@ require 'pp'
 require 'cgi'
 require 'rdf'
 require 'rdf/sesame'
+#gem 'rdf-raptor','=0.3.0'
 require 'rdf/raptor'
 require 'sparql/client'
 gem 'activesupport','=2.3.8'
@@ -24,7 +25,7 @@ require 'svn_wc'
 
 require 'patch_sesame'
 require 'patch_jira'
-require 'patch_rdf'
+#require 'patch_rdf' <-- not needed with 0.4 & greater
 
 require 'utils'
 require 'vocabulary'
