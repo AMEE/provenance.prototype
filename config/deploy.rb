@@ -33,7 +33,9 @@ set :rake_path, "rake"
 #   end
 # end
 
-after "deploy:symlink", "myamee:copy_config","svn:copy_config", "jira:copy_config","rake:web"
+after "deploy:symlink", "myamee:copy_config",
+  "svn:copy_config","prov:copy_config",
+  "jira:copy_config","deploy:logssymlink","rake:web"
 
 
 namespace :myamee do
@@ -44,16 +46,23 @@ namespace :myamee do
 end
 
 namespace :svn do
-  desc "Make copy of my_amee.yml on server"
+  desc "Make copy of svn.yml on server"
   task :copy_config do
     run "cp #{shared_path}/config/svn.yml #{release_path}/provenance-ruby/config/svn.yml"
   end
 end
 
 namespace :jira do
-  desc "Make copy of my_amee.yml on server"
+  desc "Make copy of jira.yml on server"
   task :copy_config do
     run "cp #{shared_path}/config/jira.yml #{release_path}/provenance-ruby/config/jira.yml"
+  end
+end
+
+namespace :prov do
+  desc "Make copy of my_prov.yml on server"
+  task :copy_config do
+    run "cp #{shared_path}/config/prov.yml #{release_path}/provenance-ruby/config/prov.yml"
   end
 end
 
@@ -85,5 +94,9 @@ namespace :deploy do
   desc "Restart the Passenger system."
   task :restart, :roles => :app do
     passenger.restart
+  end
+  desc "Simlink the prov-ruby logs to the rails logs"
+  task "logssymlink" do
+    run "ln -s #{shared_path}/log #{release_path}/provenance-ruby/logs"
   end
 end
