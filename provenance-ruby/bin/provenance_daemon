@@ -1,0 +1,10 @@
+#! /usr/bin/ruby
+
+# parse options and command for this ameem
+script = File.join(File.expand_path(File.dirname(__FILE__)),'provenance')
+require 'rubygems'
+require 'daemons'
+Daemons.run(script,
+  :log_output=>true,
+  :ARGV=>ARGV<<'--daemon'
+)

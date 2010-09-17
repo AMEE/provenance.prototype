@@ -5,6 +5,7 @@ module Options
     @options = OpenStruct.new
     conf=config('prov')
     options.add=true
+    options.repeat=false
     options.delete=true
     options.db_fetch=false # fetch from db
     options.out=nil # don't output file format
@@ -86,6 +87,9 @@ module Options
       end
       opts.on("-o","Output RDFXML to stdout") do
         options.out=:rdfxml
+      end
+      opts.on("--daemon") do
+        options.repeat=true
       end
       opts.on("--in fname","Input RDFXML from file") do |infile|
         options.in=File.new infile

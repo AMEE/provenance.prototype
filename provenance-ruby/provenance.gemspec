@@ -1,8 +1,8 @@
 require 'rake'
 $gemspec=Gem::Specification.new do |s|
   s.name = "provenance"
-  s.version = "1.2.0"
-  s.date = "2010-08-20"
+  s.version = "0.1.0"
+  s.date = "2010-09-17"
   s.summary = "Command line tool for the provenance toolbox"
   s.email = "james.hetherington@amee.com"
   s.homepage = "http://www.amee.com"

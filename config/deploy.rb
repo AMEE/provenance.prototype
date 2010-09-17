@@ -34,7 +34,7 @@ set :rake_path, "rake"
 # end
 
 after "deploy:symlink", "myamee:copy_config",
-  "svn:copy_config","prov:copy_config",
+  "svn:copy_config","sesame:copy_config",
   "jira:copy_config","deploy:logssymlink","rake:web"
 
 
@@ -59,12 +59,13 @@ namespace :jira do
   end
 end
 
-namespace :prov do
-  desc "Make copy of my_prov.yml on server"
+namespace :sesame do
+  desc "Make copy of sesame.yml on server"
   task :copy_config do
-    run "cp #{shared_path}/config/prov.yml #{release_path}/provenance-ruby/config/prov.yml"
+    run "cp #{shared_path}/config/sesame.yml #{release_path}/provenance-ruby/config/sesame.yml"
   end
 end
+
 
 namespace :rake do
   desc "Run web build from jira and svn"

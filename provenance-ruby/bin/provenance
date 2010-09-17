@@ -7,10 +7,17 @@ require 'provenance'
 
 begin
   prov=Provenance.new(ARGV)
-  prov.exec
-  prov.clean
-#rescue RuntimeError => error
-#  print error.message+"\n"
-#  provenance "--help"
+  if prov.options.repeat
+    loop do
+      prov.exec
+      prov.clean
+      sleep(60)
+    end
+  else
+    prov.exec
+  end 
+  #rescue RuntimeError => error
+  #  print error.message+"\n"
+  #  provenance "--help"
 end
 

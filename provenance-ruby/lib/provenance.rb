@@ -201,6 +201,8 @@ class Provenance
   
   end
   def clean
-    
+    @blocks=nil
+    @triples=[]
+    @repository=nil
   end
 end
