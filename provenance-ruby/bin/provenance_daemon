@@ -6,5 +6,7 @@ require 'rubygems'
 require 'daemons'
 Daemons.run(script,
   :log_output=>true,
-  :ARGV=>ARGV<<'--daemon'
+  :ARGV=>ARGV.include?('--') ? ARGV<<'--daemon' : ARGV << '--' << '--daemon',
+  :dir=>ENV['ProvenanceHome'],
+  :dir_mode=>:normal
 )

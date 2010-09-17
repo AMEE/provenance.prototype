@@ -1,7 +1,7 @@
 require 'rake'
 $gemspec=Gem::Specification.new do |s|
   s.name = "provenance"
-  s.version = "0.1.0"
+  s.version = "0.1.1"
   s.date = "2010-09-17"
   s.summary = "Command line tool for the provenance toolbox"
   s.email = "james.hetherington@amee.com"
@@ -12,7 +12,7 @@ $gemspec=Gem::Specification.new do |s|
    "config/jira.example.yml","config/log.yml","config/svn.example.yml",
    "config/sesame.yml"].to_a
   s.bindir="#{$root}bin"
-  s.executables = ['provenance']
+  s.executables = ['provenance','provenance_daemon']
   s.add_dependency("activesupport", "= 2.3.8")
   s.add_dependency("rdf")
   s.add_dependency("rdf-raptor")

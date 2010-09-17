@@ -36,13 +36,13 @@ class SemanticDB::Sesame < SemanticDB
   def store(triples)
     triples.each do |statement|
       @log.debug("Set: #{statement.subject} #{statement.predicate} #{statement.object}")
-      @sesame.insert_statement statement
+      @sesame.insert statement
     end
   end
   def delete(triples)
     triples.each do |statement|
       @log.debug("Unset: #{statement.subject} #{statement.predicate} #{statement.object}")
-      @sesame.delete_statement statement
+      @sesame.delete statement
     end
   end
   def true?(statement)

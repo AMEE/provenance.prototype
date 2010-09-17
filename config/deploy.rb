@@ -72,7 +72,10 @@ namespace :rake do
   task "web" do
     run "cd #{release_path}; mkdir -p resources;"+
       "mkdir -p app/views/map; "+
-      "mkdir -p app/views/report;rake web"
+      "mkdir -p app/views/report"
+  end
+  task "clean" do
+    run "cd #{current_path}; rake clean"
   end
 end
 
