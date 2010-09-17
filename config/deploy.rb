@@ -1,5 +1,5 @@
-set :application, "audit.amee.com"
-set :deploy_to,  "/var/www/audit"
+set :application, "test.provenance.amee.com"
+set :deploy_to,  "/var/www/test.provenance.amee.com"
 
 set :scm, :git
 set :git_enable_submodules,1
@@ -8,8 +8,8 @@ set :repository,  "git@github.com:AMEE/provenance.prototype.git"
 
 
 # Or: `accurev`, `bzr`, `cvs`, `darcs`, `git`, `mercurial`, `perforce`, `subversion` or `none`
-set :user, "jamespjh"
-set :domain, "ec2-79-125-29-100.eu-west-1.compute.amazonaws.com"
+set :user, "jamesh"
+set :domain, "test.provenance.amee.com"
 server domain, :app, :web
 
 default_run_options[:pty] = true
@@ -33,7 +33,7 @@ set :rake_path, "rake"
 #   end
 # end
 
-after "deploy:symlink", "myamee:copy_config"
+after "deploy:symlink", "myamee:copy_config","svn:copy_config", "jira:copy_config","rake:web"
 
 
 namespace :myamee do
@@ -43,20 +43,47 @@ namespace :myamee do
   end
 end
 
+namespace :svn do
+  desc "Make copy of my_amee.yml on server"
+  task :copy_config do
+    run "cp #{shared_path}/config/svn.yml #{release_path}/provenance-ruby/config/svn.yml"
+  end
+end
+
+namespace :jira do
+  desc "Make copy of my_amee.yml on server"
+  task :copy_config do
+    run "cp #{shared_path}/config/jira.yml #{release_path}/provenance-ruby/config/jira.yml"
+  end
+end
+
+namespace :rake do
+  desc "Run web build from jira and svn"
+  task "web" do
+    run "cd #{release_path}; mkdir -p resources;"+
+      "mkdir -p app/views/map; "+
+      "mkdir -p app/views/report;rake web"
+  end
+end
+
+
 #############################################################
 # Passenger
 #############################################################
 
 namespace :passenger do
-desc "Restart Application"
-task :restart, :roles => :app do
-run "touch #{current_path}/tmp/restart.txt"
-end
+  desc "Restart Application"
+  task :restart, :roles => :app do
+    run "touch #{current_path}/tmp/restart.txt"
+  end
 end
 
+
+
+
 namespace :deploy do
-desc "Restart the Passenger system."
-task :restart, :roles => :app do
-passenger.restart
-end
+  desc "Restart the Passenger system."
+  task :restart, :roles => :app do
+    passenger.restart
+  end
 end
