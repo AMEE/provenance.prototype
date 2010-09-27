@@ -1,4 +1,6 @@
-set :application, "test.provenance.amee.com"
+require File.dirname(__FILE__)+'/../vendor/plugins/san_juan/lib/san_juan'
+
+set :application, "test-provenance.amee.com"
 set :deploy_to,  "/var/www/test.provenance.amee.com"
 
 set :scm, :git
@@ -9,7 +11,7 @@ set :repository,  "git@github.com:AMEE/provenance.prototype.git"
 
 # Or: `accurev`, `bzr`, `cvs`, `darcs`, `git`, `mercurial`, `perforce`, `subversion` or `none`
 set :user, "jamesh"
-set :domain, "test.provenance.amee.com"
+set :domain, "test-provenance.amee.com"
 server domain, :app, :web
 
 default_run_options[:pty] = true
@@ -91,16 +93,23 @@ namespace :passenger do
   end
 end
 
-
-
-
 namespace :deploy do
   desc "Restart the Passenger system."
   task :restart, :roles => :app do
+    god.app.reload
+    god.app.provenance.restart
     passenger.restart
   end
   desc "Simlink the prov-ruby logs to the rails logs"
   task "logssymlink" do
     run "ln -s #{shared_path}/log #{release_path}/provenance-ruby/logs"
+  end
+  desc "Start the background daemons"
+  task :start do
+    god.all.start
+  end
+  desc "Stop the background daemons"
+  task :stop do
+    god.all.terminate
   end
 end

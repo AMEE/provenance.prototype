@@ -14,7 +14,7 @@ Scales={
 
 def goptions(file,s)
   file=File.basename(file,".dot")
-  "#{Graphers[file]} -Gsize=#{Scales[file][0]*s},#{Scales[file][1]*s} -Gratio=fill"
+  "#{Graphers[file]} -Epenwidth=4 -Npenwidth=2 -Estyle=solid -Gfontsize=16 -Gsize=#{Scales[file][0]*s},#{Scales[file][1]*s} -Gratio=fill"
 end
 
 def definescale(s)
