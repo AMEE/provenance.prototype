@@ -7,7 +7,7 @@ God.contact(:email) do |c|
 end
 
 God.watch do |w|
-    script = "/var/lib/gems/1.8/bin/provenance_daemon"
+    script = "provenance_daemon"
 
     w.name = "provenance"
     w.interval = 30.seconds
@@ -17,8 +17,8 @@ God.watch do |w|
     w.start_grace = 20.seconds
     w.restart_grace = 20.seconds
     w.stop_grace = 10.seconds
-    w.pid_file = File.join("~/.provenance/provenance.pid")
-    w.log = File.join("~/.provenance/provenance.log")
+    w.pid_file = File.join("/home/jamesh/.provenance/provenance.pid")
+    w.log = File.join("/home/jamesh/.provenance/provenance.log")
     w.behavior(:clean_pid_file)
 
     w.start_if do |start|

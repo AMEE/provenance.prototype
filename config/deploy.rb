@@ -1,4 +1,6 @@
 require File.dirname(__FILE__)+'/../vendor/plugins/san_juan/lib/san_juan'
+san_juan.role :app, %w(provenance)
+set :god_config_path, Proc.new{"#{current_path}/config/god/app.god"}
 
 set :application, "test-provenance.amee.com"
 set :deploy_to,  "/var/www/test.provenance.amee.com"
