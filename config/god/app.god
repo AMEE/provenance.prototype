@@ -32,7 +32,7 @@ God.watch do |w|
     w.restart_if do |restart|
       restart.condition(:memory_usage) do |c|
         c.notify = 'developers'
-        c.above = 150.megabytes
+        c.above = 350.megabytes
         c.times = [3, 5] # 3 out of 5 intervals
       end
       restart.condition(:cpu_usage) do |c|
