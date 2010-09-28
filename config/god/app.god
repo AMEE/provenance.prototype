@@ -11,9 +11,9 @@ God.watch do |w|
 
     w.name = "provenance"
     w.interval = 30.seconds
-    w.start = "#{script} start --everything"
+    w.start = "#{script} start -- --everything"
     w.stop = "#{script} stop"
-    w.restart = "#{script} restart --everything"
+    w.restart = "#{script} restart -- --everything"
     w.start_grace = 20.seconds
     w.restart_grace = 20.seconds
     w.stop_grace = 10.seconds
