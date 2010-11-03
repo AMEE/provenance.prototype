@@ -7,7 +7,7 @@ require 'rdf/sesame'
 #gem 'rdf-raptor','=0.3.0'
 require 'rdf/raptor'
 require 'sparql/client'
-gem 'activesupport','=2.3.8'
+gem 'activesupport','~>2.3.9'
 require 'active_support'
 require 'jira4r'
 require 'find'
@@ -59,7 +59,12 @@ class Provenance
     $log.info("Verbosity #{Log4r::LNAMES[Log4r::Outputter['stderr'].level]}")
     @project,@issue=Issue.parse_key(options.target)
     @triples=[]
-    @db="SemanticDB::#{options.db}".constantize.new
+    @db=case options.db.downcase
+    when 'sesame'
+      Connection::Sesame.connect
+    else
+      raise "No such db as #{options.db}"
+    end
   end
 
 
@@ -112,15 +117,24 @@ class Provenance
   def db_fetch
     if options.db_fetch
       $log.info("Reading from DB")
-      @triples=db.fetch
+      db.each_statement do |s|
+        @triples<<s
+      end
+    end
+  end
+
+  def db_sparql
+    if options.db_sparql
+      $log.info("SPARQL querying DB")
+      #@triples=db.query(options.)
     end
   end
 
   def db_commit
     $log.debug("Before commit, db has #{db.count} triples")
     $log.debug("Operating on #{triples.length} triples")
-    db.delete triples if options.delete
-    db.store triples if options.add
+    db.delete *triples if options.delete
+    db.insert *triples if options.add
     $log.debug("After commit, db has #{db.count} triples")
   end
 
@@ -184,14 +198,18 @@ class Provenance
   end
 
   def exec
+ 
+    # different ways of obtaining triples and a repository to work on
     file_input
     jiraread
     db_fetch
+    if @blocks
+      handle_prov_blocks @blocks
+      @repository=Repository.new.insert(*triples)
+    end
 
-    handle_prov_blocks @blocks if @blocks
-   
+
     $log.debug("Before uniq, #{triples.count} triples")
-    @repository=Repository.new.insert(*triples)
     @triples=repository.statements #dedup
     $log.info("Found #{triples.count} triples")
     

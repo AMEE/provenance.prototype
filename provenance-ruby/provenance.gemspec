@@ -13,7 +13,7 @@ $gemspec=Gem::Specification.new do |s|
    "config/sesame.yml"].to_a
   s.bindir="#{$root}bin"
   s.executables = ['provenance','provenance_daemon']
-  s.add_dependency("activesupport", "= 2.3.8")
+  s.add_dependency("activesupport", "~>2.3.9")
   s.add_dependency("rdf")
   s.add_dependency("rdf-raptor")
   s.add_dependency("rdf-sesame")

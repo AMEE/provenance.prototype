@@ -1,5 +1,4 @@
 # execute queries against repositories formed of the @triples
-# no sparql cos no sparql on rdf library
 
 module QueryTemplate 
   include RDF

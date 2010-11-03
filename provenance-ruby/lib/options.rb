@@ -82,7 +82,10 @@ module Options
         options.delete=false
         options.add=false
       end
-      opts.on("-q template", "Execute sparql query template") do |template|
+      opts.on("-q template", "Execute query template") do |template|
+        options.query=File.read template
+      end
+      opts.on("--sparql template", "Execute sparql query") do |template|
         options.query=File.read template
       end
       opts.on("-o","Output RDFXML to stdout") do

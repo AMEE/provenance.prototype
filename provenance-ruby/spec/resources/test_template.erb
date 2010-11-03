@@ -2,20 +2,28 @@
 
 Provenance report for these accounts:
 
-<% query([nil,RDF.type,OPM.Account]).each_subject do |s| -%>
-  <%= s %>
+<% query(Query.new{|q| q<<[:account,RDF.type,OPM.Account]}).each do |s| -%>
+  <%= s[:account] %>
 <%end-%>
 
-<% query([nil,RDF.type,OPM.Process]).
-  each_subject do |p| %>
-  The process  <%= p %> had the following outputs:
-  <% query([nil,OPM.cause,p]).each_subject do |output| -%>
-  <% next unless first([output,RDF.type,OPM.WasGeneratedBy]) -%>
-  <%= first_object([output,OPM.effect,nil]) %> <% role=first_object([output,OPM.role,nil])%> <%if role!=AMEE.output%>with role <%= role%><%end%>
+<% query(Query.new{|q| q<<[:process,RDF.type,OPM.Process]}).each do |s| %>
+  The process  <%= s[:process] %> had the following outputs:
+  <% query(Query.new{|q|
+      q<<[:outproc,OPM.cause,s[:process]]<<
+      [:outproc,RDF.type,OPM.WasGeneratedBy]<<
+      [:outproc,OPM.effect,:output]<<
+      [:outproc,OPM.role,:outrole]}
+     ).each do |s2| -%>
+ 
+  <%= s2[:output] %> <%if s2[:outrole]!=AMEE.output%>with role <%= s2[:outrole]%><%end%>
   <% end -%>
   ... and the following inputs:
-   <% query([nil,OPM.effect,p]).each_subject do |input| -%>
-  <% next unless first([input,RDF.type,OPM.Used]) -%>
-  <%= first_object([input,OPM.cause,nil]) %><% role=first_object([input,OPM.role,nil])%> <%if role!=AMEE.input%>with role <%= role%><%end%>
+   <% query(Query.new{|q|
+      q<< [:inproc,OPM.effect,:process]<<
+      [:inproc,RDF.type,OPM.Used]<<
+      [:inproc,OPM.cause,:input]<<
+      [:inproc,OPM.role,:inrole]}).each do |s2| -%>
+  
+  <%= s2[:input]%> <%if s2[:inrole]!=AMEE.input%>with role <%= s2[:inrole]%><%end%>
   <%end-%>
 <% end %>

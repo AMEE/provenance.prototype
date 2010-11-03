@@ -3,23 +3,31 @@
 
 <div id="accounts">
   For these accounts:
-  <% query([nil,RDF.type,OPM.Account]).each_subject do |s| -%>
-  <span class="account"><%= link s %></span>
+  <% query(Query.new{|q| q<<[:account,RDF.type,OPM.Account]}).each do |s| -%>
+  <span class="account"><%= link s[:account] %></span>
   <%end-%>
 </div>
 
 <div id="processes">
-  <% query([nil,RDF.type,OPM.Process]).
-    each_subject do |p| -%>
-  <div class="process">The process  <%= link p%> had the following outputs:
-    <% query([nil,OPM.cause,p]).
-    each_subject do |o| -%>
-      <span class="output"><%=link first_object([o,OPM.effect,nil])%> <%role= first_object([o,OPM.role,nil]) %> <%= "with role #{role}" if role unless role==AMEE.output%></span> 
+  <% query(Query.new{|q| q<<[:process,RDF.type,OPM.Process]}).each do |s| -%>
+  <div class="process">The process  <%= link s[:process]%> had the following outputs:
+    <% query(Query.new{|q|
+      q<<[:outproc,OPM.cause,s[:process]]<<
+      [:outproc,RDF.type,OPM.WasGeneratedBy]<<
+      [:outproc,OPM.effect,:output]<<
+      [:outproc,OPM.role,:role]}
+     ).each do |s2|-%>
+      <span class="output"><%=link s2[:output]%> <%= "with role #{s2[:role]}" if
+        s2[:role] unless s2[:role]==AMEE.output%></span>
     <%end-%>
     ... and the following inputs:
-    <% query([nil,OPM.effect,p]).
-    each_subject do |i| -%>
-      <span class="input"><%=link first_object([i,OPM.cause,nil])%>  <%role= first_object([i,OPM.role,nil]) %> <%= "with role #{role}" if role unless role==AMEE.input%></span>
+    <% query(Query.new{|q|
+      q<< [:inproc,OPM.effect,:process]<<
+      [:inproc,RDF.type,OPM.Used]<<
+      [:inproc,OPM.cause,:input]<<
+      [:inproc,OPM.role,:role]}).each do |s3| -%>
+      <span class="input"><%=link s3[:input]%> <%= "with role #{s3[:role]}" if
+        s3[:role] unless s3[:role]==AMEE.input%></span>
     <%end-%>
     </div>
   <%end%>
