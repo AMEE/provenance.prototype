@@ -38,5 +38,10 @@ describe SemanticDB do
     @p=Provenance.new("--file #{Resources}/something.prov")
     lambda{@p.exec}.should_not raise_error
   end
+
+  it "can fetch all the data from the db and put it straight back" do
+    @p=Provenance.new("-b")
+    lambda{@p.exec}.should_not raise_error
+  end
 end
 

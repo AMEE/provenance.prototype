@@ -117,9 +117,7 @@ class Provenance
   def db_fetch
     if options.db_fetch
       $log.info("Reading from DB")
-      db.each_statement do |s|
-        @triples<<s
-      end
+      @repository=db
     end
   end
 
@@ -206,10 +204,11 @@ class Provenance
     if @blocks
       handle_prov_blocks @blocks
       @repository=Repository.new.insert(*triples)
+      $log.debug("Before uniq, #{triples.count} triples")
     end
 
 
-    $log.debug("Before uniq, #{triples.count} triples")
+  
     @triples=repository.statements #dedup
     $log.info("Found #{triples.count} triples")
     
