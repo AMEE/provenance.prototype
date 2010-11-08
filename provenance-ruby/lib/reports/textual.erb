@@ -1,0 +1,32 @@
+<div id="report">
+  <h1>Provenance report</h1>
+
+  <div id="accounts">
+    For these accounts:
+    <% q{self<<[:account,RDF.type,OPM.Account]}.each do |s| -%>
+      <span class="account"><%= link s[:account] %></span>
+    <%end-%>
+  </div>
+
+  <div id="processes">
+    <% q{self<<[:process,RDF.type,OPM.Process]}.each do |s| -%>
+      <div class="process">The process  <%= link s[:process]%> had the following outputs:
+        <% q{self<<[:outproc,OPM.cause,s[:process]]<<
+            [:outproc,RDF.type,OPM.WasGeneratedBy]<<
+            [:outproc,OPM.effect,:output]<<
+            [:outproc,OPM.role,:role]}.each do |s2|-%>
+          <span class="output"><%=link s2[:output]%> <%= "with role #{s2[:role]}" if
+          s2[:role] unless s2[:role]==AMEE.output%></span>
+        <%end-%>
+        ... and the following inputs:
+        <% q{self<< [:inproc,OPM.effect,:process]<<
+            [:inproc,RDF.type,OPM.Used]<<
+            [:inproc,OPM.cause,:input]<<
+            [:inproc,OPM.role,:role]}.each do |s3| -%>
+          <span class="input"><%=link s3[:input]%> <%= "with role #{s3[:role]}" if
+          s3[:role] unless s3[:role]==AMEE.input%></span>
+        <%end-%>
+      </div>
+    <%end%>
+  </div>
+</div>

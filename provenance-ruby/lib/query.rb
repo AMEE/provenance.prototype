@@ -9,6 +9,9 @@ module QueryTemplate
   def link url
     "<a href='#{url}'>#{url}</a>"
   end
+  def l text
+    text.to_s.gsub("\n",'\n')
+  end
   def db_query
     if options.db_query
       $log.info("Querying DB for input triples")
@@ -34,6 +37,11 @@ module QueryTemplate
       @triples=sparqler.query(options.sparql_query).to_a
     end
   end
+
+  def q(&block)
+    query RDF::Query.new(&block)
+  end
+
   delegate :query,:first,:first_subject,:first_object,:first_predicate,
     :to => :repository
 end

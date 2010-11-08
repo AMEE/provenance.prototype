@@ -35,7 +35,7 @@ rule  '.dot' => '.xml' do |t|
   sh "provenance-java/target/appassembler/bin/ameeopm #{t.source}"
 end
 rule '.report' => '.xml' do |t|
-  sh "provenance-ruby/bin/provenance --in #{t.source} -q provenance-ruby/config/textual_report.erb > #{t.name}"
+  sh "provenance-ruby/bin/provenance --in #{t.source} --report textual > #{t.name}"
 end
 
 rule '.xml' do |t|

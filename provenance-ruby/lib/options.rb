@@ -136,7 +136,10 @@ module Options
         options.recursive=true
         options.db_fetch=false
       end
-      opts.on("--out format", [:rdfxml,:n3,:ntriples,:turtle], "Output triples to stdout, in 'format'
+      opts.on("--report format",  "Output report") do |format|
+        options.query=File.read File.join(Install,'lib','reports',"#{format}.erb")
+      end
+      opts.on("--out format", [:textual,:n3,:ntriples,:turtle], "Output triples to stdout, in 'format'
             (default rdfxml, alternatively n3, turtle, or ntriples)") do |format|
         if format==nil
           options.out=:rdfxml

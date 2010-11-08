@@ -1,14 +1,14 @@
 require 'rake'
 $gemspec=Gem::Specification.new do |s|
   s.name = "provenance"
-  s.version = "0.1.1"
+  s.version = "0.1.2"
   s.date = "2010-09-17"
   s.summary = "Command line tool for the provenance toolbox"
   s.email = "james.hetherington@amee.com"
   s.homepage = "http://www.amee.com"
   s.has_rdoc = true
   s.authors = ["James Hetherington"]
-  s.files = FileList["lib/**/*.rb", "bin/*", "[A-Z]*",
+  s.files = FileList["lib/**/*.rb","lib/**/*.erb", "bin/*", "[A-Z]*",
    "config/jira.example.yml","config/log.yml","config/svn.example.yml",
    "config/sesame.yml"].to_a
   s.bindir="#{$root}bin"
