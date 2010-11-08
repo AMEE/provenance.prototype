@@ -4,6 +4,7 @@ require 'pp'
 require 'cgi'
 require 'rdf'
 require 'rdf/sesame'
+require 'sparql/client'
 #gem 'rdf-raptor','=0.3.0'
 require 'rdf/raptor'
 require 'sparql/client'
@@ -33,6 +34,7 @@ require 'parser'
 require 'multiloop'
 require 'statemented'
 require 'prov_block'
+require 'crawler'
 
 require 'connection'
 require 'comment'
@@ -40,7 +42,6 @@ require 'text_file'
 require 'svn_file'
 require 'text_step'
 require 'command'
-require 'semantic_db'
 require 'options'
 require 'issue'
 require 'query'
@@ -62,6 +63,8 @@ class Provenance
     @db=case options.db.downcase
     when 'sesame'
       Connection::Sesame.connect
+    when 'sesame-sparql'
+      Connection::Sparql.connect
     else
       raise "No such db as #{options.db}"
     end
@@ -121,14 +124,8 @@ class Provenance
     end
   end
 
-  def db_sparql
-    if options.db_sparql
-      $log.info("SPARQL querying DB")
-      #@triples=db.query(options.)
-    end
-  end
-
   def db_commit
+    return unless options.delete || options.add
     $log.debug("Before commit, db has #{db.count} triples")
     $log.debug("Operating on #{triples.length} triples")
     db.delete *triples if options.delete
@@ -201,14 +198,21 @@ class Provenance
     file_input
     jiraread
     db_fetch
+    db_query
+    sparql_query
     if @blocks
       handle_prov_blocks @blocks
-      @repository=Repository.new.insert(*triples)
-      $log.debug("Before uniq, #{triples.count} triples")
     end
 
-
-  
+    unless @triples.empty?
+      $log.debug("Before uniq, #{triples.count} triples")
+      @repository=Repository.new.insert(*triples)
+    end
+    if options.subgraph
+      c=OPMCrawler.new(@repository,options.subgraph)
+      @repository=c.induced_subgraph
+    end
+    
     @triples=repository.statements #dedup
     $log.info("Found #{triples.count} triples")
     

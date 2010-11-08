@@ -85,9 +85,28 @@ module Options
       opts.on("-q template", "Execute query template") do |template|
         options.query=File.read template
       end
-      opts.on("--sparql template", "Execute sparql query") do |template|
-        options.query=File.read template
+      opts.on("--dbq template", "Obtain data from db by query") do |template|
+        options.db_query=File.read template
+        options.jira=false
+        options.delete=false
+        options.add=false
       end
+      opts.on("--sparql template", "Obtain data from db by sparql query") do |template|
+        options.sparql_query=File.read template
+        options.jira=false
+        options.delete=false
+        options.add=false
+      end
+      opts.on("--category-subgraph category",
+        "Use only data in the OPM subgraph for amee category") do |category|
+        options.category_subgraph=category
+        options.subgraph=Parser["amee:#{category}"].first
+      end
+      opts.on("--subgraph url",
+        "Use only data in the OPM subgraph for url") do |url|
+        options.subgraph=RDF::URI(url)
+      end
+
       opts.on("-o","Output RDFXML to stdout") do
         options.out=:rdfxml
       end

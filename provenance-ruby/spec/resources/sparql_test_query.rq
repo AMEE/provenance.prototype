@@ -1,0 +1,2 @@
+DESCRIBE ?x
+WHERE { ?x ?y ?z }

@@ -36,7 +36,7 @@ RDF::Sesame::Connection.class_eval do
       req.basic_auth(user,password)
       response=http.request(req)
       Log4r::Logger['Semantic'].error("Bad request: #{host} #{npath} #{response} #{req.body}") if
-        response.code=~/4\d\d/ || response.code=~/5\d\d/
+      response.code=~/4\d\d/ || response.code=~/5\d\d/
       if block_given?
         block.call(response)
       else
@@ -46,5 +46,21 @@ RDF::Sesame::Connection.class_eval do
   end
 end
 
+SPARQL::Client.class_eval do
+  def get(query, headers = {}, &block)
+    url = self.url.dup
+    url.query_values = {:query => query.to_s}
 
+    http_klass(url.scheme).start(url.host, url.port) do |http|
+      req = Net::HTTP::Get.new(url.path + "?#{url.query}", @headers.merge(headers))
+      req.basic_auth(url.user,url.password)
+      response = http.request(req)
+      if block_given?
+        block.call(response)
+      else
+        response
+      end
+    end
+  end
+end
 

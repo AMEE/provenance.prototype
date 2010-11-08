@@ -11,7 +11,7 @@ Triples=[
   )
 ]
 
-describe SemanticDB do
+describe "Connection to sesame" do
   before(:each) do
     @semantic=Connection::Sesame.connect
   end
@@ -31,12 +31,21 @@ describe SemanticDB do
   it "should handle output of a real comment" do
     @semantic.insert *Comment.new(Connection::Jira.connect,'ST',49,12470).triples
   end
+end
+
+describe "Connection to DB via provenance command" do
 
   it "should handle db upload provenance command with a real comment" do
     @d=Provenance.new("-d --file #{Resources}/something.prov")
     lambda{@d.exec}.should_not raise_error
     @p=Provenance.new("--file #{Resources}/something.prov")
     lambda{@p.exec}.should_not raise_error
+  end
+
+  it "should read data from sparql endpoint" do
+    @d=Provenance.new("--database sesame-sparql -b")
+    lambda{@d.exec}.should_not raise_error
+    @d.triples.should_not be_empty
   end
 
   it "can fetch all the data from the db and put it straight back" do

@@ -4,4 +4,6 @@ prov :ameem do
   path = args.shift
   invoke :in,"csv_files:#{path}"
   invoke :out,"amee:#{path}"
+  subject "amee:#{path}"
+  type AMEE.category
 end

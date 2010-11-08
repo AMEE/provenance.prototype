@@ -14,7 +14,7 @@ class Command
     # is the URL of the prov_block, i.e. the URI for the process
     $log.debug("Building triples for #{self.class}(#{args.join(',')})")
     Parser.context prov_block.account_uri
-    parse(*args) do |params|
+    parse_all(*args) do |params|
       @args=params
       do_description
     end

@@ -18,4 +18,10 @@ describe TextFile do
     @typeassertion.predicate.should eql RDF.type
     @typeassertion.object.should eql OPM.WasGeneratedBy
   end
+  it "should produce correct account when invoked via prov command" do
+    @p=Provenance.new("--file #{Resources}/sample_account.prov")
+    @p.exec
+    @p.triples.should_not be_empty
+    pp @p.triples.to_a
+  end
 end

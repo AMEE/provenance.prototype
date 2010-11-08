@@ -18,3 +18,4 @@ module RDF::Raptor::CLI::Writer
       alias_method_chain :write_triple,:flush
 
 end
+

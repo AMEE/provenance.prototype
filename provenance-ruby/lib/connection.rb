@@ -12,6 +12,14 @@ module Connection
   module Jira
     Config=config('jira')
     def self.connect
+      if @jira
+        begin
+          jira.getIssue("EX-1")
+        rescue
+          $log.info "Jira connection was dead, reauthenticating"
+          @jira=nil
+        end
+      end
       @jira ||= begin
         jira=Jira4R::JiraTool.new(2, Config['url'])
         jira.logger=Log4r::Logger['Jira']
@@ -30,7 +38,23 @@ module Connection
         $log.info "Connecting to #{Config['url']} repository #{Config['repository']}."
         serv = RDF::Sesame::Server.new(url)
         repo = serv.repository(Config['repository'])
-        Log4r::Logger['Semantic'].info("#{repo.size} existing statements")
+        Log4r::Logger['Semantic'].info("Sesame has #{repo.size} existing statements")
+        repo
+      end
+    end
+  end
+  
+  module Sparql
+    # connect to a SPARQL endpoint.
+    Config=config('sparql')
+    def self.connect
+      @sparql ||= begin
+        url = RDF::URI.new(Config['url'])
+        $log.info "Connecting to #{Config['url']} repository "+
+          "as a read-only SPARQL endpoint."
+        repo = SPARQL::Client::Repository.new(url)
+        count=repo.size
+        Log4r::Logger['Semantic'].info("Sparql endpoint has #{count} existing statements")
         repo
       end
     end
