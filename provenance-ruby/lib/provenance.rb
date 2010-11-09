@@ -60,6 +60,7 @@ class Provenance
     $log.info("Verbosity #{Log4r::LNAMES[Log4r::Outputter['stderr'].level]}")
     @project,@issue=Issue.parse_key(options.target)
     @triples=[]
+    @blocks=[]
     @db=case options.db.downcase
     when 'sesame'
       Connection::Sesame.connect
@@ -93,7 +94,7 @@ class Provenance
         comments.flatten!(1)
       end
       $log.info("Found #{comments.length} comments")
-      @blocks=comments
+      @blocks.concat comments
     end
   end
 
@@ -147,26 +148,42 @@ class Provenance
       t=TextFile.new(options.infile)
       steps=t.steps
       $log.info("Found #{steps.length} comments")
-      @blocks=steps
+      @blocks.concat steps
     end
     if options.category
-      @blocks=[]
       $log.info("Reading prov:commands from #{options.category} in svn")
-      svn=Connection::Subversion.connect
       glob=options.recursive ? '**/*.prov' : '*.prov'
-      fullpath=File.join(Connection::Subversion::Config['svn_repo_working_copy'],
-        options.category,glob)
-      accounts=Dir.glob(fullpath).map{|x|
-        x.sub(Connection::Subversion::Config['svn_repo_working_copy'],'')}
-      $log.info("Found #{accounts.length} accounts: #{accounts.inspect}")
-      accounts.each do |account|
-        t=SvnFile.new(svn,account)
-        steps=t.steps
-        $log.info("Found #{steps.length} comments in an account")
-        @blocks<<steps
-      end
-      @blocks.flatten!(1)
+      steps=svn_block(glob,SvnFile).flatten(1)
+      @blocks.concat steps
     end
+    if options.legacy
+      
+      $log.info("Reading legacy from #{options.category} in svn")
+      
+      dataglob=options.recursive ? '**/data.csv' : 'data.csv'
+      metaglob=options.recursive ? '**/meta.yml' : 'meta.yml'
+      #  steps=svn_block(dataglob,DataFile).flatten(1)
+      #  @blocks.concat steps
+      #  steps=svn_block(metaglob,MetaFile).flatten(1)
+      #  @blocks.concat steps
+    end
+  end
+
+  def svn_block(glob,klass)
+    svn=Connection::Subversion.connect
+    fullpath=File.join(Connection::Subversion::Config['svn_repo_working_copy'],
+      options.category,glob)
+    accounts=Dir.glob(fullpath).map{|x|
+      x.sub(Connection::Subversion::Config['svn_repo_working_copy'],'')}
+    $log.info("Found #{accounts.length} accounts: #{accounts.inspect}")
+    results=[]
+    accounts.each do |account|
+      t=klass.new(svn,account)
+      steps=t.steps
+      $log.info("Found #{steps.length} comments in an account")
+      results<<steps
+    end
+    return results
   end
 
   def file_output
@@ -200,7 +217,7 @@ class Provenance
     db_fetch
     db_query
     sparql_query
-    if @blocks
+    unless @blocks.empty?
       handle_prov_blocks @blocks
     end
 

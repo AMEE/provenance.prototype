@@ -41,9 +41,9 @@ public class AMEEOPMManager {
         aom.toDot();
     }
 
-    public AMEEOPMManager(String afilename) throws Exception {
-        filename=removeExtension(afilename);
-        File file = new File(afilename);
+    public AMEEOPMManager(String source) throws Exception {
+        filename=removeExtension(source);
+        File file = new File(source);
         // Construct manager, factory, helper.
         ElmoModule module = new ElmoModule();
         module.addConcept(org.openprovenance.rdf.Entity.class);
@@ -75,7 +75,7 @@ public class AMEEOPMManager {
         graph=oFactory.newOPMGraph(gr);
 
         for (Artifact art : graph.getArtifacts().getArtifact()) {
-            //System.out.println(((RdfArtifact) art).getQName());
+            System.out.println(((RdfArtifact) art).getQName());
         }
     }
 

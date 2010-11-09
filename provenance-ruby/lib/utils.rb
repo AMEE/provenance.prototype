@@ -7,9 +7,21 @@ def configfile(mod)
 end
 
 def config(mod)
-    YAML.load_file configfile(mod)
+  YAML.load_file configfile(mod)
 end
 
+def narrow(text,limit=20)
+  lines=[]
+  while text.length>limit
+    line=text[0..limit].split(' ')[0...-1].join(' ')
+    break if line.strip.empty?
+    lines<<line
+    text=text[lines.last.length+1..-1]
+  end
+  lines<<text
+  return lines.map{|x|x.strip}.join("\n")
+end
+  
 yc=Log4r::YamlConfigurator
 yc['HOME']=Home
 yc.load_yaml_file configfile('log')

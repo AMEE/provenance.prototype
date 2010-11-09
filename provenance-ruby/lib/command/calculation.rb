@@ -6,5 +6,6 @@ end
 prov :numeric do
   invoke :base_in
   qualify OPM.role,AMEE.numeric
+  label
 end
 

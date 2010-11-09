@@ -130,16 +130,23 @@ module Options
         options.category=cpath
         options.db_fetch=false
       end
-      opts.on("--category-recursive cpath","Input all prov files from amee api_csvs category and children") do |cpath|
+      opts.on("--legacy cpath","Input all data that can be gleaned"+
+          " from legacy files from amee api_csvs category") do |cpath|
         options.jira=false
-        options.category=cpath
+        options.legacy=cpath
+        options.db_fetch=false
+      end
+      opts.on("--legacy-recursive cpath","Input data that can be gleaned"+
+          " from legacy files from amee api_csvs category and children") do |cpath|
+        options.jira=false
+        options.legacy=cpath
         options.recursive=true
         options.db_fetch=false
       end
       opts.on("--report format",  "Output report") do |format|
         options.query=File.read File.join(Install,'lib','reports',"#{format}.erb")
       end
-      opts.on("--out format", [:textual,:n3,:ntriples,:turtle], "Output triples to stdout, in 'format'
+      opts.on("--out format", [:textual,:n3,:ntriples,:turtle,:rdfxml], "Output triples to stdout, in 'format'
             (default rdfxml, alternatively n3, turtle, or ntriples)") do |format|
         if format==nil
           options.out=:rdfxml

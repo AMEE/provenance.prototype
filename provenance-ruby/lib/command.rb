@@ -23,8 +23,8 @@ class Command
   
   def qualify(v,o)
     o=RDF::Literal(o.to_s,:datatype=>XSD.anyURI) if v==OPM.type
-      # I don't understand this design choice, but OPM types are NOT URIrefs.
-      # They're literal values of URI type.
+    # I don't understand this design choice, but OPM types are NOT URIrefs.
+    # They're literal values of URI type.
     statement(subject,v,o)
     case v
     when OPM.cause,OPM.effect
@@ -38,7 +38,6 @@ class Command
       else
         statement(graph,OPM.hasArtifact,o)
         statement(o,RDF.type,OPM.Artifact)
-        statement(o,OPM.label,RDF::Literal.new(o.to_s.split(/\//)[-1]))
         statement(o,OPM.account,prov_block.account_uri)
       end
     end
@@ -46,11 +45,11 @@ class Command
   def type(o)
     qualify(RDF.type,o)
     case o
-      when OPM.Process
-        statement graph,OPM.hasProcess,subject
-      when OPM.WasDerivedFrom, OPM.WasGeneratedBy,
-           OPM.Used, OPM.WasTriggeredBy, OPM.WasControlledBy
-        statement graph,OPM.hasDependency,subject
+    when OPM.Process
+      statement graph,OPM.hasProcess,subject
+    when OPM.WasDerivedFrom, OPM.WasGeneratedBy,
+        OPM.Used, OPM.WasTriggeredBy, OPM.WasControlledBy
+      statement graph,OPM.hasDependency,subject
     end
   end
   def graph
@@ -65,8 +64,22 @@ class Command
       constantize.new(prov_block,*nargs)
     c.triples.each do |s|
       @triples<<s
-      end
+    end
     subject c.subject
+  end
+  def label(o=args.first,l=o.to_s.split(/\//)[-1])
+    # we draw the distinction between auto and manual labels
+    # so that manual label can be used for preference
+    # if only some accounts give a manual label
+    # this DOESN'T WORK FIXME
+    if args[1]=="called"
+      statement o,OPM.label,RDF::Literal.new(args[2])
+      statement o,AMEE.manuallabel,RDF::Literal.new(args[2])
+    else
+      statement o,OPM.label,RDF::Literal.new(args[2])
+      statement o,AMEE.autolabel,RDF::Literal.new(l)
+    end
+    
   end
   def self.create(prov_block,name,args)
     $log.debug("Create command #{name.capitalize}(#{args.join(',')})")

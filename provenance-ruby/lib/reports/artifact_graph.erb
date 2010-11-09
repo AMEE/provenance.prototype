@@ -1,8 +1,8 @@
 digraph OPMGraph { rankdir="TB"
-<%q{self<<[:artifact,RDF.type,OPM.Artifact]<<
-    [:artifact,OPM.label,:label]
+<%q{self<<[:artifact,RDF.type,OPM.Artifact]
   }.each do |s|-%>
-"<%=l s[:artifact]%>" [label="<%=l s[:label]%>",href="<%=l s[:artifact]%>"]
+
+"<%=l s[:artifact]%>" [label="<%=l label_for(s[:artifact])%>",href="<%=l s[:artifact]%>"]
 <%end%>
 <%q{self<<[:outlink,OPM.effect,:out]<<
     [:out,RDF.type,OPM.Artifact] <<

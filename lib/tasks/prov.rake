@@ -1,20 +1,38 @@
 task :default => ["web"]
 
-Resources="resources/"
+Resources="Resources/"
+def resourcepath(code)
+  rp=case code
+  when /[A-Z][A-Z]-\d*/
+    "jira"
+  when "everything"
+    "everything"
+  else
+    "textual_accounts"
+  end
+  result="#{Resources}#{rp}/#{code}/"
+  return result
+end
+
 Graphers={
   "ST-50"=>"fdp",
   "SC-47"=>"dot",
-  "everything"=>"fdp"
+  "everything"=>"dot"
 }
-Scales={
+
+  Scales={
   "ST-50"=>[8,4],
   "SC-47"=>[8,4],
-  "everything"=>[8,4]
+  "everything"=>[32,4]
 }
+
+def scales x
+  Scales[x]||[8,4]
+end
 
 def goptions(file,s)
   file=File.basename(file,".dot")
-  "#{Graphers[file]} -Epenwidth=4 -Npenwidth=2 -Estyle=solid -Gfontsize=16 -Gsize=#{Scales[file][0]*s},#{Scales[file][1]*s} -Gratio=fill"
+  "#{Graphers[file]||'dot'} -Epenwidth=4 -Npenwidth=2 -Estyle=solid -Gfontsize=16 -Gsize=#{scales(file)[0]*s},#{scales(file)[1]*s} -Gratio=fill"
 end
 
 def definescale(s)
@@ -32,7 +50,7 @@ definescale(4)
 definescale(8)
 
 rule  '.dot' => '.xml' do |t|
-  sh "provenance-java/target/appassembler/bin/ameeopm #{t.source}"
+  sh "provenance-ruby/bin/provenance --in #{t.source} --report artifact_graph > #{t.name}"
 end
 rule '.report' => '.xml' do |t|
   sh "provenance-ruby/bin/provenance --in #{t.source} --report textual > #{t.name}"
@@ -41,61 +59,62 @@ end
 rule '.xml' do |t|
   begin
     target=File.basename(t.name,'.xml')
+    sh "mkdir -p #{resourcepath(target)}"
     case target
     when /[A-Z][A-Z]-\d*/
       switch="-i #{target}"
     when "everything"
       switch="--everything"
     else
-      switch="--category #{target}"
+      switch="--category #{target.gsub(/-/,"/")}"
     end
     sh "provenance-ruby/bin/provenance -o -x #{switch} > #{t.name}"
   rescue => err
     p "Failed with #{err}, removing partial file".
-      rm "#{Resources}#{t.name}"
+      rm "#{resourcepath(target)}#{t.name}"
   end
 end
 
 task 'clean' do
-  rm Dir.glob "#{Resources}*"
+  rm_rf Dir.glob "#{Resources}*"
   sh "provenance-ruby/bin/provenance --clear"
 end
 
 task 'dotclean' do
-  rm Dir.glob "#{Resources}*.jpeg"
-  rm Dir.glob "#{Resources}*.cmap"
+  rm_rf Dir.glob "#{Resources}**/*.jpeg"
+  rm_rf Dir.glob "#{Resources}**/*.cmap"
 end
 
 def topartial(code)
-  "_"+code.downcase.gsub(/-/,'')
+  "_"+code.downcase.gsub(/-/,'').gsub(/\//,'_')
 end
 
 def scalepage(s,code)
-  file "#{Resources}#{code}.#{s}cmap" => "#{Resources}#{code}.dot"
-  file "#{Resources}#{code}.#{s}jpeg" => "#{Resources}#{code}.dot"
+  file "#{resourcepath(code)}#{code}.#{s}cmap" => "#{resourcepath(code)}#{code}.dot"
+  file "#{resourcepath(code)}#{code}.#{s}jpeg" => "#{resourcepath(code)}#{code}.dot"
   file "app/views/map/#{topartial(code)}#{s}.erb" =>
-    ["#{Resources}#{code}.#{s}cmap"] do
-    sh "cp #{Resources}#{code}.#{s}cmap app/views/map/#{topartial(code)}#{s}.erb"
+    ["#{resourcepath(code)}#{code}.#{s}cmap"] do
+    sh "cp #{resourcepath(code)}#{code}.#{s}cmap app/views/map/#{topartial(code)}#{s}.erb"
   end
-  file "public/images/#{code}.#{s}jpeg" => ["#{Resources}#{code}.#{s}jpeg"] do
-    sh "cp #{Resources}#{code}.#{s}jpeg public/images/#{code}.#{s}jpeg"
+  file "public/images/#{topartial(code)}.#{s}jpeg" => ["#{resourcepath(code)}#{code}.#{s}jpeg"] do
+    sh "cp #{resourcepath(code)}#{code}.#{s}jpeg public/images/#{topartial(code)}.#{s}jpeg"
   end
-  task :web => ["app/views/map/#{topartial(code)}#{s}.erb","public/images/#{code}.#{s}jpeg"]
+  task :web => ["app/views/map/#{topartial(code)}#{s}.erb","public/images/#{topartial(code)}.#{s}jpeg"]
 end
 
 def preparepage(code)
-  file "#{Resources}#{code}.xml"
+  file "#{resourcepath(code)}#{code}.xml"
   
-  file "#{Resources}#{code}.dot" => "#{Resources}#{code}.xml"
-  file "#{Resources}#{code}.report" => "#{Resources}#{code}.xml"
+  file "#{resourcepath(code)}#{code}.dot" => "#{resourcepath(code)}#{code}.xml"
+  file "#{resourcepath(code)}#{code}.report" => "#{resourcepath(code)}#{code}.xml"
   scalepage(1,code)
   scalepage(2,code)
   scalepage(4,code)
   scalepage(8,code)
 
   file "app/views/report/#{topartial(code)}.erb" =>
-    ["#{Resources}#{code}.report"] do
-    sh "cp #{Resources}#{code}.report app/views/report/#{topartial(code)}.erb"
+    ["#{resourcepath(code)}#{code}.report"] do
+    sh "cp #{resourcepath(code)}#{code}.report app/views/report/#{topartial(code)}.erb"
   end
 
  
@@ -105,3 +124,4 @@ end
 preparepage "ST-50"
 preparepage "SC-47"
 preparepage "everything"
+preparepage "transport-car-generic-ghgp-us"

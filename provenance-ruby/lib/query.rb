@@ -2,6 +2,7 @@
 
 module QueryTemplate 
   include RDF
+  # these methods add support for textual output queries against the repo
   def doquery
     template=ERB.new(options.query,nil,'-')
     template.result(binding)
@@ -12,6 +13,21 @@ module QueryTemplate
   def l text
     text.to_s.gsub("\n",'\n')
   end
+  def q(&block)
+    query RDF::Query.new(&block)
+  end
+
+  def label_for(uriref)
+    ol=first_object([uriref,OPM.label,nil])
+    dl=first_object([uriref,AMEE.autolabel,nil])
+    ml=first_object([uriref,AMEE.manuallabel,nil])
+    return narrow((ml||dl||ol).to_s)
+  end
+
+  delegate :query,:first,:first_subject,:first_object,:first_predicate,
+    :to => :repository
+
+  # these methods support querying db to obtain the triples to be analysed
   def db_query
     if options.db_query
       $log.info("Querying DB for input triples")
@@ -38,10 +54,5 @@ module QueryTemplate
     end
   end
 
-  def q(&block)
-    query RDF::Query.new(&block)
-  end
-
-  delegate :query,:first,:first_subject,:first_object,:first_predicate,
-    :to => :repository
+  
 end
