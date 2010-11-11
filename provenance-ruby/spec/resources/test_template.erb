@@ -13,7 +13,7 @@ Provenance report for these accounts:
       [:outproc,OPM.effect,:output]<<
       [:outproc,OPM.role,:outrole]}.each do |s2| -%>
  
-  <%= s2[:output] %> <%if s2[:outrole]!=AMEE.output%>with role <%= s2[:outrole]%><%end%>
+  <%= s2[:output] %> <%if s2[:outrole]!=Prov::AMEE.output%>with role <%= s2[:outrole]%><%end%>
   <% end -%>
   ... and the following inputs:
    <% q{self<< [:inproc,OPM.effect,:process]<<
@@ -21,6 +21,6 @@ Provenance report for these accounts:
       [:inproc,OPM.cause,:input]<<
       [:inproc,OPM.role,:inrole]}.each do |s2| -%>
   
-  <%= s2[:input]%> <%if s2[:inrole]!=AMEE.input%>with role <%= s2[:inrole]%><%end%>
+  <%= s2[:input]%> <%if s2[:inrole]!=Prov::AMEE.input%>with role <%= s2[:inrole]%><%end%>
   <%end-%>
 <% end %>

@@ -26,7 +26,7 @@ describe Command do
       :label=>nil)
     @test=Command::Ameem.new(@comment,'dummy')
     @test.triples.should include enum_substatement(
-      "amee:dummy",RDF.type,AMEE.category).to_a.first
+      "amee:dummy",RDF.type,Prov::AMEE.category).to_a.first
   end
 end
 

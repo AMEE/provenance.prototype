@@ -1,4 +1,5 @@
-module Statemented
+module Prov
+  module Statemented
   include RDF
   include Multiloop
   def parse_all(*args,&block)
@@ -21,4 +22,5 @@ module Statemented
       @triples << triple
     end
   end
+end
 end

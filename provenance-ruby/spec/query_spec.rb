@@ -13,7 +13,7 @@ describe QueryTemplate do
     HERE
     )
     @repository=RDF::Repository.new
-    @repository.insert RDF::Statement.new("bob",RDF.type,AMEE.test)
+    @repository.insert RDF::Statement.new("bob",RDF.type,Prov::AMEE.test)
   end
   it "should desc" do
    @q=doquery

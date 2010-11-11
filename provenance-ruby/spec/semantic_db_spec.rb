@@ -7,7 +7,7 @@ Triples=[
       "http://jira.amee.com/browse/ST-49?focusedCommentId=12475"),
     RDF::URI(
       "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
-    AMEE::test
+    Prov::AMEE::test
   )
 ]
 

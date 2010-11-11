@@ -4,6 +4,7 @@
 require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 
 describe Options do
+  include Utils
   include Options
 
   it "should parse jira issue switch" do

@@ -36,9 +36,9 @@ describe Parser do
   end
   it "Should parse out a series of statements" do
     enum_substatement(
-      "amee:dummy",RDF.type,AMEE.category).to_a.
+      "amee:dummy",RDF.type,Prov::AMEE.category).to_a.
       should eql [Statement.new(RDF::URI("http://live.amee.com/data/dummy"),
-        RDF.type,AMEE.category)]
+        RDF.type,Prov::AMEE.category)]
   end
 end
 

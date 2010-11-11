@@ -15,7 +15,7 @@ describe Comment do
       "http://www.w3.org/1999/02/22-rdf-syntax-ns#type")
     @typeassertion.subject.should eql RDF::URI(
       "http://example.com/jira/browse/EX-1?focusedCommentId=55")
-    @typeassertion.object.should eql AMEE::test
+    @typeassertion.object.should eql Prov::AMEE::test
   end
   it "shouldn't balk on apostrophes" do
     @jira=flexmock(:base_url=>"http://example.com/jira",:getComment=>
@@ -41,7 +41,7 @@ describe Comment do
       "http://www.w3.org/1999/02/22-rdf-syntax-ns#type")
     @typeassertion.subject.should eql RDF::URI(
       "http://jira.amee.com/browse/ST-49?focusedCommentId=12470")
-    @typeassertion.object.should eql AMEE::test
+    @typeassertion.object.should eql Prov::AMEE::test
   end
 end
 

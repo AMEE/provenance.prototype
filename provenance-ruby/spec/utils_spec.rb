@@ -3,7 +3,7 @@ require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 Subject="Hello world I really like to do string manipulation"
 
 describe "text narrower" do
-  
+  include Utils
   it "Should not effect short string" do
     narrow(Subject,80).should eql Subject
   end
