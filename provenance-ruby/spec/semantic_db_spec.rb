@@ -37,7 +37,7 @@ describe "Connection to DB via provenance command" do
 
   it "should handle db upload provenance command with a real comment" do
     @d=Provenance.new("-d --file #{Resources}/something.prov")
-    lambda{@d.exec}.should_not raise_error
+    @d.exec
     @p=Provenance.new("--file #{Resources}/something.prov")
     lambda{@p.exec}.should_not raise_error
   end

@@ -2,7 +2,7 @@
 # and open the template in the editor.
 
 require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
-include Statemented
+
 describe Parser do
   it "Should map http string to a URI" do
     Parser["http://example.com"].first.should be_a RDF::URI
@@ -35,9 +35,9 @@ describe Parser do
     Parser["anonymous:sad"].should eql ["Happy/sad"]
   end
   it "Should parse out a series of statements" do
-    enum_substatement(
+    Statemented.enum_substatement(
       "amee:dummy",RDF.type,Prov::AMEE.category).to_a.
-      should eql [Statement.new(RDF::URI("http://live.amee.com/data/dummy"),
+      should eql [RDF::Statement.new(RDF::URI("http://live.amee.com/data/dummy"),
         RDF.type,Prov::AMEE.category)]
   end
 end

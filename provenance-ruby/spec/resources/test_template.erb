@@ -2,13 +2,13 @@
 
 Provenance report for these accounts:
 
-<% q{self<<[:account,RDF.type,OPM.Account]}.each do |s| -%>
+<% q{|z|z<<[:account,RDF.type,OPM.Account]}.each do |s| -%>
   <%= s[:account] %>
 <%end-%>
 
-<%  q{self<<[:process,RDF.type,OPM.Process]}.each do |s| %>
+<%  q{|z| z<<[:process,RDF.type,OPM.Process]}.each do |s| %>
   The process  <%= s[:process] %> had the following outputs:
-  <%  q{self<<[:outproc,OPM.cause,s[:process]]<<
+  <%  q{|z| z<<[:outproc,OPM.cause,s[:process]]<<
       [:outproc,RDF.type,OPM.WasGeneratedBy]<<
       [:outproc,OPM.effect,:output]<<
       [:outproc,OPM.role,:outrole]}.each do |s2| -%>
@@ -16,7 +16,7 @@ Provenance report for these accounts:
   <%= s2[:output] %> <%if s2[:outrole]!=Prov::AMEE.output%>with role <%= s2[:outrole]%><%end%>
   <% end -%>
   ... and the following inputs:
-   <% q{self<< [:inproc,OPM.effect,:process]<<
+   <% q{|z| z<< [:inproc,OPM.effect,:process]<<
       [:inproc,RDF.type,OPM.Used]<<
       [:inproc,OPM.cause,:input]<<
       [:inproc,OPM.role,:inrole]}.each do |s2| -%>

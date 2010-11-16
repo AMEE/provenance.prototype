@@ -2,7 +2,6 @@
 # and open the template in the editor.
 
 require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
-include Statemented
 
 describe Command do 
 
@@ -25,7 +24,7 @@ describe Command do
       :comment=>'50',
       :label=>nil)
     @test=Command::Ameem.new(@comment,'dummy')
-    @test.triples.should include enum_substatement(
+    @test.triples.should include Statemented::enum_substatement(
       "amee:dummy",RDF.type,Prov::AMEE.category).to_a.first
   end
 end

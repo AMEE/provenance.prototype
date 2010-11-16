@@ -12,9 +12,8 @@ describe TextFile do
     @issue=TextFile.new(@file)
     @issue.steps.length.should eql 6
     @typeassertion= @issue.steps[0].commands[0].triples[0]
-    @typeassertion.subject.should eql RDF::URI(
-      "file:///home/jamespjh/Private/amee/provenance/provenance-ruby/spec"+
-        "/resources/sample_account.prov?offset=0#1")
+    @typeassertion.subject.to_s.
+      should match /file:\/\/.*sample_account\.prov\?offset=0#1/
     @typeassertion.predicate.should eql RDF.type
     @typeassertion.object.should eql OPM.WasGeneratedBy
   end
