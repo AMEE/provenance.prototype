@@ -56,7 +56,7 @@ describe Provenance do
   end
   it "should develop an induced subgraph from exemplar account from url" do
     @p=Provenance.new("--file #{Resources}/sample_account.prov"+
-        " --subgraph file:///home/jamespjh/Private/amee/provenance/provenance-ruby/spec/resources/sample_account.prov?offset=0")
+        " --subgraph file:///Users/jamespjh/devel/amee/provenance.prototype/provenance-ruby/spec/resources/sample_account.prov?offset=0")
     @p.exec
     @p.triples.should_not be_empty
   end
