@@ -1,4 +1,4 @@
-require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
+require File.expand_path(File.dirname(File.dirname(__FILE__)) + '/spec_helper')
 
 describe QueryTemplate do
   include QueryTemplate
@@ -28,19 +28,42 @@ describe Provenance do
     @p.doquery.should match /working/
     @p.doquery.should match Regexp.escape "http://jira.amee.com/browse/ST-49?focusedCommentId=12470"
   end
+  it "should give right results in graph query on a comment" do
+    @p=Provenance.new("--report artifact_graph -x -c 14135 -i SC-47")
+    @p.exec
+    dpath="transport/car/generic/ghgp/us"
+    curi="http://jira.amee.com/browse/SC-47?focusedCommentId=14135"
+    [
+      [curi,RDF.type,OPM.Process],
+      ["amee:#{dpath}",RDF.type,Prov::AMEE.category],
+      [curi+"#1",OPM.cause,"apicsvs:#{dpath}/default.js"],
+      [curi+"#2",OPM.cause,"apicsvs:#{dpath}/itemdef.csv"],
+      [curi+"#3",OPM.cause,"apicsvs:#{dpath}/data.csv"],
+      [curi+"#4",OPM.effect,"amee:#{dpath}"],
+      [curi+"#1",OPM.effect,curi],
+      [curi+"#2",OPM.effect,curi],
+      [curi+"#3",OPM.effect,curi],
+      [curi+"#4",OPM.cause,curi]
+    ].each do |ss|
+      @p.triples.should include *Statemented::enum_substatement(*ss).to_a
+    end
+    @p.doquery.should match "http://svn.amee.com/internal/api_csvs/transport/car/generic/ghgp/us/default.js\"->\"http://live.amee.com/data/transport/car/generic/ghgp/us\""
+    @p.doquery.should match "http://svn.amee.com/internal/api_csvs/transport/car/generic/ghgp/us/data.csv\"->\"http://live.amee.com/data/transport/car/generic/ghgp/us\""
+    @p.doquery.should match "http://svn.amee.com/internal/api_csvs/transport/car/generic/ghgp/us/itemdef.csv\"->\"http://live.amee.com/data/transport/car/generic/ghgp/us\""
+  end
   it "should parse a db query file" do
     @p=Provenance.new("--dbq #{Resources}/db_test_query.rb")
-    lambda{@p.exec}.should_not raise_error
+    @p.exec
     @p.triples.should_not be_empty
   end
   it "should parse a sparql query file" do
     @p=Provenance.new("--sparql #{Resources}/sparql_test_query.rq")
-    lambda{@p.exec}.should_not raise_error
+    @p.exec
     @p.triples.should_not be_empty
   end
   it "should parse a db query file with a sparql endpoint" do
     @p=Provenance.new("--database sesame-sparql --dbq #{Resources}/db_test_query.rb")
-    lambda{@p.exec}.should_not raise_error
+    @p.exec
     @p.triples.should_not be_empty
   end
   it "should parse a sparql db query file with a sparql endpoint" do

@@ -1,7 +1,4 @@
-# To change this template, choose Tools | Templates
-# and open the template in the editor.
-
-require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
+require File.expand_path(File.dirname(File.dirname(__FILE__)) + '/spec_helper')
 
 describe Command do 
 
@@ -16,16 +13,23 @@ describe Command do
   end
   it "should create an ameem command" do
 
-    @comment=flexmock(:uri=>RDF::URI('http://test.amee.com/jira/EX-7'),
+    @comment=flexmock(:uri=>RDF::URI('http://test.amee.com/jira/EX-7?focusedCommentId=50'),
       :graph_uri=>RDF::URI('http://test.amee.com/jira/EX-7/graph'),
       :project=>'EX',:issue=>'7',:ticket=>flexmock,
       :account_uri=> RDF::URI('http://test.amee.com/jira/EX-7/issue'),
       :newuri => RDF::URI('http://test.amee.com/jira/EX-7/new'),
       :comment=>'50',
-      :label=>nil)
+      :label=>"EX-7 50")
     @test=Command::Ameem.new(@comment,'dummy')
-    @test.triples.should include Statemented::enum_substatement(
-      "amee:dummy",RDF.type,Prov::AMEE.category).to_a.first
+    [
+      [@comment.uri,RDF.type,OPM.Process],
+      ["amee:dummy",RDF.type,Prov::AMEE.category],
+      [@comment.newuri,OPM.cause,"csv_files:dummy"],
+      [@comment.newuri,OPM.effect,"amee:dummy"],
+      [@comment.uri,OPM.label,"EX-7 50"]
+    ].each do |ss|
+      @test.triples.should include *Statemented::enum_substatement(*ss).to_a
+    end
   end
 end
 

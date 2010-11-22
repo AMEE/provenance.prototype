@@ -1,4 +1,4 @@
-require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
+require File.expand_path(File.dirname(File.dirname(__FILE__)) + '/spec_helper')
 
 describe TextFile do
   it "should load steps" do
@@ -21,6 +21,5 @@ describe TextFile do
     @p=Provenance.new("--file #{Resources}/sample_account.prov")
     @p.exec
     @p.triples.should_not be_empty
-    pp @p.triples.to_a
   end
 end

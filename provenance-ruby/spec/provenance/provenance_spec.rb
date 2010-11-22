@@ -1,7 +1,7 @@
 # To change this template, choose Tools | Templates
 # and open the template in the editor.
 
-require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
+require File.expand_path(File.dirname(File.dirname(__FILE__)) + '/spec_helper')
 
 describe Provenance do
   it "should exec the executable" do
@@ -22,7 +22,7 @@ describe Provenance do
   end
   it "should load multiple issues by text search" do
     @p=Provenance.new("-x --alljira")
-    lambda{@p.exec}.should_not raise_error
+    @p.exec
   end
 end
 

@@ -1,4 +1,4 @@
-require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
+require File.expand_path(File.dirname(File.dirname(__FILE__)) + '/spec_helper')
 
 
 
@@ -98,7 +98,7 @@ describe Crawler do
   it "doublestart should work" do
     x=doublestart.dup
     x.execute(Repo)
-    x.each_solution.map{|z|z[:middle]}.should eql [n[1],n[2]]
+    x.each_solution.map{|z|z[:middle]}.uniq.should eql [n[1],n[2]]
     x.each_solution.map{|z|z[:end]}.should_not include [n[3],n[4],n[5]]
   end
 

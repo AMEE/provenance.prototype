@@ -1,7 +1,4 @@
-# To change this template, choose Tools | Templates
-# and open the template in the editor.
-
-require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
+require File.expand_path(File.dirname(File.dirname(__FILE__)) + '/spec_helper')
 
 describe Options do
   include Utils
@@ -79,14 +76,9 @@ describe Options do
     options.subgraph.should eql RDF::URI("http://test.amee.com/foo")
   end
 
-  it "should parse --dbq" do
-    parse_options("--dbq #{Resources}/db_test_query.rb")
-    options.add.should be_false
-    options.delete.should be_false
-    options.jira.should be_false
-    options.db_fetch.should be_false
-    options.db_query.should match "statements"
-    options.out.should be_nil
+  it "should parse --report" do
+    parse_options("--report textual")
+    options.query.should match /Provenance report/
   end
 
   it "should parse --in" do

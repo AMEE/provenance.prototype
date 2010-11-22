@@ -1,5 +1,5 @@
 
-require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
+require File.expand_path(File.dirname(File.dirname(__FILE__)) + '/spec_helper')
 
 describe Issue do
   it "should load comments with a mock jira" do
