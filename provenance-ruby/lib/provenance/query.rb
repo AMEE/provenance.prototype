@@ -14,7 +14,7 @@ module Prov
       text.to_s.gsub("\n",'\n')
     end
     def q(&block)
-      query RDF::Query.new(&block)
+      RDF::Query.new(&block).execute(repository)
     end
 
     def label_for(uriref)

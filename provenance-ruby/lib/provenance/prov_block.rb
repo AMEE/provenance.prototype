@@ -30,7 +30,7 @@ module Prov
     def parse_body
       # commands are bounded by prov:foo and semicolon
       # pain to do this in ruby 1.8 without lookaround to do non-consuming splits
-
+      return unless body
       lines=body.split(/[;]/) # was also on newline, trying without
       # tokenize on whitespace
       lines.each do |line|

@@ -1,7 +1,7 @@
 module Prov
   module Utils
-    Home=ENV['ProvenanceHome'] || File.join(File.dirname(File.dirname(__FILE__)))
-    Install=File.join(File.dirname(File.dirname(__FILE__)))
+    Home=ENV['ProvenanceHome'] || File.join(File.dirname(File.dirname(File.dirname(__FILE__))))
+    Install=File.join(File.dirname(File.dirname(File.dirname(__FILE__))))
 
     def configfile(mod)
       File.join(Home,'config',"#{mod}.yml")

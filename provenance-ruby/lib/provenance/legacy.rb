@@ -7,26 +7,49 @@ module Prov
     end
     attr_accessor :folder
     def steps
+      begin
       @steps=construct_steps.enum_with_index.collect do |b,i|
         TextStep.new(self,i,b)
+      end.reject{|x|x.blank?}
+      rescue => err
+        $log.warn("Error #{err} while parsing #{self.class.to_s.
+          underscore.humanize.downcase} for #{File.dirname(path)}")
+        []
       end
     end
+    def step x
+      c=called x
+      "prov:process #{c.reject{|x|x.blank?}.
+      map{|s| "prov:in #{s}"}.join(" ")} prov:out csv_files:#{folder}"
+    end
     def called x
-      
+      return [] unless x
       m=/\[+(.*)\|(.*?)\]+/.match x
-      return x[URI.regexp] unless m
-      "#{m[1]} called \"#{m[2]}\""
+      return ["#{m[1].strip} called \"#{m[2].strip}\""] if m
+      return x.enum_for(:scan,URI.regexp).map{|match|
+        begin
+          add=URI.parse($&)
+        rescue URI::InvalidURIError
+          add=nil
+        end
+        add.nil?||(add.path.blank?&&add.host.blank?) ? nil : $&
+      }
     end
   end
 
   class DataCsvFile < LegacyFile
     def construct_model
+      begin
       @item_definition=ItemDefinition.from_file(File.join(File.dirname(path),'itemdef.csv'))
       @data=DataTable.from_file(path,@id)
+      rescue => err
+        $log.warn("Error #{err} while reading data files for #{File.dirname(path)}")
+      end
     end
     def construct_steps
-      @data.items.map{|i|i.get('source')}.uniq.map do |source|
-        "prov:process prov:in #{called source} prov:out csv_files:#{folder}"
+      return [] unless data
+      data.items.map{|i|i.get('source')}.uniq.map do |source|  
+          step source    
       end
     end
     def filename
@@ -37,10 +60,17 @@ module Prov
 
   class MetaYmlFile < LegacyFile
     def construct_model
+      begin
       @meta=YAML.load_file(path)
+      rescue => err
+        $log.warn("Error #{err} while reading metadata file for #{File.dirname(path)}")
+      end
     end
     def construct_steps
-      "prov:process prov:in #{called meta['provenance']} prov:out csv_files:#{folder}"
+      return [] unless meta&&meta['provenance']
+      sources=meta['provenance']
+      sources=sources.join(" ") if sources.is_a? Array #undo yamlism
+      step sources
     end
     def filename
       "meta.yml"

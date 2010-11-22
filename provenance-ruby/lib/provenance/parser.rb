@@ -20,7 +20,7 @@ module Prov
       @@parsers.each do |v|
         passresult=[]
         val.each do |vval|
-          $log.debug("Parsing  #{vval.class} #{vval.inspect} under handler #{v.class}")
+          #$log.debug("Parsing  #{vval.class} #{vval.inspect} under handler #{v.class}")
           res=v.dohandle(vval)
           if res.class==Array
             res.each do |r|

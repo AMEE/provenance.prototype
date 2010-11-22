@@ -9,7 +9,6 @@ module Prov
     invoke :base_out,"amee:#{path}"
     qualify OPM.role,AMEE.output
     subject "amee:#{path}"
-
     type AMEE.category
   end
 end

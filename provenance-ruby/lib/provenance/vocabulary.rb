@@ -15,6 +15,7 @@ module Prov
     property :category # the concept of an AMEE DC
     property :manualllabel
     property :autolabel
+    property :graph #the amee provenance graph
   end
 
   class OPM < RDF::Vocabulary("http://openprovenance.org/ontology#")

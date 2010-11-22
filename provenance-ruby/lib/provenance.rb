@@ -72,7 +72,6 @@ module Prov
       $log.info("Verbosity #{Log4r::LNAMES[Log4r::Outputter['stderr'].level]}")
       @project,@issue=Issue.parse_key(options.target)
       @triples=[]
-      @blocks=[]
       @db=case options.db.downcase
       when 'sesame'
         Connection::Sesame.connect
@@ -88,46 +87,45 @@ module Prov
       if options.jira
         $log.info("Reading from Jira")
         if comment&&issue
-          comments=[Comment.new(Connection::Jira.connect,project,issue,comment)]
+          handle_prov_block Comment.new(Connection::Jira.connect,project,issue,comment)
         elsif issue
-          comments=Issue.new(Connection::Jira.connect,project,issue).comments
+          Issue.new(Connection::Jira.connect,project,issue).
+            comments.each do |c|
+            handle_prov_block c
+          end
         else
           # slurp according to filter
           jira=Connection::Jira.connect
-          comments=[]
           # our version of jira doesn't paginate here.
           issues=jira.getIssuesFromTextSearch('prov')
           $log.info("Found #{issues.length} issues")
           issues.each do |issue|
             tc=Issue.new(jira,*Issue.parse_key(issue.key)).comments
             $log.info("Found #{tc.length} comments in issue #{issue.key}")
-            comments<<tc
+            tc.each do |c| handle_prov_block c end
           end
-          comments.flatten!(1)
         end
-        $log.info("Found #{comments.length} comments")
-        @blocks.concat comments
       end
     end
 
-    def handle_prov_blocks(pbs)
-      pbs.each do |comment|
-        comment.triples.each do |statement|
-          @triples << statement
-        end
-      end
-      Parser.context pbs.first.graph_uri # there's only one graph
-      pbs.each do |ac|
-        statement(ac.graph_uri,OPM.hasAccount,ac.account_uri)
-        statement(ac.graph_uri,RDF.type,OPM.OPMGraph)
-        statement(ac.account_uri,RDF.type,OPM.Account)
-      end
-    
+    def handle_prov_block(pb)
+      @triples.concat(pb.triples)
+      statement(graph_uri,OPM.hasAccount,pb.account_uri)
+      statement(pb.account_uri,RDF.type,OPM.Account)
+    end
+
+    def declare_roles
       [AMEE.browser,AMEE.via,AMEE.output,
         AMEE.input,AMEE.container,AMEE.numeric].each do |role|
         statement(role,RDF.type,OPM.Role)
         statement(role,OPM.value,role.qname[1].to_s)
       end
+      statement(graph_uri,RDF.type,OPM.OPMGraph)
+      Parser.context graph_uri # there's only one graph
+    end
+
+    def graph_uri
+      AMEE.graph
     end
 
     def db_fetch
@@ -160,13 +158,14 @@ module Prov
         t=TextFile.new(options.infile)
         steps=t.steps
         $log.info("Found #{steps.length} comments")
-        @blocks.concat steps
+        steps.each do |step|
+          handle_prov_block step
+        end
       end
       if options.category
         $log.info("Reading prov:commands from #{options.category} in svn")
         glob=options.recursive ? '**/*.prov' : '*.prov'
-        steps=svn_block(glob,SvnFile,options.category).flatten(1)
-        @blocks.concat steps
+        svn_block(glob,SvnFile,options.category).flatten(1)
       end
       if options.legacy
       
@@ -174,10 +173,8 @@ module Prov
       
         dataglob=options.recursive ? '**/data.csv' : 'data.csv'
         metaglob=options.recursive ? '**/meta.yml' : 'meta.yml'
-        steps=svn_block(dataglob,DataCsvFile,options.legacy).flatten(1)
-        @blocks.concat steps
-        steps=svn_block(metaglob,MetaYmlFile,options.legacy).flatten(1)
-        @blocks.concat steps
+        svn_block(dataglob,DataCsvFile,options.legacy).flatten(1)
+        svn_block(metaglob,MetaYmlFile,options.legacy).flatten(1)      
       end
     end
 
@@ -188,14 +185,14 @@ module Prov
       accounts=Dir.glob(fullpath).map{|x|
         x.sub(Connection::Subversion::Config['svn_repo_working_copy'],'')}
       $log.info("Found #{accounts.length} accounts: #{accounts.inspect}")
-      results=[]
       accounts.each do |account|
         t=klass.new(svn,account)
         steps=t.steps
         $log.info("Found #{steps.length} comments in an account")
-        results<<steps
+        steps.each do |step|
+          handle_prov_block step
+        end
       end
-      return results
     end
 
     def file_output
@@ -222,16 +219,15 @@ module Prov
     end
 
     def exec
- 
+      declare_roles
       # different ways of obtaining triples and a repository to work on
       file_input
       jiraread
       db_fetch
       db_query
+     
       sparql_query
-      unless @blocks.empty?
-        handle_prov_blocks @blocks
-      end
+      
 
       unless @triples.empty?
         $log.debug("Before uniq, #{triples.count} triples")
@@ -242,7 +238,7 @@ module Prov
         @repository=c.induced_subgraph
       end
     
-      @triples=repository.statements #dedup
+      @triples=repository.statements.to_a #dedup
       $log.info("Found #{triples.count} triples")
     
       db_commit
@@ -251,7 +247,6 @@ module Prov
   
     end
     def clean
-      @blocks=nil
       @triples=[]
       @repository=nil
     end

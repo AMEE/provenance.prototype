@@ -21,7 +21,7 @@ module Prov
       end
       qualify OPM.account,prov_block.account_uri
     end
-  
+
     def qualify(v,o)
       o=RDF::Literal(o.to_s,:datatype=>XSD.anyURI) if v==OPM.type
       # I don't understand this design choice, but OPM types are NOT URIrefs.
@@ -61,7 +61,7 @@ module Prov
       @subject=s
     end
     def invoke(other_command,nargs=args)
-      c="Command::#{other_command.to_s.capitalize}".
+      c="Prov::Command::#{other_command.to_s.capitalize}".
         constantize.new(prov_block,*nargs)
       c.triples.each do |s|
         @triples<<s
@@ -77,7 +77,7 @@ module Prov
         statement o,OPM.label,RDF::Literal.new(args[2])
         statement o,AMEE.manuallabel,RDF::Literal.new(args[2])
       else
-        statement o,OPM.label,RDF::Literal.new(args[2])
+        statement o,OPM.label,RDF::Literal.new(l)
         statement o,AMEE.autolabel,RDF::Literal.new(l)
       end
     
@@ -85,7 +85,7 @@ module Prov
     def self.create(prov_block,name,args)
       $log.debug("Create command #{name.capitalize}(#{args.join(',')})")
       begin
-        "Command::#{name.capitalize}".constantize.new(prov_block,*args)
+        "Prov::Command::#{name.capitalize}".constantize.new(prov_block,*args)
       rescue NameError,ArgumentError => err
         $log.error err
         $log.error err.backtrace

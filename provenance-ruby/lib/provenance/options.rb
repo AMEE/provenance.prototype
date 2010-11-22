@@ -52,6 +52,7 @@ module Prov
         opts.on("--everything") do
           options.jira=true
           options.category='/'
+          options.legacy='/'
           options.recursive=true
           options.db_fetch=false
         end
@@ -145,7 +146,7 @@ module Prov
           options.db_fetch=false
         end
         opts.on("--report format",  "Output report") do |format|
-          options.query=File.read File.join(Install,'lib','provenance','reports',"#{format}.erb")
+          options.query=File.read File.join(Utils::Install,'lib','provenance','reports',"#{format}.erb")
         end
         opts.on("--out format", [:textual,:n3,:ntriples,:turtle,:rdfxml], "Output triples to stdout, in 'format'
             (default rdfxml, alternatively n3, turtle, or ntriples)") do |format|

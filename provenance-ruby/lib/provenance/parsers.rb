@@ -49,7 +49,7 @@ module Prov
   end
 
   parse :uri do |x|
-    if x.class != RDF::URI && (x=~/http\:\/\// || x=~/mailto/ || x=~/file\:\/\//)
+    if x.class != RDF::URI && (x=~/http\:\/\// || x=~/ftp\:\/\// || x=~/mailto/ || x=~/file\:\/\//)
       RDF::URI.new(x)
     else
       x
