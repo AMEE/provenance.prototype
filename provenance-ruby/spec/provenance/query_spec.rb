@@ -23,7 +23,8 @@ end
 
 describe Provenance do
   it "should parse a query file" do
-    @p=Provenance.new("-q #{Resources}/test_template.erb -x -c 12470 -i ST-49")
+    #this will also load up the db with some stuff ready for other tests
+    @p=Provenance.new("-q #{Resources}/test_template.erb -c 12470 -i ST-49")
     @p.exec
     @p.doquery.should match /working/
     @p.doquery.should match Regexp.escape "http://jira.amee.com/browse/ST-49?focusedCommentId=12470"
@@ -76,6 +77,14 @@ describe Provenance do
         " --category-subgraph transport/car/generic/ghgp")
     @p.exec
     @p.triples.should_not be_empty
+    $reference=@p.triples
+  end
+  it "should develop an induced subgraph from exemplar account from sparql ep" do
+    @p=Provenance.new("--database sesame-sparql --file #{Resources}/sample_account.prov"+
+        " --category-subgraph transport/car/generic/ghgp")
+    @p.exec
+    @p.triples.should_not be_empty
+    @p.triples.should eql $reference #assert get same answer with sparql endpoint
   end
   it "should develop an induced subgraph from exemplar account from url" do
     @p=Provenance.new("--file #{Resources}/sample_account.prov"+

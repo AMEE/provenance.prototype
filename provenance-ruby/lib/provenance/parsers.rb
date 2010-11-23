@@ -16,6 +16,7 @@ module Prov
   end
 
   prefix :apicsvs do |x|
+    x.gsub!("apicsvs:/","apicsvs:") #remove extraneous slash
     presub(x,'svn:internal/api_csvs/')
   end
 
@@ -49,7 +50,7 @@ module Prov
   end
 
   parse :uri do |x|
-    if x.class != RDF::URI && (x=~/http\:\/\// || x=~/ftp\:\/\// || x=~/mailto/ || x=~/file\:\/\//)
+    if x.class != RDF::URI && (x=~/http\:\/\// || x=~/https\:\/\// || x=~/ftp\:\/\// || x=~/mailto/ || x=~/file\:\/\//)
       RDF::URI.new(x)
     else
       x

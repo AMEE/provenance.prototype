@@ -137,6 +137,10 @@ module Prov
 
     def db_commit
       return unless options.delete || options.add
+      unless db.mutable?
+        $log.warn("Cannot write to immutable repository")
+        return
+      end
       $log.debug("Before commit, db has #{db.count} triples")
       $log.debug("Operating on #{triples.length} triples")
       db.delete *triples if options.delete

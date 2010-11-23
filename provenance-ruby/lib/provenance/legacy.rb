@@ -24,8 +24,12 @@ module Prov
     end
     def called x
       return [] unless x
-      m=/\[+(.*)\|(.*?)\]+/.match x
-      return ["#{m[1].strip} called \"#{m[2].strip}\""] if m
+      m=x.enum_for(:scan,/\[+([^\]\[]*?)\|(.*?)\]+/).select{|match|
+        match[0]=~URI.regexp
+      }.map{|match|
+        "#{match[0].strip} called \"#{match[1].strip}\""
+      }
+     return m unless m.empty?
       return x.enum_for(:scan,URI.regexp).map{|match|
         begin
           add=URI.parse($&)

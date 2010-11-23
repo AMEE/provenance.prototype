@@ -23,6 +23,14 @@ describe 'MetaYmlFile' do
     @d.steps.first.body.should eql "prov:process prov:in http://foo.bar/baz"+
       " called \"wibble\" prov:out csv_files:/transport/car/generic/ghgp/us"
   end
+  it "should parse multiple [|] sources" do
+    @d.should_receive("meta").
+      and_return('provenance' =>  ["[http://foo.bar/baz | wibble ]",
+      "http://foo.bar/biz | wobble"])
+    @d.steps.length.should eql 1
+    @d.steps.first.body.should eql "prov:process prov:in http://foo.bar/baz"+
+      " called \"wibble\" prov:out csv_files:/transport/car/generic/ghgp/us"
+  end
   it "should parse multiple sources" do
     @d.should_receive("meta").and_return('provenance'  => ["http://foo.bar/baz",
         "http://foo.bar/biz"])
@@ -57,6 +65,21 @@ describe 'DataCsvFile' do
     @d.steps.length.should eql 1
     @d.steps.first.body.should eql "prov:process prov:in http://foo.bar/baz "+
       "called \"wibble\" prov:out csv_files:/transport/car/generic/ghgp/us"
+  end
+  it "should parse multiple [|] source with first one no alternative " do
+    @d.should_receive("data.items").
+      and_return([flexmock(:get => "[[wibble]],[[http://foo.bar/biz | wobble ]]")])
+    @d.steps.length.should eql 1
+    @d.steps.first.body.should eql "prov:process prov:in http://foo.bar/biz "+
+      "called \"wobble\" prov:out csv_files:/transport/car/generic/ghgp/us"
+  end
+  it "should parse multiple [|] sources" do
+    @d.should_receive("data.items").
+      and_return([flexmock(:get => "[[http://foo.bar/baz | wibble ]],[[http://foo.bar/biz | wobble ]]")])
+    @d.steps.length.should eql 1
+    @d.steps.first.body.should eql "prov:process prov:in http://foo.bar/baz "+
+      "called \"wibble\" prov:in http://foo.bar/biz called \"wobble\" "+
+      "prov:out csv_files:/transport/car/generic/ghgp/us"
   end
   it "should parse multiple sources" do
     @d.should_receive("data.items").
