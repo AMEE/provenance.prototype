@@ -37,6 +37,36 @@ module Prov
       return @colors[uriref]
     end
 
+    def shape_for(uriref)
+      #we should do this semantically
+      #but for now just parse the url
+      case uriref.to_s
+      when /anonymous/
+        "diamond"
+      else
+        "ellipse"
+      end
+    end
+
+    def style_for(type,role)
+      $log.debug "Style for #{RDF::URI.new(type.to_s).inspect},#{role.inspect}"
+      case RDF::URI.new(type.to_s)#because opm types are Literal anyURIs not URIrefs
+      when AMEE.calculation
+        'dashed'
+      when AMEE.download
+        case role
+        when AMEE.via
+          'dotted'
+        else
+          'bold'
+        end
+      when AMEE.manual
+        'dotted'
+      else
+        'solid'
+      end
+    end
+
     def newcolor
       @colorindex||=-1
       @colorindex+=1

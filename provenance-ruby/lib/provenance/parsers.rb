@@ -21,13 +21,13 @@ module Prov
   end
 
   prefix :anonymous do |x|
-    presub(x,Parser.context+"/") do |x|
+    presub(x,Parser.context+"/anonymous/") do |x|
       CGI.escape x
     end
   end
 
   prefix :nouri do |x|
-    presub(x,"http://xml.amee.com/provenance/global/") do |x|
+    presub(x,"http://xml.amee.com/provenance/global/anonymous/") do |x|
       CGI.escape x
     end
   end
@@ -42,7 +42,9 @@ module Prov
     #  presub(x,'http://svn.amee.com/!svn/bc/')
     #else
     # improve this to lookup latest svn number
-    presub(x,'http://svn.amee.com/')
+    presub(x,'http://svn.amee.com/') do |path|
+      path.gsub(/^\d*\//,'')
+    end
     #end
   end
 

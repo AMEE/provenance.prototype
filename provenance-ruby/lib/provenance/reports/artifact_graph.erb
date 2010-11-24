@@ -2,7 +2,7 @@ digraph OPMGraph { rankdir="TB"
 <%q{|q| q<<[:artifact,RDF.type,OPM.Artifact]
   }.each do |s|-%>
 
-"<%=l s[:artifact]%>" [label="<%=l label_for(s[:artifact])%>",href="<%=l s[:artifact]%>"]
+"<%=l s[:artifact]%>" [label="<%=l label_for(s[:artifact])%>",href="<%=l s[:artifact]%>", shape=<%=shape_for(s[:artifact])%>]
 <%end%>
 subgraph cluster_accounts_key {
 label="Accounts"
@@ -11,13 +11,16 @@ rankdir=lr
   }.each do |s|-%>
 "<%=l s[:account]%>" [label="<%=l label_for(s[:account])%>",href="<%=l s[:account]%>",color="<%=color_for s[:account]%>" shape=rectangle]
 <%end%>
-} 
+}
+
 <%q{|q| q<<[:outlink,OPM.effect,:out]<<
     [:out,RDF.type,OPM.Artifact] <<
     [:outlink,OPM.cause,:proc]<<
     [:inlink,OPM.effect,:proc]<<
     [:inlink,OPM.cause,:in] <<
-    [:proc,OPM.account,:account]}.each do |s|-%>
-"<%=l s[:in]%>"->"<%=l s[:out]%>" [color="<%=color_for s[:account]%>"]
+    [:proc,OPM.account,:account]
+  }.each do |s|-%>
+"<%=l s[:in]%>"->"<%=l s[:out]%>" [color="<%=color_for s[:account]%>",style="<%=
+    style_for(first_object([s[:proc],OPM.type,nil]),first_object([s[:inlink],OPM.role,nil]))%>"]
 <%end%>
 }

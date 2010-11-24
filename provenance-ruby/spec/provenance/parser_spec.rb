@@ -9,6 +9,8 @@ describe Parser do
   end
   it "Should parse svn to a URI" do
     Parser["svn:456/example.csv"].first.should be_a RDF::URI
+    Parser["svn:456/example.csv"].first.should eql RDF::URI(
+      "http://svn.amee.com/example.csv")
     #removed this tests while i'm not sure how to handle !svn/bc in the graphs
     #Parser["svn:456/example.csv"].first.should eql RDF::URI(
     #  "http://svn.amee.com/!svn/bc/456/example.csv")
