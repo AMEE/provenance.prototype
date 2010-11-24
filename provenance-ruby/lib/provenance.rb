@@ -105,12 +105,14 @@ module Prov
             tc.each do |c| handle_prov_block c end
           end
         end
+        declare_roles
       end
     end
 
     def handle_prov_block(pb)
       @triples.concat(pb.triples)
       statement(graph_uri,OPM.hasAccount,pb.account_uri)
+      label(pb.account_uri)
       statement(pb.account_uri,RDF.type,OPM.Account)
     end
 
@@ -180,6 +182,9 @@ module Prov
         svn_block(dataglob,DataCsvFile,options.legacy).flatten(1)
         svn_block(metaglob,MetaYmlFile,options.legacy).flatten(1)      
       end
+      if options.in||options.infile||options.category||options.legacy
+        declare_roles
+      end
     end
 
     def svn_block(glob,klass,folder)
@@ -223,7 +228,7 @@ module Prov
     end
 
     def exec
-      declare_roles
+      
       # different ways of obtaining triples and a repository to work on
       file_input
       jiraread
@@ -238,6 +243,7 @@ module Prov
         @repository=Repository.new.insert(*triples)
       end
       if options.subgraph
+        $log.debug("Crawling repository for #{options.subgraph}")
         c=OPMCrawler.new(@repository,options.subgraph)
         @repository=c.induced_subgraph
       end

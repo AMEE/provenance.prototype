@@ -65,7 +65,12 @@ module Prov
       end
     end
     def presub(input,replacement)
-      input.sub(/#{prefix}\:/,replacement)
+      if block_given?
+        postfix=/#{prefix}\:(.*)/.match(input)[1]
+      "#{replacement}#{yield(postfix)}"
+      else
+        input.sub(/#{prefix}\:/,replacement)
+      end
     end
   end
   

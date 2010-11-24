@@ -1,4 +1,10 @@
 module Prov
+  class LegacyStep < TextStep
+    def newuri
+      @urinum+=1
+      RDF::URI "#{url}.#{@urinum}"
+    end
+  end
   class LegacyFile < SvnFile
     def initialize(repo,path)
       @folder=File.dirname(path)
@@ -9,7 +15,7 @@ module Prov
     def steps
       begin
       @steps=construct_steps.enum_with_index.collect do |b,i|
-        TextStep.new(self,i,b)
+        LegacyStep.new(self,i,b)
       end.reject{|x|x.blank?}
       rescue => err
         $log.warn("Error #{err} while parsing #{self.class.to_s.
@@ -17,10 +23,9 @@ module Prov
         []
       end
     end
-    def step x
-      c=called x
+    def step c
       "prov:process #{c.reject{|x|x.blank?}.
-      map{|s| "prov:in #{s}"}.join(" ")} prov:out csv_files:#{folder}"
+      map{|s| "prov:in #{s}"}.join(" ")} prov:out amee:#{folder}"
     end
     def called x
       return [] unless x
@@ -52,12 +57,15 @@ module Prov
     end
     def construct_steps
       return [] unless data
-      data.items.map{|i|i.get('source')}.uniq.map do |source|  
+      data.items.map{|i|called(i.get('source'))}.uniq.map do |source|
           step source    
       end
     end
     def filename
       "data.csv"
+    end
+    def url
+      "#{super}#source"
     end
     attr_reader :data
   end
@@ -74,10 +82,13 @@ module Prov
       return [] unless meta&&meta['provenance']
       sources=meta['provenance']
       sources=sources.join(" ") if sources.is_a? Array #undo yamlism
-      step sources
+      step called sources
     end
     def filename
       "meta.yml"
+    end
+    def url
+      "#{super}#provenance"
     end
     attr_reader :meta
   end

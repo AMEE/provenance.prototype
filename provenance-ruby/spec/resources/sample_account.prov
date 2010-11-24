@@ -23,7 +23,7 @@ prov:via http://www.ghgprotocol.org/calculation-tools/all-tools
 prov:out svn:internal/api_csvs/transport/car/generic/ghgp/sources/WRI_Transport_Tool.xls
 
 prov:manual
-prov:out csv_files:transport/car/generic/ghgp
+prov:out csv_files:transport/car/generic/ghgp/us
 prov:in svn:internal/api_csvs/transport/car/generic/ghgp/sources/WRI_Transport_Tool.xls
 
-prov:ameem transport/car/generic/ghgp
+prov:ameem transport/car/generic/ghgp/us

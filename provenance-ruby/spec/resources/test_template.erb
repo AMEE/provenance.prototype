@@ -1,5 +1,5 @@
 <%= 'working' %>
-
+<%= longest_object([nil,RDF.type,nil]) %>
 Provenance report for these accounts:
 
 <% q{|z|z<<[:account,RDF.type,OPM.Account]}.each do |s| -%>

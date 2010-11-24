@@ -13,4 +13,7 @@ describe "text narrower" do
   it "Should do right by a long string" do
     narrow(Subject,8).should eql "Hello\nworld I\nreally\nlike to\ndo\nstring\nmanipulation"
   end
+  it "Should do right by spaces and slashes" do
+    narrow("Hello\\world I\\really+like to do+string+manipulation",8).should eql "Hello\nworld I\nreally\nlike to\ndo\nstring\nmanipulation"
+  end
 end

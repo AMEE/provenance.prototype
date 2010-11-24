@@ -43,6 +43,7 @@ module Prov
         newsolution.concat nextstep.each_solution.to_a
       end
       @solution=newsolution
+      $log.debug("Crawler step #{solution.inspect}")
       return self
     end
     def seed
@@ -110,7 +111,8 @@ module Prov
       step=RDF::Query.new {|q|
         q <<
           [:link,OPM.effect,:start] <<
-          [:link,OPM.cause,:end]
+          [:link,OPM.cause,:end] <<
+          [:link,OPM.account,:account] #so that the accounts end up in the description
       }
       super(repo,start,step)
     end

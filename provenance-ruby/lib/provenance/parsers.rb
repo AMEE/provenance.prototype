@@ -21,14 +21,19 @@ module Prov
   end
 
   prefix :anonymous do |x|
-    presub(x,Parser.context+"/")
+    presub(x,Parser.context+"/") do |x|
+      CGI.escape x
+    end
   end
 
   prefix :nouri do |x|
-    presub(x,"http://xml.amee.com/provenance/global/")
+    presub(x,"http://xml.amee.com/provenance/global/") do |x|
+      CGI.escape x
+    end
   end
 
   prefix :amee do |x|
+    x.gsub!("amee:/","amee:") #remove extraneous slash
     presub(x,'http://live.amee.com/data/')
   end
 

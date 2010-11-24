@@ -27,6 +27,22 @@ module Prov
       end
     end
 
+    def label(o=respond_to?(:args) ? args.first : nil,l=o.to_s.split(/\//)[-1])
+      # we draw the distinction between auto and manual labels
+      # so that manual label can be used for preference
+      # if only some accounts give a manual label
+      if respond_to?(:args)&&args[1]=="called"
+        statement o,OPM.label,RDF::Literal.new(args[2])
+        statement o,AMEE.manuallabel,RDF::Literal.new(args[2])
+      elsif o=~/"amee:"/
+        statement o,OPM.label,RDF::Literal.new(args[1].gsub("amee:",''))
+        statement o,AMEE.autolabel,RDF::Literal.new(args[1].gsub("amee:",''))
+      else
+        statement o,OPM.label,RDF::Literal.new(l)
+      end
+
+    end
+
     module_function :each_substatement, :enum_substatement, :parse_all, :all
   
   end

@@ -18,7 +18,7 @@ module Prov
     def narrow(text,limit=20)
       lines=[]
       while text.length>limit
-        line=text[0..limit].split(' ')[0...-1].join(' ')
+        line=text[0..limit].split(/[ \/\\\+]/)[0...-1].join(' ')
         break if line.strip.empty?
         lines<<line
         text=text[lines.last.length+1..-1]
@@ -32,5 +32,7 @@ module Prov
     yc.load_yaml_file configfile('log')
     $log=Log4r::Logger['Main']
   end
+
+  
 end
 

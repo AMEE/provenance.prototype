@@ -31,8 +31,11 @@ describe Parser do
       ]
   end
   it "Should parse anonymous to context" do
-    Parser.context "Happy"
-    Parser["anonymous:sad"].should eql ["Happy/sad"]
+    Parser.context "svn:example.csv"
+    Parser["anonymous:sad time"].should eql [RDF::URI("http://svn.amee.com/example.csv/sad+time")]
+  end
+  it "should parse nouri to global" do
+    Parser["nouri:sad time"].should eql [RDF::URI("http://xml.amee.com/provenance/global/sad+time")]
   end
   it "Should parse out a series of statements" do
     Statemented.enum_substatement(

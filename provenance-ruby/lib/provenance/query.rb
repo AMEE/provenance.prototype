@@ -1,6 +1,7 @@
 # execute queries against repositories formed of the @triples
 module Prov
   module QueryTemplate
+    Colors=%w{red blue green orange cyan magenta yellow violet indigo}
     include RDF
     # these methods add support for textual output queries against the repo
     def doquery
@@ -18,10 +19,29 @@ module Prov
     end
 
     def label_for(uriref)
-      ol=first_object([uriref,OPM.label,nil])
-      dl=first_object([uriref,AMEE.autolabel,nil])
-      ml=first_object([uriref,AMEE.manuallabel,nil])
-      return narrow((ml||dl||ol).to_s)
+      ol=longest_object([uriref,OPM.label,nil])
+      dl=longest_object([uriref,AMEE.autolabel,nil])
+      ml=longest_object([uriref,AMEE.manuallabel,nil])
+      return narrow((ml||dl||ol||uriref).to_s)
+    end
+
+    def longest_object(pattern)
+      res=query(pattern).map{|s|s.object}
+      res.sort{|x,y|y.to_s.length<=>x.to_s.length}.first
+    end
+
+    def color_for(uriref)
+      @colors||={}
+      return @colors[uriref] if @colors[uriref]
+      @colors[uriref]=newcolor
+      return @colors[uriref]
+    end
+
+    def newcolor
+      @colorindex||=-1
+      @colorindex+=1
+      @colorindex=0 if @colorindex>=Colors.length
+      Colors[@colorindex]
     end
 
     delegate :query,:first,:first_subject,:first_object,:first_predicate,

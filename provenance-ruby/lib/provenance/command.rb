@@ -16,10 +16,13 @@ module Prov
       $log.debug("Building triples for #{self.class}(#{args.join(',')})")
       Parser.context prov_block.account_uri
       parse_all(*args) do |params|
+        #We have to do this once for each param-multiplicity of the arguments
+        #e.g. if one of the arguments is a csv-files, do_description will be
+        #invoked 3 times, and hence newuri will be also
         @args=params
         do_description
+        qualify OPM.account,prov_block.account_uri
       end
-      qualify OPM.account,prov_block.account_uri
     end
 
     def qualify(v,o)
@@ -67,20 +70,6 @@ module Prov
         @triples<<s
       end
       subject c.subject
-    end
-    def label(o=args.first,l=o.to_s.split(/\//)[-1])
-      # we draw the distinction between auto and manual labels
-      # so that manual label can be used for preference
-      # if only some accounts give a manual label
-      # this DOESN'T WORK FIXME
-      if args[1]=="called"
-        statement o,OPM.label,RDF::Literal.new(args[2])
-        statement o,AMEE.manuallabel,RDF::Literal.new(args[2])
-      else
-        statement o,OPM.label,RDF::Literal.new(l)
-        statement o,AMEE.autolabel,RDF::Literal.new(l)
-      end
-    
     end
     def self.create(prov_block,name,args)
       $log.debug("Create command #{name.capitalize}(#{args.join(',')})")
