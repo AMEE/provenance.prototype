@@ -56,34 +56,6 @@ module Prov
           options.recursive=true
           options.db_fetch=false
         end
-        opts.on("-d","delete only") do
-          options.add=false
-        end
-        opts.on("-a","force add only, default replaces") do
-          options.delete=false
-        end
-        opts.on("-x","Don't effect DB, just read data") do
-          options.delete=false
-          options.add=false
-        end
-        opts.on("-b","--db_fetch","Don't read ticket, fetch from DB") do
-          options.jira=false
-          options.db_fetch=true
-          options.delete=false
-          options.add=false
-        end
-        opts.on("--clear","empty semantic db") do
-          options.jira=false
-          options.db_fetch=true
-          options.delete=true
-          options.add=false
-        end
-        opts.on("-t", "Don't do anything") do
-          options.jira=false
-          options.db_fetch=false
-          options.delete=false
-          options.add=false
-        end
         opts.on("-q template", "Execute query template") do |template|
           options.query=File.read template
         end
@@ -155,6 +127,40 @@ module Prov
           else
             options.out=format
           end
+        end
+        opts.on("-d","delete only") do
+          options.add=false
+          options.delete=true
+        end
+        opts.on("--replace","force replace of db") do
+          options.add=true
+          options.delete=true
+        end
+        opts.on("-a","force add only, default replaces") do
+          options.delete=false
+          options.add=true
+        end
+        opts.on("-x","Don't effect DB, just read data") do
+          options.delete=false
+          options.add=false
+        end
+        opts.on("-b","--db_fetch","Don't read ticket, fetch from DB") do
+          options.jira=false
+          options.db_fetch=true
+          options.delete=false
+          options.add=false
+        end
+        opts.on("--clear","empty semantic db") do
+          options.jira=false
+          options.db_fetch=true
+          options.delete=true
+          options.add=false
+        end
+        opts.on("-t", "Don't do anything") do
+          options.jira=false
+          options.db_fetch=false
+          options.delete=false
+          options.add=false
         end
       end.parse!(args)
     
