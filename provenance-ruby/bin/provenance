@@ -11,7 +11,7 @@ begin
     loop do
       prov.exec
       prov.clean
-      sleep(60*60)
+      sleep(24*60*60)
     end
   else
     prov.exec
