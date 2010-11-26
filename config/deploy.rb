@@ -74,9 +74,10 @@ end
 namespace :rake do
   desc "Run web build from jira and svn"
   task "web" do
-    run "cd #{release_path}; mkdir -p resources;"+
+    run "cd #{release_path}; mkdir -p Resources;"+
       "mkdir -p app/views/map; "+
-      "mkdir -p app/views/report"
+      "mkdir -p app/views/report;" +
+      "rake web"
   end
   task "clean" do
     run "cd #{current_path}; rake clean"
