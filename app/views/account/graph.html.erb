@@ -1,12 +1,13 @@
-<h1>Provenance graph for <%= @account %> </h1>
+<h1>Provenance graph for <%= @label %> </h1>
 <div id="viewport" style="height: <%=96*@basey%>px; width: <%=96*@basex%>px;">
   <% [1,2,4,8].each do |scale| %>
+  <%#scale=1%>
     <div style="height: <%=96*@basey*scale%>px; width: <%=96*@basex*scale%>px;">
-      <%= image_tag "_#{@account.downcase.sub(/-/,'')}.#{scale}jpeg", :usemap=>"#graphmap#{scale}",:id=>"graphimg#{scale}",
+      <%= image_tag "_#{@code}#{scale}.jpeg", :usemap=>"#graphmap#{scale}",:id=>"graphimg#{scale}",
         :style=>"height: #{96*@basey*scale}px; width: #{96*@basex*scale}px;"%>
       <div class="mapcontent">
         <map id="graphmap<%=scale%>" name="graphmap<%=scale%>">
-          <%= render :partial=> "map/#{@account.downcase.sub(/-/,'')}#{scale}" %>
+          <%= render :partial=> "map/#{@code}#{scale}" %>
         </map>
       </div>
     </div>
