@@ -1,0 +1,136 @@
+h2. Description
+
+Want "Capistrano":http://capify.org/ to talk to "God":http://god.rubyforge.org/? Find "San Juan":http://maps.google.com/maps?client=safari&ie=UTF8&oe=UTF-8&q=San+Juan+Capistrano,+CA,+USA&ll=33.495598,-117.665291&spn=0.020113,0.037851&t=h&z=15
+
+h2. Requirements
+
+* "God":http://god.rubyforge.org/
+* "Capistrano":http://capify.org/
+
+h2. Install
+
+<pre>
+<code>
+gem install jnewland-san_juan
+OR
+gem install jnewland-san_juan -s http://gems.github.com
+</code>
+</pre>
+
+h2. Usage
+
+In your Capistrano deploy recipie:
+
+<pre>
+<code>
+require 'san_juan'
+
+role :app, 'foo.example.com'
+role :web, 'bar.example.com'
+
+san_juan.role :app, %w(mongrels memcached)
+san_juan.role :web, %w(nginx)
+</code>
+</pre>
+
+Now, check out @cap -T@:
+
+<pre>
+<code>
+  ...
+  cap god:all:quit                                   # Quit god, but not the proce...
+  cap god:all:reload                                 # Reloading God Config
+  cap god:all:start                                  # Start god
+  cap god:all:start_interactive                      # Start god interactively
+  cap god:all:status                                 # Describe the status of the ...
+  cap god:all:terminate                              # Terminate god and all monit...
+  cap god:app:mongrels:log                           # Log mongrels
+  cap god:app:mongrels:remove                        # Remove mongrels
+  cap god:app:mongrels:restart                       # Restart mongrels
+  cap god:app:mongrels:start                         # Start mongrels
+  cap god:app:mongrels:stop                          # Stop mongrels
+  cap god:app:mongrels:unmonitor                     # Unmonitor mongrels
+  cap god:app:memcached:log                          # Log memcached
+  cap god:app:memcached:remove                       # Remove memcached
+  cap god:app:memcached:restart                      # Restart memcached
+  cap god:app:memcached:start                        # Start memcached
+  cap god:app:memcached:stop                         # Stop memcached
+  cap god:app:memcached:unmonitor                    # Unmonitor memcached
+  cap god:app:quit                                   # Quit god, but not the proce...
+  cap god:app:reload                                 # Reload the god config file
+  cap god:app:start                                  # Start god
+  cap god:app:start_interactive                      # Start god interactively
+  cap god:app:terminate                              # Terminate god and all monit...
+  cap god:web:nginx:log                              # Log nginx
+  cap god:web:nginx:remove                           # Remove nginx
+  cap god:web:nginx:restart                          # Restart nginx
+  cap god:web:nginx:start                            # Start nginx
+  cap god:web:nginx:stop                             # Stop nginx
+  cap god:web:nginx:unmonitor                        # Unmonitor nginx
+  cap god:web:quit                                   # Quit god, but not the proce...
+  cap god:web:reload                                 # Reload the god config file
+  cap god:web:start                                  # Start god
+  cap god:web:start_interactive                      # Start god interactively
+  cap god:web:terminate                              # Terminate god and all monit...
+  ...
+</pre>
+</code>
+
+To make capistrano start, stop, and restart your app using God, override the
+@deploy:start@, @deploy:stop@, and @deploy:restart@ tasks:
+
+<pre>
+<code>
+namespace :deploy do
+  desc "Use god to restart the app"
+  task :restart do
+    god.all.reload #ensures any changes to the god config are applied at deploy
+    god.app.mongrels.restart
+    # god.web.nginx.restart
+    # ...
+  end
+
+  desc "Use god to start the app"
+  task :start do
+    god.all.start
+  end
+
+  desc "Use god to stop the app"
+  task :stop do
+    god.all.terminate
+  end
+end
+</pre>
+</code>
+
+h2. Tweaks
+
+A few of the tasks in the @god:all@ namespace require the path to your god
+configuration file. This defaults to:
+
+@"#{current_path}/config/god/#{role}.god"@
+
+This can be changed by setting the @god_config_path@ capistrano variable:
+
+<pre>
+<code>
+require 'san_juan'
+
+set :god_config_path, "/path/to/config"
+
+role :app, 'foo.example.com'
+role :web, 'bar.example.com'
+
+san_juan.role :app, %w(mongrels memcached)
+san_juan.role :web, %w(nginx)
+
+</code>
+</pre>
+
+h2. Author
+
+"Jesse Newland":http://jnewland.com/
+
+h2. License
+
+"WTFPL":http://sam.zoy.org/wtfpl/
