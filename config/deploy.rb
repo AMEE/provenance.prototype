@@ -40,7 +40,7 @@ set :rake_path, "rake"
 
 after "deploy:symlink", "myamee:copy_config",
   "svn:copy_config","sesame:copy_config","sparql:copy_config",
-  "jira:copy_config","deploy:logssymlink","gems:install","rake:web"
+  "jira:copy_config","deploy:logssymlink","gems:install"
 
 
 namespace :myamee do

@@ -35,11 +35,11 @@ God.watch do |w|
         c.above = 350.megabytes
         c.times = [3, 5] # 3 out of 5 intervals
       end
-      restart.condition(:cpu_usage) do |c|
-        c.notify = 'developers'
-        c.above = 50.percent
-        c.times = 5
-      end
+      #restart.condition(:cpu_usage) do |c|
+      # c.notify = 'developers'
+      #  c.above = 50.percent
+      #  c.times = 5
+      #end
     end
 
     # lifecycle
