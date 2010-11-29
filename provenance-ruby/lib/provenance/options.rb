@@ -7,7 +7,7 @@ module Prov
       conf=config('prov')
       options.add=true
       options.repeat=false
-      options.delete=true
+      options.delete=false #delete to db
       options.db_fetch=false # fetch from db
       options.out=nil # don't output file format
       options.infile=nil

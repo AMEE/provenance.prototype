@@ -7,7 +7,7 @@ describe Options do
   it "should parse jira issue switch" do
     parse_options("-i EX-1")
     options.add.should be_true
-    options.delete.should be_true
+    options.delete.should be_false
     options.jira.should be_true
     options.infile.should be_nil
     options.category.should be_nil
@@ -17,7 +17,7 @@ describe Options do
   it "should parse text file switch" do
     parse_options("--file #{Resources}/something.prov")
     options.add.should be_true
-    options.delete.should be_true
+    options.delete.should be_false
     options.jira.should be_false
     options.infile.path.should eql "#{Resources}/something.prov"
     options.category.should be_nil
@@ -27,7 +27,7 @@ describe Options do
   it "should parse apicsv switch" do
     parse_options("--category /home/heating")
     options.add.should be_true
-    options.delete.should be_true
+    options.delete.should be_false
     options.jira.should be_false
     options.infile.should be_nil
     options.category.should eql '/home/heating'
@@ -93,7 +93,7 @@ describe Options do
   it "should parse output formats" do
     parse_options("-o -i EX-1")
     options.add.should be_true
-    options.delete.should be_true
+    options.delete.should be_false
     options.jira.should be_true
     options.db_fetch.should be_false
     options.out.should eql :rdfxml
