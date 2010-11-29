@@ -21,6 +21,7 @@ $gemspec=Gem::Specification.new do |s|
   s.add_dependency("jira4r")
   s.add_dependency("sparql-client")
   s.add_dependency("daemons")
+  s.add_dependency("ameem")
   s.requirements << "svn-wc, required ruby svn bindings.
         get with sudo apt-get install libsvn-ruby
       "

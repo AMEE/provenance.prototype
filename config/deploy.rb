@@ -18,6 +18,7 @@ server domain, :app, :web
 
 default_run_options[:pty] = true
 ssh_options[:forward_agent] = true
+#ssh_options[:verbose]=:debug
 set :use_sudo, true
 set :rails_env, "staging"
 set :rake_path, "rake"
@@ -38,8 +39,8 @@ set :rake_path, "rake"
 # end
 
 after "deploy:symlink", "myamee:copy_config",
-  "svn:copy_config","sesame:copy_config",
-  "jira:copy_config","deploy:logssymlink","rake:web"
+  "svn:copy_config","sesame:copy_config","sparql:copy_config",
+  "jira:copy_config","deploy:logssymlink","gems:install","rake:web"
 
 
 namespace :myamee do
@@ -70,6 +71,13 @@ namespace :sesame do
   end
 end
 
+namespace :sparql do
+  desc "Make copy of sparql.yml on server"
+  task :copy_config do
+    run "cp #{shared_path}/config/sparql.yml #{release_path}/provenance-ruby/config/sparql.yml"
+  end
+end
+
 
 namespace :rake do
   desc "Run web build from jira and svn"
@@ -81,6 +89,14 @@ namespace :rake do
   end
   task "clean" do
     run "cd #{current_path}; rake clean"
+  end
+end
+
+
+namespace :gems do
+  desc "Install gems"
+  task :install, :roles => :app do
+    run "cd #{current_release} && #{sudo} rake gems:install"
   end
 end
 

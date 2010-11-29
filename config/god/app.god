@@ -7,7 +7,7 @@ God.contact(:email) do |c|
 end
 
 God.watch do |w|
-    script = "provenance_daemon"
+    script = "nice provenance_daemon"
 
     w.name = "provenance"
     w.interval = 30.seconds
