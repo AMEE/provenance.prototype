@@ -1,6 +1,10 @@
 require File.expand_path(File.dirname(File.dirname(__FILE__)) + '/spec_helper')
 
-
+class RDF::Statement
+  def <=>(x)
+    to_s<=>x.to_s
+  end
+end
 
 n=10.times.map{|x|RDF::URI.new "http://test.amee.com/node/#{x}"}
 m=10.times.map{|x|RDF::URI.new "http://test.amee.com/attribute/#{x}"}
