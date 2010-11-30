@@ -8,7 +8,7 @@ describe Connection do
   end
   it "should connect to Sesame OK" do
     @sesame=Connection::Sesame.connect
-    @sesame.title.should eql 'AMEE Provenance Repository'
+    @sesame.title.should match /AMEE Provenance/
   end
   it "should connect to SVN OK" do
     @svn=Connection::Subversion.connect
