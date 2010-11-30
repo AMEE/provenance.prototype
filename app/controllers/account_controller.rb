@@ -24,7 +24,7 @@ class AccountController < ApplicationController
       rawcode="-x params[:account]"
     elsif params[:everything]
       @label="all information available"
-      rawcode="-x --everything"
+      rawcode="-b"
     elsif params[:allpath]
       jpath=params[:allpath].join('/')
       @label="all information pertaining to AMEE category #{jpath}"
