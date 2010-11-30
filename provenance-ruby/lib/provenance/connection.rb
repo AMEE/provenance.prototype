@@ -42,6 +42,9 @@ module Prov
           repo
         end
       end
+      def self.sparqlurl
+        "#{RDF::URI.new(Config['url'])}/repositories/#{Config['repository']}"
+      end
     end
   
     module Sparql

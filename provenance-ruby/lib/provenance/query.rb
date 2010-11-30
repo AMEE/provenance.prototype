@@ -91,7 +91,8 @@ module Prov
       if db.is_a? SPARQL::Client::Repository
         db.client
       elsif db.is_a? RDF::Sesame::Repository
-        SPARQL::Client.new(db.url)
+        $log.debug("Reconnecting to sesame db #{Connection::Sesame.sparqlurl} as a sparql endpoint")
+        SPARQL::Client.new(Connection::Sesame.sparqlurl)
       else
         raise "DB not provided in form which can be queried with sparql"
       end
