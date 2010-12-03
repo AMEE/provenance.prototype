@@ -21,7 +21,7 @@ describe QueryTemplate do
   end
 end
 
-describe Provenance do
+describe Provenance, "when querying" do
   it "should parse a query file" do
     #this will also load up the db with some stuff ready for other tests
     @p=Provenance.new("-q #{Resources}/test_template.erb -c 12470 -i ST-49")
