@@ -14,3 +14,16 @@ describe 'connection to svn' do
   end
 end
 
+describe SvnFile do
+  before :all do
+    path=File.join(SubversionTestCategory,'data.csv')
+    @file=SvnFile.new(Connection::Subversion.connect,path)
+  end
+  it "should know the first author to commit the file" do
+    @file.first_author.should eql 'rebecca'
+  end
+  it "should know the last author to commit the file" do
+    @file.last_author.should eql 'andrew'
+  end
+end
+

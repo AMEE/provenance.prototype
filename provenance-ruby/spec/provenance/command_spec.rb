@@ -4,7 +4,7 @@ describe Command do
 
   it "should create a test command" do
     @comment=flexmock(:uri=>RDF::URI('http://test.amee.com/jira/EX-7'),
-      :account_uri=>nil,:label=>nil)
+      :account_uri=>'account',:label=>nil)
     @test=Command::Test.new(@comment,'dummy')
     @test.args.should eql ['dummy']
     @test.triples[0].predicate.should eql RDF::URI(
@@ -19,14 +19,17 @@ describe Command do
       :account_uri=> RDF::URI('http://test.amee.com/jira/EX-7/issue'),
       :newuri => RDF::URI('http://test.amee.com/jira/EX-7/new'),
       :comment=>'50',
-      :label=>"EX-7 50")
+      :label=>"EX-7 50",
+      :author=>"Bob"
+    )
     @test=Command::Ameem.new(@comment,'dummy')
     [
       [@comment.uri,RDF.type,OPM.Process],
       ["amee:dummy",RDF.type,Prov::AMEE.category],
       [@comment.newuri,OPM.cause,"csv_files:dummy"],
       [@comment.newuri,OPM.effect,"amee:dummy"],
-      [@comment.uri,OPM.label,"EX-7 50"]
+      [@comment.uri,OPM.label,"EX-7 50"],
+      [@comment.uri,OPM.wasControlledBy,"Bob"]
     ].each do |ss|
       @test.triples.should include *Statemented::enum_substatement(*ss).to_a
     end

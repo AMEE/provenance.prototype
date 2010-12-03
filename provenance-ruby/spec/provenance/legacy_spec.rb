@@ -7,39 +7,43 @@ describe 'MetaYmlFile' do
   it "should parse a meta.yml" do
     @d.steps.first.body.should eql "prov:process prov:in "+
       "http://www.ghgprotocol.org/calculation-tools/all-tools called"+
-      " \"GHGP  Protocol\" prov:out amee:/transport/car/generic/ghgp/us"
+      " \"GHGP  Protocol\" prov:out amee:/transport/car/generic/ghgp/us prov:by andrew.berkeley"
     @d.steps.
       first.newuri.should eql RDF::URI.new("http://svn.amee.com/internal/api_csvs#{SubversionTestCategory}/meta.yml#provenance?offset=0.3")
   end
   it "should parse basic source" do
     @d.should_receive("meta").
       and_return('provenance' => "http://foo.bar/baz")
+    @d.should_receive("author").and_return("Bob")
     @d.steps.length.should eql 1
     @d.steps.first.body.should eql "prov:process prov:in http://foo.bar/baz"+
-      " prov:out amee:/transport/car/generic/ghgp/us"
+      " prov:out amee:/transport/car/generic/ghgp/us prov:by Bob"
   end
   it "should parse [|] source" do
     @d.should_receive("meta").
       and_return('provenance' =>  "[http://foo.bar/baz | wibble ]")
+    @d.should_receive("author").and_return("Bob")
     @d.steps.length.should eql 1
     @d.steps.first.body.should eql "prov:process prov:in http://foo.bar/baz"+
-      " called \"wibble\" prov:out amee:/transport/car/generic/ghgp/us"
+      " called \"wibble\" prov:out amee:/transport/car/generic/ghgp/us prov:by Bob"
   end
   it "should parse multiple [|] sources" do
     @d.should_receive("meta").
       and_return('provenance' =>  ["[http://foo.bar/baz | wibble ]",
       "http://foo.bar/biz | wobble"])
+    @d.should_receive("author").and_return("Bob")
     @d.steps.length.should eql 1
     @d.steps.first.body.should eql "prov:process prov:in http://foo.bar/baz"+
-      " called \"wibble\" prov:out amee:/transport/car/generic/ghgp/us"
+      " called \"wibble\" prov:out amee:/transport/car/generic/ghgp/us prov:by Bob"
   end
   it "should parse multiple sources" do
     @d.should_receive("meta").and_return('provenance'  => ["http://foo.bar/baz",
         "http://foo.bar/biz"])
+    @d.should_receive("author").and_return("Bob")
     @d.steps.length.should eql 1
     @d.steps.first.body.should eql "prov:process prov:in http://foo.bar/baz "+
       "prov:in http://foo.bar/biz prov:out "+
-      "amee:/transport/car/generic/ghgp/us"
+      "amee:/transport/car/generic/ghgp/us prov:by Bob"
   end
 end
 
@@ -51,53 +55,59 @@ describe 'DataCsvFile' do
   it "should parse a csv file" do
      @d.steps.first.body.should eql "prov:process prov:in "+
       "http://www.ghgprotocol.org/calculation-tools/all-tools prov:out "+
-      "amee:/transport/car/generic/ghgp/us"
+      "amee:/transport/car/generic/ghgp/us prov:by andrew"
     @d.steps.length.should eql 1
   end
   it "should parse basic source" do
     @d.should_receive("data.items").
       and_return([flexmock(:get => "http://foo.bar/baz")])
+    @d.should_receive("author").and_return("Bob")
     @d.steps.length.should eql 1
     @d.steps.first.body.should eql "prov:process prov:in http://foo.bar/baz "+
-      "prov:out amee:/transport/car/generic/ghgp/us"
+      "prov:out amee:/transport/car/generic/ghgp/us prov:by Bob"
   end
   it "should parse [|] source" do
     @d.should_receive("data.items").
       and_return([flexmock(:get => "[http://foo.bar/baz | wibble ]")])
+    @d.should_receive("author").and_return("Bob")
     @d.steps.length.should eql 1
     @d.steps.first.body.should eql "prov:process prov:in http://foo.bar/baz "+
-      "called \"wibble\" prov:out amee:/transport/car/generic/ghgp/us"
+      "called \"wibble\" prov:out amee:/transport/car/generic/ghgp/us prov:by Bob"
   end
   it "should parse multiple [|] source with first one no alternative " do
     @d.should_receive("data.items").
       and_return([flexmock(:get => "[[wibble]],[[http://foo.bar/biz | wobble ]]")])
+    @d.should_receive("author").and_return("Bob")
     @d.steps.length.should eql 1
     @d.steps.first.body.should eql "prov:process prov:in http://foo.bar/biz "+
-      "called \"wobble\" prov:out amee:/transport/car/generic/ghgp/us"
+      "called \"wobble\" prov:out amee:/transport/car/generic/ghgp/us prov:by Bob"
   end
   it "should parse multiple [|] sources" do
     @d.should_receive("data.items").
       and_return([flexmock(:get => "[[http://foo.bar/baz | wibble ]],[[http://foo.bar/biz | wobble ]]")])
+    @d.should_receive("author").and_return("Bob")
     @d.steps.length.should eql 1
     @d.steps.first.body.should eql "prov:process prov:in http://foo.bar/baz "+
       "called \"wibble\" prov:in http://foo.bar/biz called \"wobble\" "+
-      "prov:out amee:/transport/car/generic/ghgp/us"
+      "prov:out amee:/transport/car/generic/ghgp/us prov:by Bob"
   end
   it "should parse multiple sources" do
     @d.should_receive("data.items").
       and_return([flexmock(:get => "http://foo.bar/baz http://foo.bar/biz")])
+    @d.should_receive("author").and_return("Bob")
     @d.steps.length.should eql 1
     @d.steps.first.body.should eql "prov:process prov:in http://foo.bar/baz "+
       "prov:in http://foo.bar/biz "+
-      "prov:out amee:/transport/car/generic/ghgp/us"
+      "prov:out amee:/transport/car/generic/ghgp/us prov:by Bob"
   end
   it "should parse multiple sources with cruft" do
     @d.should_receive("data.items").
       and_return([flexmock(:get => "UK: http://foo.bar/baz ; IE: http://foo.bar/biz ")])
+    @d.should_receive("author").and_return("Bob")
     @d.steps.length.should eql 1
     @d.steps.first.body.should eql "prov:process prov:in http://foo.bar/baz "+
       "prov:in http://foo.bar/biz "+
-      "prov:out amee:/transport/car/generic/ghgp/us"
+      "prov:out amee:/transport/car/generic/ghgp/us prov:by Bob"
   end
 end
 

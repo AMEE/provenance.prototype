@@ -31,6 +31,7 @@ describe Comment do
     @jira=Connection::Jira.connect
     @sesame=Connection::Sesame.connect
     @comment=Comment.new(@jira,'SC',47,14135)
+    @comment.author.should eql 'james.hetherington'
     @triples= @comment.commands.collect{|c| c.triples}.flatten(1)
     dpath="transport/car/generic/ghgp/us"
     [
@@ -40,6 +41,7 @@ describe Comment do
       [@comment.uri+"#2",OPM.cause,"apicsvs:#{dpath}/itemdef.csv"],
       [@comment.uri+"#3",OPM.cause,"apicsvs:#{dpath}/data.csv"],
       [@comment.uri+"#4",OPM.effect,"amee:#{dpath}"],
+      [@comment.uri,OPM.wasControlledBy,"james.hetherington"],
       [@comment.uri+"#1",OPM.effect,@comment.uri],
       [@comment.uri+"#2",OPM.effect,@comment.uri],
       [@comment.uri+"#3",OPM.effect,@comment.uri],
