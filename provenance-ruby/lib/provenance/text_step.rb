@@ -22,5 +22,10 @@ module Prov
     def account_uri
       "#{file.url}"
     end
+
+    def author
+      file.author
+    end
+
   end
 end

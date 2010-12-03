@@ -25,6 +25,8 @@ module Prov
       end
     end
 
+    delegate :author, :to=>:prov_block
+
     def qualify(v,o)
       o=RDF::Literal(o.to_s,:datatype=>XSD.anyURI) if v==OPM.type
       # I don't understand this design choice, but OPM types are NOT URIrefs.

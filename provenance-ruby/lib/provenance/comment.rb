@@ -2,7 +2,7 @@ module Prov
   class Comment < HandlesProvBlock
     include RDF
  
-    attr_reader :commands,:jira,:project,:ticket,:comment
+    attr_reader :commands,:jira,:project,:ticket,:comment,:jira_model
     def initialize(jira,project,ticket,comment)
       # looks up comment , e.g. EX-74 comment 12345 in JIRA,
       # and builds the set of provenance
@@ -11,7 +11,8 @@ module Prov
       # as well, to help keep URLs meaningful
       super()
       $log.debug("Looking up comment #{project}-#{ticket}:#{comment}")
-      @body=jira.getComment(comment).body
+      @jira_model=jira.getComment(comment)
+      @body=jira_model.body
       @commands=[]
       @project=project
       @ticket=ticket
@@ -34,6 +35,9 @@ module Prov
       "#{jira.base_url}/browse/#{project}-#{ticket}"
     end
 
-  
+    def author
+      @jira_model.author
+    end
+
   end
 end

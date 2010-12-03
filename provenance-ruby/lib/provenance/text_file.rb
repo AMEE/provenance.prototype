@@ -20,6 +20,10 @@ module Prov
       url
     end
 
+    def author
+      nil
+    end
+
     def url
       # url of the text file
       "file://#{file.path}"

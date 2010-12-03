@@ -5,6 +5,7 @@ module Prov
       RDF::URI "#{url}.#{@urinum}"
     end
   end
+
   class LegacyFile < SvnFile
     def initialize(repo,path)
       @folder=File.dirname(path)
@@ -25,7 +26,7 @@ module Prov
     end
     def step c
       "prov:process #{c.reject{|x|x.blank?}.
-      map{|s| "prov:in #{s}"}.join(" ")} prov:out amee:#{folder}"
+      map{|s| "prov:in #{s}"}.join(" ")} prov:out amee:#{folder} prov:by #{author}"
     end
     def called x
       return [] unless x

@@ -15,6 +15,10 @@ module Prov
     def graph_uri
       "http://www.amee.com/graph"
     end
+
+    def author
+      nil
+    end
   
     def newuri
       @urinum+=1
