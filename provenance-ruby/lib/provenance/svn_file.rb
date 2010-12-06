@@ -20,7 +20,7 @@ module Prov
     end
 
     def last_author
-      `svn log #{path} --quiet | grep r | gawk '{print $3}' | head -n1`.chop
+      `svn log #{path} --quiet #{Connection::Subversion.auth_options}| grep r | gawk '{print $3}' | head -n1`.chop
     end
     def author
       last_author
