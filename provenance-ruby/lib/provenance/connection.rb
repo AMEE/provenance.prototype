@@ -72,12 +72,17 @@ module Prov
           unless File.directory? Config['svn_repo_working_copy']
             $log.info "Initial checkout to #{Config['svn_repo_working_copy']}"
             wc.do_checkout
+            $log.info "Checkout complete"
           else
             $log.info "Svn updating"
             wc.update
+            $log.info "Update complete"
           end
           wc
         end
+      end
+      def self.auth_options
+        "--username #{Config["svn_user"]} --password #{Config["svn_pass"]}"
       end
     end
   end

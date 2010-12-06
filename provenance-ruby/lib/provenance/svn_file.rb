@@ -16,7 +16,7 @@ module Prov
     def first_author
       #should be able to use the svn_wc lib for this, but doesn't support it
       # so use shell command
-      `svn log #{path} --quiet | grep r | gawk '{print $3}' | tail -n1`.chop
+      `svn log #{path} --quiet #{Connection::Subversion.auth_options}| grep r | gawk '{print $3}' | tail -n1`.chop
     end
 
     def last_author
