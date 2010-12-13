@@ -58,6 +58,9 @@ module Prov
 
   parse :uri do |x|
     if x.class != RDF::URI && (x=~/http\:\/\// || x=~/https\:\/\// || x=~/ftp\:\/\// || x=~/mailto/ || x=~/file\:\/\//)
+      if x=~/[\s"]/
+        x=x.split("/").map{|x| x=~/http/ ? x : CGI.escape(x)}.join("/")
+      end
       RDF::URI.new(x)
     else
       x

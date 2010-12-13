@@ -16,6 +16,9 @@ module Prov
     property :manualllabel
     property :autolabel
     property :graph #the amee provenance graph
+    property :assembly #A process type involving assembling things together
+    property :component
+    property :assumption
   end
 
   class OPM < RDF::Vocabulary("http://openprovenance.org/ontology#")

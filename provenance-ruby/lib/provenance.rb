@@ -171,7 +171,7 @@ module Prov
       if options.category
         $log.info("Reading prov:commands from #{options.category} in svn")
         glob=options.recursive ? '**/*.prov' : '*.prov'
-        svn_block(glob,SvnFile,options.category).flatten(1)
+        svn_block(glob,SvnFile,File.join('api_csvs',options.category)).flatten(1)
       end
       if options.legacy
       
@@ -179,10 +179,14 @@ module Prov
       
         dataglob=options.recursive ? '**/data.csv' : 'data.csv'
         metaglob=options.recursive ? '**/meta.yml' : 'meta.yml'
-        svn_block(dataglob,DataCsvFile,options.legacy).flatten(1)
+        svn_block(dataglob,DataCsvFile,File.join('api_csvs',options.legacy)).flatten(1)
         svn_block(metaglob,MetaYmlFile,options.legacy).flatten(1)      
       end
-      if options.in||options.infile||options.category||options.legacy
+      if options.sourcechecker
+        $log.info("Reading sourcechecker accounts from SVN")
+        svn_block('**/*.prov',SvnFile,'provenance/sourcechecker')
+      end
+      if options.in||options.infile||options.category||options.legacy||options.sourcechecker
         declare_roles
       end
     end

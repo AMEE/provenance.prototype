@@ -23,7 +23,7 @@ module Prov
       `svn log #{path} --quiet #{Connection::Subversion.auth_options}| grep r | gawk '{print $3}' | head -n1`.chop
     end
     def author
-      last_author
+      "mailto:#{last_author}@amee.com"
     end
 
   end
