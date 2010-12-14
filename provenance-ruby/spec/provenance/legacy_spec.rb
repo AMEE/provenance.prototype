@@ -2,12 +2,12 @@ require File.expand_path(File.dirname(File.dirname(__FILE__)) + '/spec_helper')
 describe 'MetaYmlFile' do
   before :each do
     @d=flexmock MetaYmlFile.new(Connection::Subversion.connect,
-      File.join(SubversionTestCategory,'meta.yml'))
+      File.join('api_csvs',SubversionTestCategory,'meta.yml'))
   end
   it "should parse a meta.yml" do
     @d.steps.first.body.should eql "prov:process prov:in "+
       "http://www.ghgprotocol.org/calculation-tools/all-tools called"+
-      " \"GHGP  Protocol\" prov:out amee:/transport/car/generic/ghgp/us prov:by andrew.berkeley"
+      " \"GHGP  Protocol\" prov:out amee:/transport/car/generic/ghgp/us prov:by mailto:andrew.berkeley@amee.com"
     @d.steps.
       first.newuri.should eql RDF::URI.new("http://svn.amee.com/internal/api_csvs#{SubversionTestCategory}/meta.yml#provenance?offset=0.3")
   end
@@ -50,12 +50,12 @@ end
 describe 'DataCsvFile' do
   before :each do
     @d=flexmock DataCsvFile.new(Connection::Subversion.connect,
-      File.join(SubversionTestCategory,'data.csv'))
+      File.join('api_csvs',SubversionTestCategory,'data.csv'))
   end
   it "should parse a csv file" do
      @d.steps.first.body.should eql "prov:process prov:in "+
       "http://www.ghgprotocol.org/calculation-tools/all-tools prov:out "+
-      "amee:/transport/car/generic/ghgp/us prov:by andrew"
+      "amee:/transport/car/generic/ghgp/us prov:by mailto:andrew@amee.com"
     @d.steps.length.should eql 1
   end
   it "should parse basic source" do

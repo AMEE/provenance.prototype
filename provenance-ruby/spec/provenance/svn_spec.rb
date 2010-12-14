@@ -16,7 +16,7 @@ end
 
 describe SvnFile do
   before :all do
-    path=File.join(SubversionTestCategory,'data.csv')
+    path=File.join('api_csvs',SubversionTestCategory,'data.csv')
     @file=SvnFile.new(Connection::Subversion.connect,path)
   end
   it "should know the first author to commit the file" do

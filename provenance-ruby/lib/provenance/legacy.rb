@@ -8,7 +8,7 @@ module Prov
 
   class LegacyFile < SvnFile
     def initialize(repo,path)
-      @folder=File.dirname(path)
+      @folder=File.dirname(path).gsub(/.*api_csvs/,'')
       super(repo,path)
       construct_model
     end
