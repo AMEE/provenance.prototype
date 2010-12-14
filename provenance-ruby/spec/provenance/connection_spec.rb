@@ -12,10 +12,10 @@ describe Connection do
   end
   it "should connect to SVN OK" do
     @svn=Connection::Subversion.connect
-    info= @svn.info(File.join(Connection::Subversion::Config['svn_repo_working_copy'],
+    info= @svn.info(File.join(Connection::Subversion::Config['svn_repo_working_copy'],'api_csvs',
         SubversionTestCategory))
     info[:url].
-      should eql "#{Connection::Subversion::Config['svn_repo_master']}#{SubversionTestCategory}"
+      should eql "#{Connection::Subversion::Config['svn_repo_master']}/api_csvs#{SubversionTestCategory}"
   end
 end
 
