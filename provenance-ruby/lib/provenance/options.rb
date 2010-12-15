@@ -51,6 +51,7 @@ module Prov
         end
         opts.on("--everything") do
           options.jira=true
+          options.sourcechecker=true
           options.category='/'
           options.legacy='/'
           options.recursive=true
