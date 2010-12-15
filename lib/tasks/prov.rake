@@ -32,9 +32,16 @@ end
 task :clean => [:xmlclean, :dbclean, 
   :imgclean, :dotclean, :reportclean, :webclean]
 
-Pages=[ "-x -i ST-50",
-  "-x -i SC-47",
-  "-x --category /transport/car/generic/ghgp/us",
-  "-b",
-  "--database sesame-sparql -b --category-subgraph /transport/car/generic/ghgp/us"
-].map{|x|CGI.escape x}
+
+AccountYaml=YAML.load_file(File.join(File.dirname(
+       File.dirname(File.dirname(__FILE__))),'config','accounts.yml'))
+
+categories=AccountYaml['categories']
+jiras=AccountYaml['jira']
+
+Pages=[
+  "-b"
+].concat(categories.map{|x|"-x --category #{x}"}).
+  concat(categories.map{|x|"--database sesame-sparql -b --category-subgraph #{x}"}).
+  concat(jiras.map{|x| "-x -i #{x[0]}-#{x[1]}"}).
+  map{|x|CGI.escape x}

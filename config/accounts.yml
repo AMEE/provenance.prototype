@@ -1,0 +1,13 @@
+categories:
+  - /transport/car/generic/ghgp/us
+  - /business/energy/chp/defra
+  - /business/energy/electricity/defra/uk
+  - /business/energy/stationaryCombustion/defra/energy
+  - /business/energy/stationaryCombustion/defra/mass
+  - /business/energy/stationaryCombustion/defra/volume
+  - /business/processes/defra
+  - /transport/car/generic/ghgp/us
+  - /transport/defra/passenger
+jira:
+  - [ST, 50]
+  - [SC, 47]

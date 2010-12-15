@@ -1,7 +1,8 @@
 class AccountController < ApplicationController
 
-  before_filter :build
-
+  before_filter :build, :except=>'index'
+  require 'account' #Explicit include of model because we use derived classes
+  #so autoloader gets confused cos I didn't make each one its own file
 
 
   def graph
@@ -15,31 +16,35 @@ class AccountController < ApplicationController
 
   def report
   end
+
+  def index
+    #list available accounts
+    @accounts=PertainingCategory.available_categories.
+      concat(DirectCategory.available_categories).
+      concat(JiraAccount.available_issues).
+      concat([
+        EverythingAccount.new
+      ])
+  end
   
   private
 
   def build
     if params[:account]
-      @label=" information in account #{params[:account]}"
-      rawcode="-x params[:account]"
+      @account=RawAccount.new(account)
     elsif params[:everything]
-      @label="all information available"
-      rawcode="-b"
+      @account=EverythingAccount.new
     elsif params[:allpath]
-      jpath=params[:allpath].join('/')
-      @label="all information pertaining to AMEE category #{jpath}"
-      rawcode="--database sesame-sparql -b --category-subgraph /#{jpath}"
+      @account=PertainingCategory.new(params[:allpath])
     elsif params[:textpath]
-      jpath=params[:textpath].join('/')
-      @label="all information pertaining to AMEE category #{jpath}"
-      rawcode="-x --category /#{jpath}"
+      @account=DirectCategory.new(params[:textpath])
     elsif params[:project]
-      @label=" information in jira ticket #{params[:project]}-#{params[:issue]}"
-      rawcode=code "-x -i #{params[:project]}-#{params[:issue]}"
+      @account=JiraAccount.new(params[:project],params[:issue])
     else
       raise "Invalid route"
     end
-    @code=CGI.escape(rawcode).gsub('+','_').gsub('%','__').gsub('-','_')
+    @code=@account.code
+    @label=@account.label
    #lossy encoding as partial names must be valid variable names
   end
 

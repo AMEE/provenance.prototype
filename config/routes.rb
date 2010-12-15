@@ -9,5 +9,5 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'textual/*textpath/report', :controller=>'account',:action=>'report'
   map.connect 'issue/:project/:issue/graph', :controller=>'account',:action=>'graph'
   map.connect 'issue/:project/:issue/report', :controller=>'account',:action=>'report'
-  map.root :controller=>'account',:allpath=>%w{transport car generic ghgp us},:action=>'graph'
+  map.root :controller=>'account',:action=>'index'
 end
