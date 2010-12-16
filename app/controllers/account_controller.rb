@@ -23,7 +23,8 @@ class AccountController < ApplicationController
       concat(DirectCategory.available_categories).
       concat(JiraAccount.available_issues).
       concat([
-        EverythingAccount.new
+        EverythingAccount.new,
+        SourcesAccount.new
       ])
   end
   
@@ -33,6 +34,8 @@ class AccountController < ApplicationController
     if params[:account]
       @account=RawAccount.new(account)
     elsif params[:everything]
+      @account=EverythingAccount.new
+    elsif params[:sources]
       @account=EverythingAccount.new
     elsif params[:allpath]
       @account=PertainingCategory.new(params[:allpath])

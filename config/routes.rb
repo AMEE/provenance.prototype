@@ -8,6 +8,7 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'textual/*textpath/graph', :controller=>'account',:action=>'graph'
   map.connect 'textual/*textpath/report', :controller=>'account',:action=>'report'
   map.connect 'issue/:project/:issue/graph', :controller=>'account',:action=>'graph'
-  map.connect 'issue/:project/:issue/report', :controller=>'account',:action=>'report'
+  map.connect 'sources/graph',:controller=>'account',:action=>'graph',:sources=>true
+  map.connect 'sources/report',:controller=>'account',:action=>'report',:sources=>true
   map.root :controller=>'account',:action=>'index'
 end

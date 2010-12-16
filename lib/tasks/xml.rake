@@ -13,3 +13,7 @@ end
 task 'xmlclean' do
   rm_rf Dir.glob "#{Resources}**/*.xml"
 end
+
+task "categoryclean" do
+  rm_rf Dir.glob "#{Resources}/categories/**/*.xml"
+end

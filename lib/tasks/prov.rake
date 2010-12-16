@@ -40,7 +40,8 @@ categories=AccountYaml['categories']
 jiras=AccountYaml['jira']
 
 Pages=[
-  "-b"
+  "-b",
+  "-x --sources"
 ].concat(categories.map{|x|"-x --category #{x}"}).
   concat(categories.map{|x|"--database sesame-sparql -b --category-subgraph #{x}"}).
   concat(jiras.map{|x| "-x -i #{x[0]}-#{x[1]}"}).
