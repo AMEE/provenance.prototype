@@ -18,6 +18,7 @@ module Prov
       @repo=repo
       @stepper=stepper
       @start=start
+      @visited=Set.new
       # a binding binding :start to each current value of start
       @solution=if @start.is_a? RDF::Query
         start.execute(@repo)
@@ -31,7 +32,7 @@ module Prov
     end
     def step
       newsolution=[]
-      progress.each do |seed|
+      (progress.reject{|x| @visited.include?(x)}).each do |seed|
         nextstep=RDF::Query.new{|q|
           @stepper.patterns.each { |p|
             q<<RDF::Query::Pattern.new(*p.to_a.map{|x|
@@ -42,6 +43,7 @@ module Prov
         nextstep.execute(@repo)
         newsolution.concat nextstep.each_solution.to_a
       end
+      @visited.merge(progress) #merge the OLD solution into visited nodes
       @solution=newsolution
       $log.debug("Crawler step #{solution.inspect}")
       return self

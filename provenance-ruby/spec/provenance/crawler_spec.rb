@@ -79,6 +79,25 @@ FourSubgraph <<
   [n[6],at,m[4]] <<
   [n[4],at,starter[3]]
 
+LoopedGraph = RDF::Repository.new
+LoopedGraph <<
+  [n[0],to,n[1]] <<
+  [n[0],to,n[2]] <<
+  [n[1],to,n[3]] <<
+  [n[2],to,n[4]] <<
+  [n[2],to,n[5]] <<
+  [n[2],to,n[0]] <<
+  [n[4],to,n[6]] <<
+  [n[4],to,n[7]] <<
+  [n[7],to,n[8]] <<
+  [n[3],at,m[1]] <<
+  [n[2],at,m[2]] <<
+  [n[7],at,m[3]] <<
+  [n[6],at,m[4]] <<
+  [n[0],at,starter[0]] <<
+  [n[2],at,starter[1]] <<
+  [n[4],at,starter[3]]
+
 
 start=RDF::Query.new{|q|q<<[:end,at,starter[0]]}
 startattwo=RDF::Query.new{|q|q<<[:end,at,starter[1]]}
@@ -202,6 +221,17 @@ describe Crawler do
     c.induced_subgraph.statements.sort.
       should eql FourSubgraph.statements.sort
   end
+  it "should not crawl indefnitely if graph has loop" do
+    c=Crawler.new(LoopedGraph,start,step)
+    c.enum_progress.to_a.should eql [
+      [n[0]],
+      [n[1],n[2]],
+      [n[3],n[4],n[5],n[0]],
+      [n[6],n[7]],#Note that we DONT start again from 0 here
+      [n[8]]
+    ]
+  end
+
 
 end
 

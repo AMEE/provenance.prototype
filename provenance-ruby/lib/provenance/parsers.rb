@@ -56,6 +56,23 @@ module Prov
     end
   end
 
+  #Don't treat fragment for XLS as part of unique identifier
+  parse :xlsfragment do |x|
+    if x=~/\.xls/&&x.respond_to?(:gsub)
+      x.gsub(/#.*?$/,'')
+    else
+      x
+    end
+  end
+
+  parse :pdffragment do |x|
+    if x=~/\.pdf/&&x.respond_to?(:gsub)
+      x.gsub(/#.*?$/,'')
+    else
+      x
+    end
+  end
+
   parse :uri do |x|
     if x.class != RDF::URI && (x=~/http\:\/\// || x=~/https\:\/\// || x=~/ftp\:\/\// || x=~/mailto/ || x=~/file\:\/\//)
       if x=~/[\s"]/
