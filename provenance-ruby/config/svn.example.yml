@@ -1,5 +1,5 @@
-svn_repo_master        : http://svn.amee.com/internal/api_csvs
-svn_repo_working_copy  : /home/jamespjh/devel/amee/provenance/provenance-ruby/subversion_checkout/api_csvs
-svn_user               : james.hetherington
+svn_repo_master        : *********
+svn_repo_working_copy  : *********
+svn_user               : *********
 svn_pass               : *********
 
