@@ -1,1 +1,7 @@
 .DS_Store
+provenance-ruby/config/jira.yml
+provenance-ruby/config/sesame.yml
+provenance-ruby/config/sparql.yml
+provenance-ruby/config/svn.yml
+*.sqlite3
+config/my_amee.yml
